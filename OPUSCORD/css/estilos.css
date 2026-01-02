@@ -1,0 +1,269 @@
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Contenedor principal */
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+/* Contenedor principal de la sidebar */
+.sidebar {
+    width: 200px;
+    background-color: #2f3136;
+    color: #fff;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* separa la parte superior de la inferior */
+    height: 100vh;
+}
+
+/* Navegación */
+.sidebar nav ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+.sidebar nav ul li {
+    margin-bottom: 10px;
+}
+
+.sidebar button {
+    width: 100%;
+    padding: 10px;
+    background-color: #36393f;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.sidebar button:hover {
+    background-color: #7289da;
+}
+
+/* Contenedor de botones de sesión */
+.auth-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Botones de iniciar sesión y registrarse */
+.login-btn {
+    background-color: #7289da;
+    color: #fff;
+}
+
+.login-btn:hover {
+    background-color: #5b6eae;
+}
+
+.register-btn {
+    background-color: #43b581;
+    color: #fff;
+}
+
+.register-btn:hover {
+    background-color: #369b6e;
+}
+
+/* Área principal */
+.main-content {
+    flex: 1;
+    background-color: #36393f;
+    color: #fff;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+/* Feed de publicaciones */
+.feed .post {
+    background-color: #2f3136;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    padding: 10px;
+}
+
+.post-header {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.post img {
+    width: 100%;
+    border-radius: 10px;
+}
+
+.caption {
+    margin-top: 10px;
+}
+
+/* Mensajes */
+.messages {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.message {
+    background-color: #40444b;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+/* Ocultar sección */
+.hidden {
+    display: none;
+}
+/* Lista de conversaciones */
+.conversations {
+    width: 200px;
+    background-color: #2f3136;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.conversations h3 {
+    margin-bottom: 10px;
+    color: #fff;
+}
+
+.conversations ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.conversations li {
+    margin-bottom: 5px;
+}
+
+.conversations li a {
+    display: block;
+    padding: 8px;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    background-color: #36393f;
+    transition: background 0.2s;
+}
+
+.conversations li a:hover {
+    background-color: #7289da;
+}
+
+/* Chat concreto */
+.chat {
+    background-color: #2f3136;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    max-height: 80vh;
+}
+
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 10px;
+    margin-bottom: 10px;
+}
+
+.chat-messages .message {
+    background-color: #40444b;
+    padding: 8px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    max-width: 400px;
+}
+
+.chat-input {
+    display: flex;
+    gap: 5px;
+}
+
+.chat-input input {
+    flex: 1;
+    padding: 8px;
+    border-radius: 5px;
+    border: none;
+}
+
+.chat-input button {
+    padding: 8px 12px;
+    border-radius: 5px;
+    border: none;
+    background-color: #7289da;
+    color: #fff;
+    cursor: pointer;
+}
+
+.chat-input button:hover {
+    background-color: #5b6eae;
+}
+/* Mensajes dentro del chat */
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+/* Mensaje de otro usuario */
+.message.otro {
+    align-self: flex-start; /* a la izquierda */
+    background-color: #40444b;
+    color: #fff;
+    padding: 8px;
+    border-radius: 10px;
+    max-width: 70%;
+}
+
+/* Mensaje propio */
+.message.propio {
+    align-self: flex-end; /* a la derecha */
+    background-color: #7289da;
+    color: #fff;
+    padding: 8px;
+    border-radius: 10px;
+    max-width: 70%;
+}
+/* Feed de publicaciones */
+.feed .post {
+    background-color: #2f3136;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    padding: 10px;
+}
+
+/* Cabecera de cada publicación */
+.post-header {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* Imagenes uniformes */
+.post img {
+    width: 100%;          /* ocupa todo el ancho del post */
+    max-width: 400px;     /* límite máximo de ancho */
+    height: 250px;        /* altura fija */
+    object-fit: cover;    /* recorta la imagen para que encaje sin deformar */
+    border-radius: 10px;
+    display: block;       /* evita espacios debajo de la imagen */
+    margin: 0 auto;       /* centra la imagen si el post es más ancho */
+}
+
+/* Pie de publicación */
+.caption {
+    margin-top: 10px;
+}
