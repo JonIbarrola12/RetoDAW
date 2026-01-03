@@ -24,7 +24,19 @@
         <div class="card shadow p-4" style="width: 22rem;">
             <h3 class="text-center mb-4">Iniciar sesión</h3>
 
-            <form action="login.php" method="POST">
+            <form action="crearUsuario.php" method="POST">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Nombre</label>
+                    <input type="text" class="form-control" id="name" name="nombre" placeholder="Ingresa tu nombre" required>
+                </div>
+                <div class="mb-3">
+                    <label for="surname" class="form-label">Apellido</label>
+                    <input type="text" class="form-control" id="surname" name="apellido" placeholder="Ingresa tu apellido" required>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Ingresa tu email" required>
+                </div>
                 <div class="mb-3">
                     <label for="usuario" class="form-label">Usuario</label>
                     <input type="text" class="form-control" id="usuario" name="usuario" placeholder="Ingresa tu usuario" required>
@@ -35,7 +47,7 @@
                     <input type="password" class="form-control" id="contrasena" name="contrasena" placeholder="Ingresa tu contraseña" required>
                 </div>
 
-                <button type="submit" class="btn btn-purple w-100 mb-2 mt-3">Ingresar</button>
+                <button type="submit" class="btn btn-purple w-100 mb-2 mt-3">Registrarse</button>
             </form>
         </div>
     </div>
@@ -44,4 +56,3 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-

@@ -16,7 +16,7 @@ class LoginClass {
 
     private function verificarUsuario() {
         // Preparar la consulta segura
-        $stmt = $this->conexion->prepare("SELECT TrabajadorId, Usuario, Contrasena FROM trabajadores WHERE Usuario = ?");
+        $stmt = $this->conexion->prepare("SELECT id_usuario, Username, Password FROM usuario WHERE Username = ?");
         $stmt->bind_param("s", $this->usuario);
         $stmt->execute();
         $resultado = $stmt->get_result();
@@ -25,13 +25,13 @@ class LoginClass {
             $fila = $resultado->fetch_assoc();
 
             // Comparación directa sin hash
-            if (password_verify($this->contrasena, $fila['Contrasena'])) {
+            if (password_verify($this->contrasena, $fila['Password'])) {
                 session_start();
                 $_SESSION['Usuario'] = $this->usuario;
                 $_SESSION['valid'] = true;
-                $_SESSION['id'] = $fila['TrabajadorId'];         // Guardar el ID
-                $_SESSION['nombreUsuario'] = $fila['Usuario']; // Guardar el nombre de usuario
-                header("Location: ../index.php");
+                $_SESSION['id'] = $fila['id_usuario'];         // Guardar el ID
+                $_SESSION['nombreUsuario'] = $fila['username']; // Guardar el nombre de usuario
+                header("Location: ../paginas/index.php");
                 exit();
             } else {
                 echo "Contraseña incorrecta.";

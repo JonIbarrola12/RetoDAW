@@ -1,10 +1,12 @@
 <!DOCTYPE html>
+<?php session_start() ?>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OPUSCORD - Feed</title>
-    <link rel="stylesheet" href="../css/estilos.css">
+    <link rel="stylesheet" href="../../css/estilos.css">
+    <?php require_once('../conexion.php');?>
 </head>
 <body>
     <div class="container">
@@ -19,10 +21,21 @@
             </nav>
 
             <!-- Botones de sesión abajo -->
-            <div class="auth-buttons">
-                <button class="login-btn">Iniciar Sesión</button>
-                <button class="register-btn">Registrarse</button>
-            </div>
+             <?php
+                    if (isset($_SESSION['Usuario'])) {
+                        echo'
+                        <p>Usuario: ' . htmlspecialchars($_SESSION['Usuario']) .'</p>
+                        <a href="../Login/Logout.php"><button class="login-btn">Cerrar Sesión</button></a>
+                        ';
+                    }else{
+                        echo'
+                         <div class="auth-buttons">
+                            <a href="../Login/Index.php"><button class="login-btn">Iniciar Sesión</button></a>
+                            <a href="../Login/registrarse.php"><button class="register-btn">Registrarse</button></a>
+                        </div>
+                        ';
+                    }
+           ?>
         </aside>
 
         <main class="main-content">
