@@ -8,7 +8,7 @@ class LoginClass {
         $this->usuario = trim($usuario);
         $this->contrasena = trim($contrasena);
 
-        require_once("conexion.php");
+        require_once("../conexion.php");
         $this->conexion = $conexion;
 
         $this->verificarUsuario();
@@ -26,11 +26,10 @@ class LoginClass {
 
             // Comparación directa sin hash
             if (password_verify($this->contrasena, $fila['Password'])) {
-                session_start();
-                $_SESSION['Usuario'] = $this->usuario;
-                $_SESSION['valid'] = true;
-                $_SESSION['id'] = $fila['id_usuario'];         // Guardar el ID
-                $_SESSION['nombreUsuario'] = $fila['username']; // Guardar el nombre de usuario
+                session_start(); // inicia sesión
+                $_SESSION['Usuario'] = $fila['Username'];       // Nombre de usuario
+                $_SESSION['id_usuario'] = $fila['id_usuario'];  // ID de usuario
+                $_SESSION['valid'] = true;                      // login válido
                 header("Location: ../paginas/index.php");
                 exit();
             } else {
