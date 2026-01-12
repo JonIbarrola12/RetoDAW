@@ -15,8 +15,8 @@
             <!-- Navegación arriba -->
             <nav class="main-nav">
                 <ul>
-                    <li><a href="index.html"><button>Feed</button></a></li>
-                    <li><a href="mensajes.html"><button>Mensajes</button></a></li>
+                    <li><a href="index.php"><button>Feed</button></a></li>
+                    <li><a href="mensajes.php"><button>Mensajes</button></a></li>
                 </ul>
             </nav>
 
