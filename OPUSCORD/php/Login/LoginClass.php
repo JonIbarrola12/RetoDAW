@@ -8,7 +8,7 @@ class LoginClass {
         $this->usuario = trim($usuario);
         $this->contrasena = trim($contrasena);
 
-        require_once("conexion.php");
+        require_once("../conexion.php");
         $this->conexion = $conexion;
 
         $this->verificarUsuario();
