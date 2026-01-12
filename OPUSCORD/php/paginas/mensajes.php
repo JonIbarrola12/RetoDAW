@@ -40,10 +40,10 @@
             <aside class="conversations">
                 <h3>Conversaciones</h3>
                 <ul>
-                    <!-- Cada conversación redirige a chat.html con query string -->
-                    <li><a href="chat.html?user=usuario1">usuario1</a></li>
-                    <li><a href="chat.html?user=usuario2">usuario2</a></li>
-                    <li><a href="chat.html?user=usuario3">usuario3</a></li>
+                    <!-- Cada conversación redirige a chat.php con query string -->
+                    <li><a href="chat.php?user=usuario1">usuario1</a></li>
+                    <li><a href="chat.php?user=usuario2">usuario2</a></li>
+                    <li><a href="chat.php?user=usuario3">usuario3</a></li>
                 </ul>
             </aside>
         </main>
