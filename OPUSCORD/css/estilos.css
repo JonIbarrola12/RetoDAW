@@ -324,6 +324,22 @@
     animation: fadein 0.5s;
 }
 
+/* Perfil  */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.profile-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ccc;
+}
+
+
 /* efecto suave de aparición */
 @keyframes fadein {
     from { opacity: 0; }

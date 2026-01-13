@@ -104,17 +104,44 @@ $busqueda = $_GET['buscar'] ?? '';
 </head>
 <body>
 
-<div class="container">
-    <aside class="sidebar">
-        <h2><a href="index.php" style="text-decoration:none; color:inherit;">OPUSCORD</a></h2>
-        <nav class="main-nav">
-            <ul>
-                <li><a href="index.php"><button>Feed</button></a></li>
-                <li><a href="mensajes.php"><button>Mensajes</button></a></li>
-                <li><a href="amigos.php"><button>Amigos</button></a></li>
-            </ul>
-        </nav>
-    </aside>
+    <div class="container">
+        <aside class="sidebar">
+            <h2>OPUSCORD</h2>
+            <!-- Navegación arriba -->
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.php"><button>Feed</button></a></li>
+                    <li><a href="mensajes.php"><button>Mensajes</button></a></li>
+                    <li><a href="amigos.php"><button>Amigos</button></a></li>
+                    <li><a href="index.php"><button>Feed</button></a></li>
+                </ul>
+            </nav>
+
+            <!-- Botones de sesión abajo -->
+            <?php
+                if (isset($_SESSION['Usuario'])) {
+
+                    $Foto = (isset($_SESSION['Foto']) && !empty($_SESSION['Foto']))
+                        ? $_SESSION['Foto']
+                        : '../../Recursos/mamiy.png';
+
+                    echo '
+                        <img src="' . htmlspecialchars($Foto) . '" alt="Foto de perfil" class="profile-pic">
+                        <p>' . htmlspecialchars($_SESSION['Usuario']) . '</p>
+                        <a href="../Login/Logout.php">
+                            <button class="login-btn">Cerrar Sesión</button>
+                        </a>
+                    ';
+                } else {
+                    echo '
+                        <div class="auth-buttons">
+                            <a href="../Login/Index.php"><button class="login-btn">Iniciar Sesión</button></a>
+                            <a href="../Login/registrarse.php"><button class="register-btn">Registrarse</button></a>
+                        </div>
+                    ';
+                }
+            ?>
+        </aside>
 
     <main class="main-content">
         
