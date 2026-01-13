@@ -15,14 +15,11 @@
             <!-- Navegación arriba -->
             <nav class="main-nav">
                 <ul>
-<<<<<<< HEAD
                     <li><a href="index.html"><button>Feed</button></a></li>
                     <li><a href="mensajes.html"><button>Mensajes</button></a></li>
                     <li><a href="amigos.php"><button>Amigos</button></a></li>
-=======
                     <li><a href="index.php"><button>Feed</button></a></li>
                     <li><a href="mensajes.php"><button>Mensajes</button></a></li>
->>>>>>> 1950f6cb5d506e0f8fe1ed154d00e7e9f1f4e81a
                 </ul>
             </nav>
 
