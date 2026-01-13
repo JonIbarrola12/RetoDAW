@@ -28,42 +28,38 @@ class AmigosCRUD {
 
     public static function añadirAmigo(Amigo $amigo) {
         global $conexion;
-        $insertSql = "INSERT into amigos (id_usuario, id_amigo_usuario, Estado, FechaSolicitud, FechaAceptacion) VALUES (?, ?, ?, ?, ?)";
 
-        try {
-            $stmt = mysqli_prepare($conexion, $insertSql);
-            if (!$stmt) {
-                throw new Exception("Error al preparar la consulta: " . mysqli_error($conexion));
-            }
+        // FechaAceptacion se deja como null directamente en el sql
+        $sql = "INSERT INTO amigos 
+                (id_usuario, id_amigo_usuario, Estado, FechaSolicitud, FechaAceptacion)
+                VALUES (?, ?, ?, ?, NULL)";
 
-            $usuarioId = $amigo->getUsuarioId();
-            $amigoUsuarioId = $amigo->getAmigoUsuarioId();
-            $estado = $amigo->getEstado();
-            $fechaSolicitud = $amigo->getFechaSolicitud()->format('Y-m-d H:i:s');
-            $fechaAceptacion = $amigo->getFechaAceptacion() ?
-                $amigo->getFechaAceptacion()->format('Y-m-d H:i:s') : null;
-
-            mysqli_stmt_bind_param(
-                $stmt,
-                "iisss",
-                $usuarioId,
-                $amigoUsuarioId,
-                $estado,
-                $fechaSolicitud,
-                $fechaAceptacion
-            );
-
-            $resultado = mysqli_stmt_execute($stmt);
-            if (!$resultado) {
-                throw new Exception("Error al ejecutar el INSERT: " . mysqli_stmt_error($stmt));
-            }
-
-            mysqli_stmt_close($stmt);
-
-        } catch (Exception $e) {
-            echo "Error al añadir amigo: " . $e->getMessage();
+        $stmt = mysqli_prepare($conexion, $sql);
+        if (!$stmt) {
+            die("Error prepare: " . mysqli_error($conexion));
         }
+
+        $usuarioId = $amigo->getUsuarioId();
+        $amigoUsuarioId = $amigo->getAmigoUsuarioId();
+        $estado = $amigo->getEstado();
+        $fechaSolicitud = $amigo->getFechaSolicitud()->format('Y-m-d H:i:s');
+
+        mysqli_stmt_bind_param(
+            $stmt,
+            "iiss",
+            $usuarioId,
+            $amigoUsuarioId,
+            $estado,
+            $fechaSolicitud
+        );
+
+        if (!mysqli_stmt_execute($stmt)) {
+            die("Error execute: " . mysqli_stmt_error($stmt));
+        }
+
+        mysqli_stmt_close($stmt);
     }
+
 
     public static function eliminarAmigo(int $amigoId) {
         global $conexion;
@@ -127,4 +123,17 @@ class AmigosCRUD {
         $amigos = self::recibirRegistros();
         return count($amigos);
     }
+
+    public static function aceptarAmigo(int $idAmigoRegistro) {
+        global $conexion;
+
+        $updateSql = "UPDATE amigos SET Estado = ?, FechaAceptacion = ? WHERE id_amigo = ?";
+        $stmt = mysqli_prepare($conexion, $updateSql);
+        $estado = Amigo::ESTADO_ACEPTADO;
+        $fechaAceptacion = (new DateTime())->format('Y-m-d H:i:s');
+        mysqli_stmt_bind_param($stmt, "ssi", $estado, $fechaAceptacion, $idAmigoRegistro);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+    }
+
 }

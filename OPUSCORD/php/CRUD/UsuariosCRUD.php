@@ -3,7 +3,7 @@
     class UsuariosCRUD{
         public static function recibirRegistros(){
             global $conexion;
-            $selectSql = "SELECT * from usuario";
+            $selectSql = "SELECT * from usuarios";
             try{
                 $query = mysqli_query($conexion,$selectSql);
                 if (!$query) {
@@ -24,7 +24,7 @@
 
         public static function añadirUsuario(Usuario $usuario){
             global $conexion;
-            $insertSql = "INSERT into usuario (Nombre,Apellido,Username,Email,Password,Pfp,Bio,FechaRegistro) values (?,?,?,?,?,?,?,?)";
+            $insertSql = "INSERT into usuarios (Nombre,Apellido,Username,Email,Password,Pfp,Bio,FechaRegistro) values (?,?,?,?,?,?,?,?)";
             try {
                 $stmt = mysqli_prepare($conexion, $insertSql);
                 if (!$stmt) {
@@ -70,7 +70,7 @@
 
         public static function eliminarUsuario(string $Username){
             global $conexion;
-            $deleteSql = "DELETE from usuario where Username = ? ";
+            $deleteSql = "DELETE from usuarios where Username = ? ";
 
             try {
                 $stmt = mysqli_prepare($conexion, $deleteSql);
@@ -99,7 +99,7 @@
         public static function modificarUsuario(Usuario $Usuario, string $UsernameOriginal){
             global $conexion;
 
-            $modificarSql = "UPDATE usuario SET Nombre = ?, Apellido = ?, Username = ?, Email = ?, Pfp = ?, Bio = ? WHERE Username = ?";
+            $modificarSql = "UPDATE usuarios SET Nombre = ?, Apellido = ?, Username = ?, Email = ?, Pfp = ?, Bio = ? WHERE Username = ?";
 
             try {
                 $stmt = mysqli_prepare($conexion, $modificarSql);

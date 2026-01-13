@@ -17,6 +17,7 @@
                 <ul>
                     <li><a href="index.html"><button>Feed</button></a></li>
                     <li><a href="mensajes.html"><button>Mensajes</button></a></li>
+                    <li><a href="amigos.php"><button>Amigos</button></a></li>
                 </ul>
             </nav>
 

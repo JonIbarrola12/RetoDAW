@@ -16,7 +16,7 @@ class LoginClass {
 
     private function verificarUsuario() {
         // Preparar la consulta segura
-        $stmt = $this->conexion->prepare("SELECT id_usuario, Username, Password FROM usuario WHERE Username = ?");
+        $stmt = $this->conexion->prepare("SELECT id_usuario, Username, Password FROM usuarios WHERE Username = ?");
         $stmt->bind_param("s", $this->usuario);
         $stmt->execute();
         $resultado = $stmt->get_result();
