@@ -16,13 +16,13 @@
     /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
     --
-    -- Table structure for table `usuario`
+    -- Table structure for table `usuarios`
     --
 
-    DROP TABLE IF EXISTS `usuario`;
+    DROP TABLE IF EXISTS `usuarios`;
     /*!40101 SET @saved_cs_client     = @@character_set_client */;
     /*!50503 SET character_set_client = utf8mb4 */;
-    CREATE TABLE `usuario` (
+    CREATE TABLE `usuarios` (
     `id_usuario` int(11) NOT NULL AUTO_INCREMENT,
     `Nombre` varchar(25) DEFAULT NULL,
     `Apellido` varchar(25) DEFAULT NULL,
@@ -39,12 +39,12 @@
     /*!40101 SET character_set_client = @saved_cs_client */;
 
     --
-    -- Dumping data for table `usuario`
+    -- Dumping data for table `usuarios`
     --
 
-    /*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
-    INSERT INTO `usuario` VALUES (NULL,'Cristian','Bermudo','Cremu','cremu@email.com','1234',NULL,NULL,NOW()),(NULL,'Eder','Nieves','Eder27','eder27@email.com','1234',NULL,NULL,NOW());
-    /*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
+    /*!40000 ALTER TABLE `usuarios` DISABLE KEYS */;
+    INSERT INTO `usuarios` VALUES (NULL,'Cristian','Bermudo','Cremu','cremu@email.com','1234',NULL,NULL,NOW()),(NULL,'Eder','Nieves','Eder27','eder27@email.com','1234',NULL,NULL,NOW());
+    /*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
 
 
     --
