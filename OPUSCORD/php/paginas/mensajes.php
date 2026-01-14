@@ -1,4 +1,10 @@
 <!DOCTYPE html>
+<?php session_start();
+if (!isset($_SESSION['Usuario'])) {
+    header("Location: ../Login/login.php");
+    exit();
+}
+?>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -22,8 +28,10 @@
              <?php
                     if (isset($_SESSION['Usuario'])) {
                         echo'
-                        <p>Usuario' . htmlspecialchars($_SESSION['Usuario']) .'</p>
+                        <div class="auth-buttons">
+                        <p>Usuario: ' . htmlspecialchars($_SESSION['Usuario']) .'</p>
                         <a href="../Login/Logout.php"><button class="login-btn">Cerrar Sesión</button></a>
+                        </div>
                         ';
                     }else{
                         echo'

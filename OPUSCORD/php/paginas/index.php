@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<?php session_start() ?>
+<?php session_start();?>
+
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -15,20 +16,19 @@
             <!-- Navegación arriba -->
             <nav class="main-nav">
                 <ul>
-                    <li><a href="index.php"><button>Feed</button></a></li>
-                    <li><a href="mensajes.php"><button>Mensajes</button></a></li>
                     <li><a href="amigos.php"><button>Amigos</button></a></li>
                     <li><a href="index.php"><button>Feed</button></a></li>
                     <li><a href="mensajes.php"><button>Mensajes</button></a></li>
                 </ul>
             </nav>
-
             <!-- Botones de sesión abajo -->
              <?php
                     if (isset($_SESSION['Usuario'])) {
                         echo'
+                        <div class="auth-buttons">
                         <p>Usuario: ' . htmlspecialchars($_SESSION['Usuario']) .'</p>
                         <a href="../Login/Logout.php"><button class="login-btn">Cerrar Sesión</button></a>
+                        </div>
                         ';
                     }else{
                         echo'
