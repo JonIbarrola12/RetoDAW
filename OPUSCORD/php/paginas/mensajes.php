@@ -1,4 +1,10 @@
 <!DOCTYPE html>
+<?php session_start();
+if (!isset($_SESSION['Usuario'])) {
+    header("Location: ../Login/login.php");
+    exit();
+}
+?>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -14,16 +20,18 @@
             <!-- Navegación arriba -->
             <nav class="main-nav">
                 <ul>
-                    <li><a href="index.html"><button>Feed</button></a></li>
-                    <li><a href="mensajes.html"><button>Mensajes</button></a></li>
+                    <li><a href="index.php"><button>Feed</button></a></li>
+                    <li><a href="mensajes.php"><button>Mensajes</button></a></li>
                 </ul>
             </nav>
             <!-- Botones de sesión abajo -->
              <?php
                     if (isset($_SESSION['Usuario'])) {
                         echo'
-                        <p>Usuario' . htmlspecialchars($_SESSION['Usuario']) .'</p>
+                        <div class="auth-buttons">
+                        <p>Usuario: ' . htmlspecialchars($_SESSION['Usuario']) .'</p>
                         <a href="../Login/Logout.php"><button class="login-btn">Cerrar Sesión</button></a>
+                        </div>
                         ';
                     }else{
                         echo'
@@ -40,10 +48,9 @@
             <aside class="conversations">
                 <h3>Conversaciones</h3>
                 <ul>
-                    <!-- Cada conversación redirige a chat.html con query string -->
-                    <li><a href="chat.html?user=usuario1">usuario1</a></li>
-                    <li><a href="chat.html?user=usuario2">usuario2</a></li>
-                    <li><a href="chat.html?user=usuario3">usuario3</a></li>
+                    <li><a href="chat.php?user=usuario1">usuario1</a></li>
+                    <li><a href="chat.php?user=usuario2">usuario2</a></li>
+                    <li><a href="chat.php?user=usuario3">usuario3</a></li>
                 </ul>
             </aside>
         </main>

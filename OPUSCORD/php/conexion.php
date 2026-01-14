@@ -4,5 +4,5 @@
     $password = "admin";
     $database = "opuscord";
     $conexion = mysqli_connect($hostname,$username,$password,$database)
-            or die("Problemas al establecer conexion");
+
 ?>

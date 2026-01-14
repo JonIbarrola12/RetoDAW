@@ -1,10 +1,16 @@
 <!DOCTYPE html>
+<?php session_start();
+if (!isset($_SESSION['Usuario'])) {
+    header("Location: ../Login/login.php");
+    exit();
+}
+?>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OPUSCORD - Chat</title>
-    <link rel="stylesheet" href="../css/estilos.css">
+    <link rel="stylesheet" href="../../css/estilos.css">
     <?php require_once('../conexion.php');?>
 </head>
 <body>
@@ -14,16 +20,18 @@
         <!-- Navegación arriba -->
             <nav class="main-nav">
                 <ul>
-                    <li><a href="index.html"><button>Feed</button></a></li>
-                    <li><a href="mensajes.html"><button>Mensajes</button></a></li>
+                    <li><a href="index.php"><button>Feed</button></a></li>
+                    <li><a href="mensajes.php"><button>Mensajes</button></a></li>
                 </ul>
             </nav>
             <!-- Botones de sesión abajo -->
              <?php
                     if (isset($_SESSION['Usuario'])) {
                         echo'
-                        <p>Usuario' . htmlspecialchars($_SESSION['Usuario']) .'</p>
+                        <div class="auth-buttons">
+                        <p>Usuario: ' . htmlspecialchars($_SESSION['Usuario']) .'</p>
                         <a href="../Login/Logout.php"><button class="login-btn">Cerrar Sesión</button></a>
+                        </div>
                         ';
                     }else{
                         echo'
