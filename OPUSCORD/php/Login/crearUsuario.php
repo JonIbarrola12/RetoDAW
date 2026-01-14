@@ -1,5 +1,5 @@
 <?php
-require_once("conexion.php");
+require_once("../conexion.php");
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // 3. Recibir datos del formulario
@@ -13,7 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $passwordHash = password_hash($contrasena, PASSWORD_DEFAULT);
 
     // 5. Preparar consulta SQL (segura)
-    $sql = "INSERT INTO usuario (Nombre, Apellido, Email, Username, Password)
+    $sql = "INSERT INTO usuarios (Nombre, Apellido, Email, Username, Password)
             VALUES (?, ?, ?, ?, ?)";
 
     $stmt = $conexion->prepare($sql);

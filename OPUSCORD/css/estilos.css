@@ -267,3 +267,81 @@
 .caption {
     margin-top: 10px;
 }
+
+
+/* Contenedor del buscador */
+.search-form {
+    margin-top: 2%;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.search-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+}
+
+.search-wrapper input {
+    width: 100%;
+    padding: 10px 40px; /* espacio para el icono */
+    border-radius: 20px;
+    border: none;
+    background-color: #2f3136; /* color oscuro tipo Discord */
+    color: #fff;
+    font-size: 14px;
+    outline: none;
+    transition: background-color 0.2s;
+}
+
+.search-wrapper input::placeholder {
+    color: #b9bbbe; /* placeholder gris claro tipo Discord */
+}
+
+.search-wrapper input:focus {
+    background-color: #40444b; /* se aclara al enfocar */
+}
+
+.search-wrapper .search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #b9bbbe;
+    pointer-events: none; /* el icono no interfiere al escribir */
+    font-size: 16px;
+}
+
+
+
+.mensaje-solicitud {
+    background-color: #43b581; /* verde tipo Discord */
+    color: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-weight: 500;
+    animation: fadein 0.5s;
+}
+
+/* Perfil  */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.profile-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ccc;
+}
+
+
+/* efecto suave de aparición */
+@keyframes fadein {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}

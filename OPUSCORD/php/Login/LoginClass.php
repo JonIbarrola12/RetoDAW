@@ -8,7 +8,7 @@ class LoginClass {
         $this->usuario = trim($usuario);
         $this->contrasena = trim($contrasena);
 
-        require_once("conexion.php");
+        require_once("../conexion.php");
         $this->conexion = $conexion;
 
         $this->verificarUsuario();
@@ -16,7 +16,7 @@ class LoginClass {
 
     private function verificarUsuario() {
         // Preparar la consulta segura
-        $stmt = $this->conexion->prepare("SELECT id_usuario, Username, Password FROM usuario WHERE Username = ?");
+        $stmt = $this->conexion->prepare("SELECT id_usuario, Username, Password, Pfp FROM usuarios WHERE Username = ?");
         $stmt->bind_param("s", $this->usuario);
         $stmt->execute();
         $resultado = $stmt->get_result();
@@ -27,10 +27,16 @@ class LoginClass {
             // Comparación directa sin hash
             if (password_verify($this->contrasena, $fila['Password'])) {
                 session_start();
-                $_SESSION['Usuario'] = $this->usuario;
+
+                $_SESSION['Usuario'] = $fila['Username'];
+                $_SESSION['id_usuario'] = $fila['id_usuario'];
                 $_SESSION['valid'] = true;
-                $_SESSION['id'] = $fila['id_usuario'];         // Guardar el ID
-                $_SESSION['nombreUsuario'] = $fila['username']; // Guardar el nombre de usuario
+
+                // 📌 FOTO GARANTIZADA
+                $_SESSION['Foto'] = !empty($fila['Pfp']) 
+                    ? $fila['Pfp'] 
+                    : '../img/default-avatar.png';
+
                 header("Location: ../paginas/index.php");
                 exit();
             } else {
