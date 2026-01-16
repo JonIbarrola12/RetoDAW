@@ -345,3 +345,120 @@
     from { opacity: 0; }
     to { opacity: 1; }
 }
+
+.crear-grupo {
+    background-color: #2f3136;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.crear-grupo input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    border: none;
+    background-color: #40444b;
+    color: #fff;
+}
+
+.crear-grupo button {
+    padding: 8px 12px;
+    border-radius: 5px;
+    border: none;
+    background-color: #7289da;
+    color: #fff;
+    cursor: pointer;
+}
+
+.crear-grupo button:hover {
+    background-color: #5b6eae;
+}
+
+
+/* Sidebar - lista de grupos */
+.sidebar ul {
+    list-style: none; /* quita el punto de lista */
+    padding-left: 0;
+    margin-top: 10px;
+}
+
+.sidebar ul li {
+    margin-bottom: 10px;
+}
+
+/* Links de grupos */
+.sidebar ul li a {
+    text-decoration: none; /* quita el subrayado */
+    color: #fff;
+    display: block;
+    padding: 8px;
+    border-radius: 5px;
+    background-color: #36393f;
+    transition: background 0.2s;
+}
+
+.sidebar ul li a:hover {
+    background-color: #7289da;
+}
+
+/* Editar grupo */
+.crear-grupo.editar {
+    background-color: #2f3136;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.crear-grupo.editar input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    border: none;
+    background-color: #40444b;
+    color: #fff;
+}
+
+.crear-grupo.editar button {
+    padding: 8px 12px;
+    border-radius: 5px;
+    border: none;
+    background-color: #7289da;
+    color: #fff;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.crear-grupo.editar button:hover {
+    background-color: #5b6eae;
+}
+
+.crear-grupo.editar button.eliminar {
+    background-color: #f04747;
+}
+
+.crear-grupo.editar button.eliminar:hover {
+    background-color: #d73737;
+}
+
+/* Chat scroll suave */
+.chat-messages {
+    scroll-behavior: smooth;
+}
+
+/* Ajuste de scroll del chat */
+.chat {
+    max-height: calc(100vh - 180px); /* para que no se salga del viewport */
+}
+
+/* Espacio entre secciones */
+hr {
+    border: 0;
+    height: 1px;
+    background: #40444b;
+    margin: 15px 0;
+}
+
+

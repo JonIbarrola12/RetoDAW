@@ -1,134 +1,128 @@
 <?php
 require_once '../conexion.php';
+require_once '../Clases/Grupo.php';
 
 class GruposCRUD {
 
-    // Obtener todos los grupos
+    // obtenemos todos los grupos
     public static function recibirRegistros() {
         global $conexion;
-        $selectSql = "SELECT * from grupos";
 
-        try {
-            $query = mysqli_query($conexion, $selectSql);
-            if (!$query) {
-                throw new Exception("Error en la consulta: " . mysqli_error($conexion));
-            }
+        $sql = "SELECT * FROM grupos";
+        $query = mysqli_query($conexion, $sql);
 
-            $resultados = [];
-            while ($fila = mysqli_fetch_assoc($query)) {
-                $resultados[] = $fila;
-            }
-
-            return $resultados;
-
-        } catch (Exception $e) {
-            echo "Error al obtener registros: " . $e->getMessage();
-            return [];
-        }
+        return mysqli_fetch_all($query, MYSQLI_ASSOC);
     }
 
-    public static function añadirGrupo(Grupo $grupo) {
+    // crear grupo
+    public static function añadirGrupo(Grupo $grupo): int {
         global $conexion;
-        $insertSql = "INSERT into grupos (Nombre, Descripcion, id_creador, Pfp, FechaCreacion) VALUES (?, ?, ?, ?, ?)";
 
-        try {
-            $stmt = mysqli_prepare($conexion, $insertSql);
-            if (!$stmt) {
-                throw new Exception("Error al preparar la consulta: " . mysqli_error($conexion));
-            }
+        $sql = "INSERT INTO grupos (Nombre, Descripcion, id_creador, FechaCreacion)
+                VALUES (?, ?, ?, ?)";
 
-            $nombre = $grupo->getNombre();
-            $descripcion = $grupo->getDescripcion();
-            $idCreador = $grupo->getCreadorId();
-            $pfp = $grupo->getPfp();
-            $fechaCreacion = $grupo->getFechaCreacion()->format('Y-m-d H:i:s');
+        $stmt = mysqli_prepare($conexion, $sql);
 
-            mysqli_stmt_bind_param(
-                $stmt,
-                "ssiss",
-                $nombre,
-                $descripcion,
-                $idCreador,
-                $pfp,
-                $fechaCreacion
-            );
+        $nombre = $grupo->getNombre();
+        $descripcion = $grupo->getDescripcion();
+        $creadorId = $grupo->getCreadorId();
+        $fecha = $grupo->getFechaCreacion()->format('Y-m-d H:i:s');
 
-            $resultado = mysqli_stmt_execute($stmt);
-            if (!$resultado) {
-                throw new Exception("Error al ejecutar el INSERT: " . mysqli_stmt_error($stmt));
-            }
+        mysqli_stmt_bind_param(
+            $stmt,
+            "ssis",
+            $nombre,
+            $descripcion,
+            $creadorId,
+            $fecha
+        );
 
-            mysqli_stmt_close($stmt);
+        mysqli_stmt_execute($stmt);
 
-        } catch (Exception $e) {
-            echo "Error al añadir grupo: " . $e->getMessage();
-        }
+        // id del grupo recien creado
+        $idGrupoNuevo = mysqli_insert_id($conexion);
+
+        mysqli_stmt_close($stmt);
+
+        return $idGrupoNuevo;
     }
 
+    //eliminar grupo
     public static function eliminarGrupo(int $grupoId) {
         global $conexion;
-        $deleteSql = "DELETE from grupos where id_grupo = ?";
 
         try {
-            $stmt = mysqli_prepare($conexion, $deleteSql);
-            if (!$stmt) {
-                throw new Exception("Error al preparar la consulta: " . mysqli_error($conexion));
-            }
+            // borrar mensajes asociados
+            $sqlMensajes = "DELETE FROM mensajesgrupos WHERE id_receptor = ?";
+            $stmtMensajes = mysqli_prepare($conexion, $sqlMensajes);
+            mysqli_stmt_bind_param($stmtMensajes, "i", $grupoId);
+            mysqli_stmt_execute($stmtMensajes);
+            mysqli_stmt_close($stmtMensajes);
 
-            mysqli_stmt_bind_param($stmt, "i", $grupoId);
+            // borrar miembros asociados
+            $sqlMiembros = "DELETE FROM miembros WHERE GrupoId = ?";
+            $stmtMiembros = mysqli_prepare($conexion, $sqlMiembros);
+            mysqli_stmt_bind_param($stmtMiembros, "i", $grupoId);
+            mysqli_stmt_execute($stmtMiembros);
+            mysqli_stmt_close($stmtMiembros);
 
-            $resultado = mysqli_stmt_execute($stmt);
-            if (!$resultado) {
-                throw new Exception("Error al ejecutar el DELETE: " . mysqli_stmt_error($stmt));
-            }
-
-            mysqli_stmt_close($stmt);
+            // borrar el grupo
+            $sqlGrupo = "DELETE FROM grupos WHERE id_grupo = ?";
+            $stmtGrupo = mysqli_prepare($conexion, $sqlGrupo);
+            mysqli_stmt_bind_param($stmtGrupo, "i", $grupoId);
+            mysqli_stmt_execute($stmtGrupo);
+            mysqli_stmt_close($stmtGrupo);
 
         } catch (Exception $e) {
             echo "Error al eliminar grupo: " . $e->getMessage();
         }
     }
 
-    // Modificar un grupo
-    public static function modificarGrupo(Grupo $grupo, int $grupoIdOriginal) {
+
+    // modificar grupo
+    public static function modificarGrupo(Grupo $grupo, int $grupoId) {
         global $conexion;
-        $updateSql = "UPDATE grupos set Nombre = ?, Descripcion = ?, id_creador = ?, Pfp = ? where id_grupo = ?";
 
-        try {
-            $stmt = mysqli_prepare($conexion, $updateSql);
-            if (!$stmt) {
-                throw new Exception("Error al preparar la consulta: " . mysqli_error($conexion));
-            }
+        $sql = "UPDATE grupos 
+                SET Nombre = ?, Descripcion = ?
+                WHERE id_grupo = ?";
 
-            $nombre = $grupo->getNombre();
-            $descripcion = $grupo->getDescripcion();
-            $idCreador = $grupo->getCreadorId();
-            $pfp = $grupo->getPfp();
+        $stmt = mysqli_prepare($conexion, $sql);
 
-            mysqli_stmt_bind_param(
-                $stmt,
-                "ssisi",
-                $nombre,
-                $descripcion,
-                $idCreador,
-                $pfp,
-                $grupoIdOriginal
-            );
+        $nombre = $grupo->getNombre();
+        $descripcion = $grupo->getDescripcion();
 
-            $resultado = mysqli_stmt_execute($stmt);
-            if (!$resultado) {
-                throw new Exception("Error al ejecutar el update: " . mysqli_stmt_error($stmt));
-            }
+        mysqli_stmt_bind_param(
+            $stmt,
+            "ssi",
+            $nombre,
+            $descripcion,
+            $grupoId
+        );
 
-            mysqli_stmt_close($stmt);
-
-        } catch (Exception $e) {
-            echo "Error al modificar grupo: " . $e->getMessage();
-        }
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
     }
 
-    public static function cuantosGrupos() {
-        $grupos = self::recibirRegistros();
-        return count($grupos);
+    //obtener un grupo por ID
+    public static function obtenerPorId(int $id): ?array {
+        global $conexion;
+
+        $sql = "SELECT * FROM grupos WHERE id_grupo = ?";
+        $stmt = mysqli_prepare($conexion, $sql);
+
+        if (!$stmt) return null;
+
+        mysqli_stmt_bind_param($stmt, "i", $id);
+        mysqli_stmt_execute($stmt);
+
+        $res = mysqli_stmt_get_result($stmt);
+        $grupo = mysqli_fetch_assoc($res);
+
+        mysqli_stmt_close($stmt);
+
+        return $grupo ?: null;
     }
+
+
 }
