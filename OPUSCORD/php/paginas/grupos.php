@@ -185,6 +185,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
     <meta charset="UTF-8">
     <title>OPUSCORD - Grupos</title>
     <link rel="stylesheet" href="../../css/estilos.css">
+    <script src="../../js/Perfil.js"></script>
     <style>
         .chat-messages { max-height: 500px; overflow-y: auto; }
         .message.prop { background-color: #dcf8c6; padding:5px; margin:5px 0; border-radius:5px; }
@@ -198,26 +199,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
     <!-- sidebar -->
         <aside class="sidebar">
             <h2>OPUSCORD</h2>
-            <!-- Navegación arriba -->
+
             <nav class="main-nav">
                 <ul>
                     <li><a href="index.php"><button>Feed</button></a></li>
                     <li><a href="amigos.php"><button>Amigos</button></a></li>
-                    <li><a href="chatprivado.php"><button>Chat</button></a></li>
+                    <li><a href="chatprivado.php"><button>Mensajes</button></a></li>
                     <li><a href="grupos.php"><button>Grupos</button></a></li>
                 </ul>
             </nav>
-
-            <!-- Botones de sesión abajo -->
-        <nav class="main-nav">
-            <ul>
-                <li><a href="index.php"><button>Feed</button></a></li>
-                <li><a href="chatprivado.php"><button>Mensajes</button></a></li>
-                <li><a href="amigos.php"><button>Amigos</button></a></li>
-                <li><a href="grupos.php"><button class="active">Grupos</button></a></li>
-            </ul>
-        </nav>
-
             <div class="PerfilContenedor"onclick="abrirPerfil()" style="cursor:pointer;">
             <?php
             if (isset($_SESSION['Usuario'])) {
@@ -381,6 +371,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
         </ul>
     </aside>
 </div>
+    <div id="perfilModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="cerrarPerfil()">&times;</span>
+            <div id="perfilContenido"></div>
+        </div>
+    </div>
 </body>
 </html>
 

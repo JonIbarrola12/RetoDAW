@@ -18,9 +18,8 @@
                 <ul>
                     <li><a href="index.php"><button>Feed</button></a></li>
                     <li><a href="amigos.php"><button>Amigos</button></a></li>
-                    <li><a href="chatprivado.php"><button>Chat</button></a></li>
+                    <li><a href="chatprivado.php"><button>Mensajes</button></a></li>
                     <li><a href="grupos.php"><button>Grupos</button></a></li>
-
                 </ul>
             </nav>
             

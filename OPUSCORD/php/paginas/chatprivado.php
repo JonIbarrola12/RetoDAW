@@ -14,6 +14,7 @@ require_once __DIR__ . '/../CRUD/UsuariosCRUD.php';
 require_once __DIR__ . '/../CRUD/MensajesPrivadosCRUD.php';
 require_once __DIR__ . '/../Clases/MensajesPrivados.php';
 
+
 //obtenemos los usuarios
 $usuarios = UsuariosCRUD::recibirRegistros();
 $usuariosPorId = [];
@@ -96,6 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_mensaje']) && 
     <meta charset="UTF-8">
     <title>OPUSCORD - Chat Privado</title>
     <link rel="stylesheet" href="../../css/estilos.css">
+    <script src="../../js/Perfil.js"></script>
     <style>
         .chat-messages { max-height: 500px; overflow-y: auto; padding:10px; }
         .message { padding:6px 10px; margin:6px 0; border-radius:6px; max-width:70%; }
@@ -115,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_mensaje']) && 
                 <ul>
                     <li><a href="index.php"><button>Feed</button></a></li>
                     <li><a href="amigos.php"><button>Amigos</button></a></li>
-                    <li><a href="chatprivado.php"><button>Chat</button></a></li>
+                    <li><a href="chatprivado.php"><button>Mensajes</button></a></li>
                     <li><a href="grupos.php"><button>Grupos</button></a></li>
                 </ul>
             </nav>
@@ -226,5 +228,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_mensaje']) && 
         </ul>
     </aside>
 </div>
+    <div id="perfilModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="cerrarPerfil()">&times;</span>
+            <div id="perfilContenido"></div>
+        </div>
+    </div>
 </body>
 </html>
