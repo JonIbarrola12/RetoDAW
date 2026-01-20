@@ -336,8 +336,295 @@
     height: 40px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid #ccc;
+    border: 2px solid #ffffff;
 }
+
+.perfil-foto {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    margin: 0 auto 10px;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 9999;
+}
+
+.modal-content {
+    background: #242424;
+    width: 420px;
+    max-width: 90%;
+    margin: 8% auto; /* centra vertical y horizontal */
+    padding: 20px;
+    color: white;
+    border-radius: 14px;
+    position: relative;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 26px;
+    cursor: pointer;
+}
+
+.perfil-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.perfil-info-texto {
+    display: flex;
+    flex-direction: column;
+}
+
+.bio-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.estado-usuario {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+.estado-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.estado-dot.online {
+    background: #2ecc71;
+}
+
+.estado-dot.offline {
+    background: #7f8c8d;
+}
+
+.estado-texto {
+    color: #bbb;
+}
+
+/* Foto de perfil circular */
+.perfil-foto-container {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.perfil-foto-container img.perfil-foto {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Overlay de cámara */
+.perfil-foto-container .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 50%;
+    pointer-events: none; /* permite click en la imagen */
+}
+
+.perfil-foto-container:hover .overlay {
+    opacity: 1;
+}
+
+.camara-icon {
+    width: 40px;
+    height: 40px;
+}
+
+.perfil-nombre {
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+/* Info al lado de la foto */
+.perfil-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.logout-btn {
+    width: 30%;
+    padding: 10px;
+    background-color: #cd313c;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.logout-btn:hover {
+    background-color: #c62424;
+}
+
+.perfil-bio {
+    margin-top: 20px;
+}
+
+.PerfilContenedor {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-radius: 15px;
+    padding: 12px;
+    background-color: rgb(34, 34, 34);
+}
+.perfil-horiz {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* espacio entre foto y nombre */
+}
+.bio {
+    font-size: 14px;
+
+}
+.bio-edit {
+    width: 100%;
+    min-height: 80px;
+    resize: none;
+    padding: 8px;
+    border-radius: 6px;
+    color: white;
+    background-color: #636363;
+}
+
+.bio-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 5px;
+}
+.bio-footer {
+    display: flex;
+    justify-content: flex-start;
+    font-size: 12px;
+    color: #aaa;
+    margin-top: 4px;
+}
+
+.contador-normal { color: #aaa; }
+.contador-warning { color: #e2c139; }
+.contador-rojo { color: #ff4d4d; font-weight: bold; }
+
+.bio-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.bio-header h3 {
+    margin: 0;
+}
+
+.botonlapiz {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 5px;
+    border-radius: 8px;
+    background: #2c2f33;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-left: 15px;
+}
+
+.botonlapiz i {
+    font-size: 14px;
+}
+
+.botonlapiz:hover {
+    background: #3a3d41;
+}
+
+.perfil-btn i {
+    pointer-events: none;
+}
+.bio-btn {
+    color: white;
+    background-color: #242424;
+    border-radius: 8px;
+    gap: 3px;
+    padding: 2px;
+}
+.bio-btn:hover {
+    background-color: #5e5e5e;
+}
+
+.username-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.username-modal-content {
+    background: #1e1e1e;
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px;
+    position: relative;
+}
+
+.username-modal-content input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 10px;
+}
+
+#cerrarUsernameModal {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.editusu-btn {
+    display: block;
+    margin: 20px auto 0 auto; /* arriba, centrado */
+    color: white;
+    background-color: #3c3a3a;
+    border-radius: 10px;
+    padding: 2px;
+}
+.editusu-btn:hover {
+    background-color: #7c7e83;
+    font-weight: bold;
+}
+
 
 
 /* efecto suave de aparición */
