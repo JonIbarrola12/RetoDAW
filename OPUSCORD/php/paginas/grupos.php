@@ -202,7 +202,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
         <nav class="main-nav">
             <ul>
                 <li><a href="index.php"><button>Feed</button></a></li>
-                <li><a href="mensajes.php"><button>Mensajes</button></a></li>
+                <li><a href="chatprivado.php"><button>Mensajes</button></a></li>
                 <li><a href="amigos.php"><button>Amigos</button></a></li>
                 <li><a href="grupos.php"><button class="active">Grupos</button></a></li>
             </ul>
