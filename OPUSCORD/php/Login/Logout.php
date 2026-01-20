@@ -1,7 +1,16 @@
 <?php
 session_start();
+require_once("../conexion.php"); 
 
+// Marcar usuario como OFFLINE ANTES de destruir sesión
+if (isset($_SESSION['id_usuario'])) {
+    $stmt = $pdo->prepare(
+        "UPDATE usuarios SET estado = 'offline' WHERE id_usuario = ?"
+    );
+    $stmt->execute([$_SESSION['id_usuario']]);
+}
 
+// Limpiar sesión
 session_unset();
 
 // Borrar cookies

@@ -107,41 +107,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_mensaje']) && 
 
 <div class="container">
 
-    <!-- menu principal-->
-    <aside class="sidebar">
-        <h2>
-            <a href="index.php" style="text-decoration:none;color:inherit;">
-                OPUSCORD
-            </a>
-        </h2>
+    <!-- sidebar -->
+        <aside class="sidebar">
+            <h2>OPUSCORD</h2>
+            <!-- Navegación arriba -->
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.php"><button>Feed</button></a></li>
+                    <li><a href="amigos.php"><button>Amigos</button></a></li>
+                    <li><a href="chatprivado.php"><button>Chat</button></a></li>
+                    <li><a href="grupos.php"><button>Grupos</button></a></li>
+                </ul>
+            </nav>
 
-        <nav class="main-nav">
-            <ul>
-                <li><a href="index.php"><button>Feed</button></a></li>
-                <li><a href="chatprivado.php"><button class="active">Mensajes</button></a></li>
-                <li><a href="amigos.php"><button>Amigos</button></a></li>
-                <li><a href="grupos.php"><button>Grupos</button></a></li>
-            </ul>
-        </nav>
+            <!-- Botones de sesión abajo -->
 
-        <hr>
+            <div class="PerfilContenedor"onclick="abrirPerfil()" style="cursor:pointer;">
+            <?php
+            if (isset($_SESSION['Usuario'])) {
 
-        <h3>Chats</h3>
-        <ul>
-            <?php foreach ($usuarios as $u): ?>
-                <?php if ($u['id_usuario'] != $idUsuario): ?>
-                    <li>
-                        <a href="chatprivado.php?usuario=<?= $u['id_usuario'] ?>">
-                            <?= htmlspecialchars($u['Username']) ?>
-                        </a>
-                    </li>
-                <?php endif; ?>
-            <?php endforeach; ?>
-        </ul>
-    </aside>
+                $Foto = (!empty($_SESSION['Foto'])) ? $_SESSION['Foto'] : '/Recursos/mamiy.png';
 
-    <!-- chat pribado -->
-    <main class="main-content">
+
+                echo '
+                <div class="perfil-horiz">
+                    <img src="' . htmlspecialchars($Foto) . '" class="profile-pic fotoPerfil">
+                    <div class="perfil-info">
+                        <p class="perfil-nombre">' . htmlspecialchars($_SESSION['Usuario']) . '</p>
+
+                    </div>
+                </div>
+                ';
+            } else {
+                echo '
+                <div class="auth-buttons">
+                    <a href="../Login/Index.php"><button class="login-btn">Iniciar Sesión</button></a>
+                    <a href="../Login/registrarse.php"><button class="register-btn">Registrarse</button></a>
+                </div>
+                ';
+            }
+            ?>
+            </div>
+    
+
+        </aside>
+        <main class="main-content">
 
         <?php if (!$receptorId): ?>
             <h3>Selecciona un usuario para chatear</h3>
@@ -200,7 +210,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_mensaje']) && 
         <?php endif; ?>
 
     </main>
-</div>
+    <aside class="sidebar sidebar-left">
 
+        <h3>Chats</h3>
+        <ul>
+            <?php foreach ($usuarios as $u): ?>
+                <?php if ($u['id_usuario'] != $idUsuario): ?>
+                    <li>
+                        <a href="chatprivado.php?usuario=<?= $u['id_usuario'] ?>">
+                            <?= htmlspecialchars($u['Username']) ?>
+                        </a>
+                    </li>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </ul>
+    </aside>
+</div>
 </body>
 </html>

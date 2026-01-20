@@ -31,6 +31,7 @@
     `Password` varchar(225) NOT NULL,
     `Pfp` VARCHAR(225) DEFAULT NULL,
     `Bio` VARCHAR(225) DEFAULT 'Estoy usando OPUSCORD!',
+    `Estado` ENUM('Online','Offline') DEFAULT 'Offline';
     `FechaRegistro` datetime DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`id_usuario`),
     UNIQUE KEY `Username` (`Username`),

@@ -16,31 +16,15 @@
             <!-- Navegación arriba -->
             <nav class="main-nav">
                 <ul>
-                    <li><a href="amigos.php"><button>Amigos</button></a></li>
                     <li><a href="index.php"><button>Feed</button></a></li>
-                    <li><a href="chatprivado.php"><button>Mensajes</button></a></li>
+                    <li><a href="amigos.php"><button>Amigos</button></a></li>
+                    <li><a href="chatprivado.php"><button>Chat</button></a></li>
                     <li><a href="grupos.php"><button>Grupos</button></a></li>
 
                 </ul>
             </nav>
+            
             <!-- Botones de sesión abajo -->
-             <?php
-                    if (isset($_SESSION['Usuario'])) {
-                        echo'
-                        <div class="auth-buttons">
-                        <p>Usuario: ' . htmlspecialchars($_SESSION['Usuario']) .'</p>
-                        <a href="../Login/Logout.php"><button class="login-btn">Cerrar Sesión</button></a>
-                        </div>
-                        ';
-                    }else{
-                        echo'
-                         <div class="auth-buttons">
-                            <a href="../Login/Index.php"><button class="login-btn">Iniciar Sesión</button></a>
-                            <a href="../Login/registrarse.php"><button class="register-btn">Registrarse</button></a>
-                        </div>
-                        ';
-                    }
-           ?>
         </aside>
 
         <main class="main-content">
