@@ -103,7 +103,7 @@ $busqueda = $_GET['buscar'] ?? '';
     <link rel="stylesheet" href="../../css/estilos.css">
     <script src="../../js/Perfil.js"></script>
 </head>
-<body>
+<body class="bodyAmigos">
 
     <div class="container">
         <aside class="sidebar">
@@ -124,14 +124,14 @@ $busqueda = $_GET['buscar'] ?? '';
             <?php
             if (isset($_SESSION['Usuario'])) {
 
-                $Foto = (!empty($_SESSION['Foto'])) ? $_SESSION['Foto'] : '/Recursos/mamiy.png';
+                $Foto = (!empty($_SESSION['Foto'])) ? $_SESSION['Foto'] : '/Recursos/fotousuario.png';
 
 
                 echo '
                 <div class="perfil-horiz">
-                    <img src="' . htmlspecialchars($Foto) . '" class="profile-pic fotoPerfil">
+                    <img src="' . htmlspecialchars($Foto) . '" class="profile-pic fotoPerfil foto-mia" id="perfilImagen">
                     <div class="perfil-info">
-                        <p class="perfil-nombre">' . htmlspecialchars($_SESSION['Usuario']) . '</p>
+                        <p class="perfil-nombre nombre-mio">' . htmlspecialchars($_SESSION['Usuario']) . '</p>
 
                     </div>
                 </div>
@@ -145,10 +145,12 @@ $busqueda = $_GET['buscar'] ?? '';
                 ';
             }
             ?>
+
             </div>
     
 
         </aside>
+        
 
     <main class="main-content">
         
@@ -178,14 +180,31 @@ $busqueda = $_GET['buscar'] ?? '';
                     stripos($u['Username'], $busqueda) !== false &&
                     $u['id_usuario'] != $idUsuario
                 ): ?>
-                    <div class="message">
-                        <?= htmlspecialchars($u['Username']) ?>
-                        <!-- Enviar solicitud -->
-                        <form method="POST" style="display:inline;">
-                            <input type="hidden" name="id_amigo" value="<?= $u['id_usuario'] ?>">
-                            <button>➕ Añadir</button>
-                        </form>
+                    <div class="message solicitud-item">
+
+                        <div class="perfil-horiz">
+                            <img
+                                src="<?= htmlspecialchars($u['Pfp'] ?: '../../Recursos/fotousuario.png') ?>"
+                                class="profile-pic"
+                                alt="Foto de <?= htmlspecialchars($u['Username']) ?>"
+                            >
+
+                            <div class="perfil-info">
+                                <p class="perfil-nombre">
+                                    <?= htmlspecialchars($u['Username']) ?>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="acciones-solicitud">
+                            <form method="POST">
+                                <input type="hidden" name="id_amigo" value="<?= $u['id_usuario'] ?>">
+                                <button class="btn-aceptar">Enviar</button>
+                            </form>
+                        </div>
+
                     </div>
+
                 <?php endif; ?>
             <?php endforeach; ?>
         <?php endif; ?>
@@ -195,29 +214,65 @@ $busqueda = $_GET['buscar'] ?? '';
         <br>
         <h3>Solicitudes pendientes</h3>
         <br>
-
-        <?php
+        <div id="listaSolicitudes">
+            <?php
             $hayPendientes = false;
+
             foreach ($amigos as $a):
                 if (
                     $a['Estado'] === Amigo::ESTADO_PENDIENTE &&
                     $a['id_amigo_usuario'] == $idUsuario
                 ):
                     $hayPendientes = true;
-                    $username = $usuariosPorId[$a['id_usuario']]['Username'] ?? 'Usuario desconocido';
+
+                    // Obtener datos del usuario que envió la solicitud
+                    $stmt = $pdo->prepare("
+                        SELECT id_usuario, Username, Pfp, estado
+                        FROM usuarios
+                        WHERE id_usuario = ?
+                    ");
+                    $stmt->execute([$a['id_usuario']]);
+                    $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                    if (!$usuario) continue;
             ?>
-                <div class="message">
-                    <?= htmlspecialchars($username) ?>
-                    <form method="POST" style="display:inline;">
+            <div class="message solicitud">
+                
+                <div class="perfil-horiz" data-usuario-id="<?= $usuario['id_usuario'] ?>">
+                    <img
+                        src="<?= htmlspecialchars($usuario['Pfp'] ?: '../../Recursos/fotousuario.png') ?>"
+                        class="profile-pic"
+                    >
+
+                    <div class="perfil-info">
+                        <p class="perfil-nombre">
+                            <?= htmlspecialchars($usuario['Username']) ?>
+                        </p>
+
+                        <div class="estado-usuario">
+                            <span class="estado-dot <?= $usuario['estado'] === 'Online' ? 'online' : 'offline' ?>"></span>
+                            <span class="estado-texto">
+                                <?= $usuario['estado'] === 'Online' ? 'En línea' : 'Desconectado' ?>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="acciones-solicitud">
+                    <form method="POST">
                         <input type="hidden" name="aceptar_amigo" value="<?= $a['id_amigo'] ?>">
-                        <button>✔ Aceptar</button>
-                    </form>
-                    <form method="POST" style="display:inline;">
-                        <input type="hidden" name="rechazar_amigo" value="<?= $a['id_amigo'] ?>">
-                        <button>✖ Rechazar</button>
+                        <button class="btn-aceptar">✔</button>
                     </form>
 
+                    <form method="POST">
+                        <input type="hidden" name="rechazar_amigo" value="<?= $a['id_amigo'] ?>">
+                        <button class="btn-rechazar">✖</button>
+                    </form>
                 </div>
+
+            </div>
+
+
             <?php
                 endif;
             endforeach;
@@ -225,38 +280,68 @@ $busqueda = $_GET['buscar'] ?? '';
             if (!$hayPendientes) {
                 echo "<p>No hay solicitudes.</p>";
             }
-        ?>
+            ?>
 
-        <br>
-        <hr>
-        <br>
 
+      
+        </div>
         <!---------------lista de amigos------------------>
-        <h3>🌟 Amistades</h3>
-        <br>
+    <section class="bloque-amigos">
+            <h3>🌟 Amistades</h3>
+            <br>
+        <div class="lista-amigos">
+            <?php
+            $hayAmigos = false;
 
-        <?php
-        $hayAmigos = false;
-        foreach ($amigos as $a):
-            if ($a['Estado'] === Amigo::ESTADO_ACEPTADO &&
-                ($a['id_usuario'] == $idUsuario || $a['id_amigo_usuario'] == $idUsuario)):
+            foreach ($amigos as $a) {
 
-                $hayAmigos = true;
-                $idOtro = ($a['id_usuario'] == $idUsuario) ? $a['id_amigo_usuario'] : $a['id_usuario'];
-        ?>
-            <div class="message">
-                <?= htmlspecialchars($usuariosPorId[$idOtro]['Nombre'] ?? $usuariosPorId[$idOtro]['Username'] ?? $idOtro) ?>
-                <form method="POST" style="display:inline;">
-                    <input type="hidden" name="eliminar_amigo" value="<?= $a['id_amigo'] ?>">
-                    <button>❌ Eliminar</button>
-                </form>
-            </div>
-        <?php
-            endif;
-        endforeach;
-        if (!$hayAmigos) echo "<p>No tienes amigos todavía.</p>";
-        ?>
+                if (
+                    $a['Estado'] === Amigo::ESTADO_ACEPTADO &&
+                    ($a['id_usuario'] == $idUsuario || $a['id_amigo_usuario'] == $idUsuario)
+                ) {
 
+                    $hayAmigos = true;
+
+                    // ID del amigo
+                    $idOtro = ($a['id_usuario'] == $idUsuario)
+                        ? $a['id_amigo_usuario']
+                        : $a['id_usuario'];
+
+                    // Datos del amigo
+                    $stmt = $pdo->prepare("
+                        SELECT id_usuario, Username, Pfp, estado 
+                        FROM usuarios 
+                        WHERE id_usuario = ?
+                    ");
+                    $stmt->execute([$idOtro]);
+                    $amigo = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                    if (!$amigo) {
+                        continue;
+                    }
+                    ?>
+
+                    <div class="message">
+                        <div class="perfil-horiz" data-usuario-id="<?= $amigo['id_usuario'] ?>">
+                            <img src="<?= htmlspecialchars($amigo['Pfp'] ?: '../../Recursos/fotousuario.png') ?>" class="profile-pic">
+                            <div class="perfil-info">
+                                <p class="perfil-nombre"><?= htmlspecialchars($amigo['Username']) ?></p>
+                                <div class="estado-usuario">
+                                    <span class="estado-dot <?= $amigo['estado'] === 'Online' ? 'online' : 'offline' ?>"></span>
+                                    <span class="estado-texto"><?= $amigo['estado'] === 'Online' ? 'En línea' : 'Desconectado' ?></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+            <?php
+                }
+            }
+
+            ?>
+
+        </div>
+    </section>  
     </main>
     <div id="perfilModal" class="modal">
         <div class="modal-content">
@@ -265,8 +350,24 @@ $busqueda = $_GET['buscar'] ?? '';
         </div>
     </div>
 
+    <!-- Modal para mostrar perfil de amigos -->
+    <div id="perfilAmigoModal" class="perfil-modal" style="display:none;">
+        <div id="perfilAmigoContenido" class="perfil-modal-content"></div>
+        <span id="cerrarPerfilAmigoModal" class="cerrar-modal">&times;</span>
+    </div>
+
 
 </div>
+</div>
+<div id="confirmEliminarOverlay" class="confirm-overlay" style="display:none;">
+    <div class="confirm-box">
+        <p class="confirm-text">¿Deseas eliminar a <?= htmlspecialchars($amigo['Username']) ?>?</p>
+        <br>
+        <div class="confirm-actions">
+            <button class="confirm-accept btn-aceptar" onclick="aceptarConfirmEliminar()">Eliminar</button>
+            <button class="confirm-cancel btn-rechazar" onclick="cerrarConfirmEliminar()">Cancelar</button>
+        </div>
+    </div>
 </div>
 
 </body>

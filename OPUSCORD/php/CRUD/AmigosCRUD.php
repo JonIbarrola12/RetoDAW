@@ -62,7 +62,19 @@ class AmigosCRUD {
 
         mysqli_stmt_close($stmt); // Cerrar statement
     }
+    public static function obtenerAmigos(int $idUsuario) {
+        global $pdo;
 
+        $stmt = $pdo->prepare("
+            SELECT u.id_usuario, u.Username, u.Pfp, u.estado
+            FROM amigos a
+            JOIN usuarios u ON (u.id_usuario = a.id_amigo_usuario OR u.id_usuario = a.id_usuario)
+            WHERE (a.id_usuario = :id OR a.id_amigo_usuario = :id) AND a.Estado = 'Aceptado'
+            AND u.id_usuario != :id
+        ");
+        $stmt->execute([':id' => $idUsuario]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
     // funcion para eliminar un amigo por su id
     public static function eliminarAmigo(int $amigoId) {
         global $conexion;

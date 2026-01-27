@@ -33,6 +33,7 @@ class LoginClass {
             if (password_verify($this->contrasena, $fila['Password'])) {
 
                 session_start();
+                
 
                 $_SESSION['Usuario'] = $fila['Username'];
                 $_SESSION['id_usuario'] = $fila['id_usuario'];
@@ -45,7 +46,7 @@ class LoginClass {
                     : '../img/default-avatar.png';
 
                 $update = $this->conexion->prepare(
-                    "UPDATE usuarios SET estado = 'online' WHERE id_usuario = ?"
+                    "UPDATE usuarios SET estado = 'Online' WHERE id_usuario = ?"
                 );
                 $update->bind_param("i", $fila['id_usuario']);
                 $update->execute();
@@ -55,15 +56,22 @@ class LoginClass {
                 exit();
 
             } else {
-                echo "Contraseña incorrecta.";
+                    session_start();
+                    $_SESSION['error_login'] = "Contraseña incorrecta.";
+                    header("Location: index.php");
+                    exit();
             }
 
         } else {
-            echo "El usuario no existe.";
+                session_start();
+                $_SESSION['error_login'] = "El usuario no existe.";
+                header("Location: index.php");
+                exit();
         }
 
         $stmt->close();
         $this->conexion->close();
     }
+    
 }
 ?>

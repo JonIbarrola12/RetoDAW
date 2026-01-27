@@ -4,14 +4,19 @@
     padding: 0;
     box-sizing: border-box;
     font-family: "Helvetica Neue", Arial, sans-serif;
+    
 }
 
 /* Contenedor principal */
 .container {
     display: flex;
-    height: 100vh;
+    min-height: 100vh;
+    overflow: auto;
 }
+.section {
+    min-height: 100vh;
 
+}
 /* Contenedor principal de la sidebar */
 .sidebar {
     width: 200px;
@@ -21,7 +26,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between; /* separa la parte superior de la inferior */
-    height: 100vh;
+    min-height: 100vh;
 }
 
 /* Navegación */
@@ -62,11 +67,25 @@
     background-color: #7289da;
     color: #fff;
 }
-
+.textoerror {
+    color: red;
+}
+.boton-sesion {
+    background-color: rgb(87, 158, 251);
+    color: white;
+    font-weight: bolder;
+}
+.boton-sesion:hover{
+    background-color: #d5e1ff;
+    color: rgb(72, 72, 72);
+}
 .login-btn:hover {
     background-color: #5b6eae;
 }
-
+#registroTexto {
+    text-decoration: none;
+    color: rgb(84, 84, 195);
+}
 .register-btn {
     background-color: #43b581;
     color: #fff;
@@ -157,7 +176,7 @@
 }
 
 .conversations li a:hover {
-    background-color: #7289da;
+    background-color:  #7289da;
 }
 
 /* Chat concreto */
@@ -222,11 +241,12 @@
 /* Mensaje de otro usuario */
 .message.otro {
     align-self: flex-start; /* a la izquierda */
-    background-color: #40444b;
-    color: #fff;
+    color: #ffffff;
     padding: 8px;
     border-radius: 10px;
     max-width: 70%;
+    background-color: #7f7f7f;
+
 }
 
 /* Mensaje propio */
@@ -561,7 +581,9 @@
 .botonlapiz i {
     font-size: 14px;
 }
-
+.bloque-amigos {
+    margin-top: 30px;
+}
 .botonlapiz:hover {
     background: #3a3d41;
 }
@@ -611,6 +633,39 @@
     cursor: pointer;
     font-size: 20px;
 }
+.perfil-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.6);
+    justify-content: center;
+    align-items: center;
+}
+
+.perfil-modal-content {
+    background: #1e1e1e;
+    margin: auto;
+    padding: 20px;
+    color: white;
+    border-radius: 10px;
+    width: 400px;
+    max-width: 90%;
+    position: relative;
+}
+
+.cerrar-modal {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
 
 .editusu-btn {
     display: block;
@@ -625,7 +680,105 @@
     font-weight: bold;
 }
 
+.eliminar-amigo-btn {
+    background: #e27a6e;
+    border: none;
+    padding: 6px 6px;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+}
 
+.chat-amigo-btn {
+    background-color: #687cf1;
+    border: none;
+    padding: 6px 6px;
+    font-weight: bolder;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    margin-left: 25%;
+}
+
+.eliminar-amigo-btn:hover{
+    background-color: #d33b48;
+
+}
+.confirm-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999; /* MÁS alto que el perfil */
+}
+
+.confirm-box {
+    background: #302e2e;
+    padding: 20px;
+    border-radius: 10px;
+    width: 320px;
+    text-align: center;
+    color: white;
+}
+
+.btn-aceptar {
+    background: #6de8a0;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: bolder;
+    color: #157440;
+    cursor: pointer;
+}
+
+.btn-rechazar {
+    background: #e27a6e;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: bolder;
+    color: rgb(127, 32, 32);
+    cursor: pointer;
+}
+.btn-aceptar:hover {
+    background-color: #1bd770;
+}
+.btn-rechazar:hover {
+    background-color: #d33b48;
+}
+/* Contenedor principal de la solicitud */
+.message.solicitud {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Mantener el perfil alineado */
+.message.solicitud .perfil-horiz {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Botones a la derecha */
+.acciones-solicitud {
+    display: flex;
+    gap: 8px
+}
+.message.solicitud-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* 🔥 esto empuja el botón */
+    width: 100%;
+}
+
+.acciones-solicitud {
+    margin-left: auto; /* 🔥 fuerza a irse a la derecha */
+    display: flex;
+    align-items: center;
+}
 
 /* efecto suave de aparición */
 @keyframes fadein {
@@ -689,8 +842,24 @@
 .sidebar ul li a:hover {
     background-color: #7289da;
 }
+.lista-chats {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
 
 /* editar grupo */
+.chat-amigo {
+    text-decoration: none;
+    color: inherit;
+}
+
+.chat-amigo:hover {
+    background: rgba(255,255,255,0.05);
+    padding: 4px;
+    border-radius: 12px;
+}
+/* Editar grupo */
 .crear-grupo.editar {
     background-color: #2f3136;
     padding: 10px;

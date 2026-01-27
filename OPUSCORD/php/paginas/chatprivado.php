@@ -98,12 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_mensaje']) && 
     <title>OPUSCORD - Chat Privado</title>
     <link rel="stylesheet" href="../../css/estilos.css">
     <script src="../../js/Perfil.js"></script>
-    <style>
-        .chat-messages { max-height: 500px; overflow-y: auto; padding:10px; }
-        .message { padding:6px 10px; margin:6px 0; border-radius:6px; max-width:70%; }
-        .message.propio { background:#dcf8c6; margin-left:auto; }
-        .message.otro { background:#f1f0f0; }
-    </style>
+
 </head>
 <body>
 
@@ -212,21 +207,58 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_mensaje']) && 
         <?php endif; ?>
 
     </main>
-    <aside class="sidebar sidebar-left">
+<aside class="sidebar sidebar-left">
 
-        <h3>Chats</h3>
-        <ul>
-            <?php foreach ($usuarios as $u): ?>
-                <?php if ($u['id_usuario'] != $idUsuario): ?>
-                    <li>
-                        <a href="chatprivado.php?usuario=<?= $u['id_usuario'] ?>">
-                            <?= htmlspecialchars($u['Username']) ?>
-                        </a>
-                    </li>
-                <?php endif; ?>
+    <h3>Chats</h3>
+    <?php
+    $stmt = $pdo->prepare("
+        SELECT u.id_usuario, u.Username, u.Pfp, u.estado
+        FROM amigos a
+        JOIN usuarios u 
+            ON (u.id_usuario = a.id_usuario OR u.id_usuario = a.id_amigo_usuario)
+        WHERE a.Estado = 'aceptado'
+        AND u.id_usuario != ?
+    ");
+    $stmt->execute([$idUsuario]);
+    $amigos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    ?>
+    <div class="lista-chats">
+        <?php if (empty($amigos)): ?>
+            <p class="sin-amigos">No tienes Amigos</p>
+        <?php else: ?>
+            <?php foreach ($amigos as $amigo): ?>
+                <a href="chatprivado.php?usuario=<?= $amigo['id_usuario'] ?>" class="chat-amigo">
+                    
+                    <div class="perfil-horiz" data-usuario-id="<?= $amigo['id_usuario'] ?>">
+                        
+                        <img 
+                            src="<?= htmlspecialchars($amigo['Pfp'] ?: '../../Recursos/fotousuario.png') ?>"
+                            class="profile-pic"
+                            alt="Foto de <?= htmlspecialchars($amigo['Username']) ?>"
+                        >
+
+                        <div class="perfil-info">
+                            <p class="perfil-nombre">
+                                <?= htmlspecialchars($amigo['Username']) ?>
+                            </p>
+
+                            <div class="estado-usuario">
+                                <span class="estado-dot <?= $amigo['estado'] === 'Online' ? 'online' : 'offline' ?>"></span>
+                                <span class="estado-texto">
+                                    <?= $amigo['estado'] === 'Online' ? 'En línea' : 'Desconectado' ?>
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </a>
             <?php endforeach; ?>
-        </ul>
-    </aside>
+        <?php endif; ?>
+    </div>
+
+</aside>
+
 </div>
     <div id="perfilModal" class="modal">
         <div class="modal-content">
