@@ -1,82 +1,76 @@
 package opusbooks.bd;
 
 import java.sql.Connection;
-
 import java.sql.DriverManager;
-
 import opusbooks.config.Configuracion;
 
 public class BdBase {
-	private static String DRIVER;
-	private static String URL;
-	private static String USER;
-	private static String PASSWORD;
-	protected Connection conexion;
+    private static String DRIVER;
+    private static String URL;
+    private static String USER;
+    private static String PASSWORD;
 
-	public static void inicializarParametrosConexion(Configuracion configuracion) {
-		DRIVER = configuracion.getDriver();
-		URL = configuracion.getUrl();
-		USER = configuracion.getUser();
-		PASSWORD = configuracion.getPassword();
-	}
+    protected Connection conexion;
 
-	protected BdBase() {
-		super();
-	}
+    public static void inicializarParametrosConexion(Configuracion configuracion) {
+        DRIVER = configuracion.getDriver();
+        URL = configuracion.getUrl();
+        USER = configuracion.getUser();
+        PASSWORD = configuracion.getPassword();
+    }
 
-	public boolean abrirConexion() {
-		boolean correcto = true;
-		try {
-			Class.forName(DRIVER);
-			conexion = DriverManager.getConnection(URL, USER, PASSWORD);
-		} catch (Exception e) {
-			e.printStackTrace();
-			correcto = false;
-		}
-		return correcto;
-	}
+    protected BdBase() { }
 
-	public boolean cerrarConexion() {
-		boolean correcto = true;
-		try {
-			conexion.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-			correcto = false;
-		}
-		return correcto;
-	}
+    public boolean abrirConexion() {
+        System.out.println("DRIVER = " + DRIVER);
+        System.out.println("URL    = " + URL);
+        try {
+            Class.forName(DRIVER);
+            conexion = DriverManager.getConnection(URL, USER, PASSWORD);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
-	public boolean abrirTransaccion() {
-		boolean correcto = true;
-		try {
-			conexion.setAutoCommit(false);
-		} catch (Exception e) {
-			e.printStackTrace();
-			correcto = false;
-		}
-		return correcto;
-	}
+    public boolean cerrarConexion() {
+        try {
+            if (conexion != null) conexion.close();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
-	public boolean hacerCommit() {
-		boolean correcto = true;
-		try {
-			conexion.commit();
-		} catch (Exception e) {
-			e.printStackTrace();
-			correcto = false;
-		}
-		return correcto;
-	}
+    public boolean abrirTransaccion() {
+        try {
+            conexion.setAutoCommit(false);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
-	public boolean hacerRollback() {
-		boolean correcto = true;
-		try {
-			conexion.rollback();
-		} catch (Exception e) {
-			e.printStackTrace();
-			correcto = false;
-		}
-		return correcto;
-	}
+    public boolean hacerCommit() {
+        try {
+            conexion.commit();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean hacerRollback() {
+        try {
+            conexion.rollback();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

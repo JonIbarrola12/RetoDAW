@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
   <display-name>OpusBooks</display-name>
+  <welcome-file-list>
+    <welcome-file>login.jsp</welcome-file>
+</welcome-file-list>
+<context-param>
+    <param-name>fichero_propiedades</param-name>
+    <param-value>/WEB-INF/opusbooks.properties</param-value>
+</context-param>
   <servlet>
-    <servlet-name>SrvValidarEntrada</servlet-name>
-    <servlet-class>opusbooks.servlets.SrvValidarEntrada</servlet-class>
-    <init-param>
-       <param-name>fichero_propiedades</param-name>
-       <param-value>C:\\RetoDAW\OpusBooks\src\main\webapp\WEB-INF\opusbooks.properties</param-value>
-    </init-param>
+    <servlet-name>SrvLogin</servlet-name>
+    <servlet-class>opusbooks.servlets.SrvLogin</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>SrvUsuarios</servlet-name>
@@ -15,67 +18,47 @@
   </servlet>
   <servlet>
     <servlet-name>SrvProcesarCliente</servlet-name>
-    <servlet-class>artupa.servlets.SrvProcesarCliente</servlet-class>
+    <servlet-class>opusbooks.servlets.SrvProcesarUsuario</servlet-class>
   </servlet>
   <servlet>
-    <servlet-name>SrvActualizarCliente</servlet-name>
-    <servlet-class>artupa.servlets.SrvActualizarCliente</servlet-class>
+    <servlet-name>SrvAltaUsuario</servlet-name>
+    <servlet-class>opusbooks.servlets.SrvAltaUsuario</servlet-class>
   </servlet>
   <servlet>
-    <servlet-name>SrvEliminarCliente</servlet-name>
-    <servlet-class>artupa.servlets.SrvEliminarCliente</servlet-class>
+    <servlet-name>SrvLogout</servlet-name>
+    <servlet-class>opusbooks.servlets.SrvLogout</servlet-class>
   </servlet>
   <servlet>
-    <servlet-name>SrvPedidos</servlet-name>
-    <servlet-class>artupa.servlets.SrvPedidos</servlet-class>
+    <servlet-name>SrvMenu</servlet-name>
+    <servlet-class>opusbooks.servlets.SrvMenu</servlet-class>
   </servlet>
   <servlet>
-    <servlet-name>SrvProcesarPedido</servlet-name>
-    <servlet-class>artupa.servlets.SrvProcesarPedido</servlet-class>
-  </servlet>
-  <servlet>
-    <servlet-name>SrvActualizarPedido</servlet-name>
-    <servlet-class>artupa.servlets.SrvActualizarPedido</servlet-class>
-  </servlet>
-  <servlet>
-    <servlet-name>SrvEliminarPedido</servlet-name>
-    <servlet-class>artupa.servlets.SrvEliminarPedido</servlet-class>
+    <servlet-name>SrvCompra</servlet-name>
+    <servlet-class>opusbooks.servlets.SrvCompra</servlet-class>
   </servlet>
   
   <servlet-mapping>
-    <servlet-name>SrvValidarEntrada</servlet-name>
-    <url-pattern>/SrvValidarEntrada</url-pattern>
+    <servlet-name>SrvLogin</servlet-name>
+    <url-pattern>/SrvLogin</url-pattern>
   </servlet-mapping>  
   <servlet-mapping>
-    <servlet-name>SrvClientes</servlet-name>
-    <url-pattern>/SrvClientes</url-pattern>
+    <servlet-name>SrvUsuarios</servlet-name>
+    <url-pattern>/SrvUsuarios</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-    <servlet-name>SrvProcesarCliente</servlet-name>
-    <url-pattern>/SrvProcesarCliente</url-pattern>
+    <servlet-name>SrvAltaUsuario</servlet-name>
+    <url-pattern>/SrvAltaUsuario</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-    <servlet-name>SrvActualizarCliente</servlet-name>
-    <url-pattern>/SrvActualizarCliente</url-pattern>
+    <servlet-name>SrvLogout</servlet-name>
+    <url-pattern>/SrvLogout</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-    <servlet-name>SrvEliminarCliente</servlet-name>
-    <url-pattern>/SrvEliminarCliente</url-pattern>
+    <servlet-name>SrvMenu</servlet-name>
+    <url-pattern>/SrvMenu</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-    <servlet-name>SrvPedidos</servlet-name>
-    <url-pattern>/SrvPedidos</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>SrvProcesarPedido</servlet-name>
-    <url-pattern>/SrvProcesarPedido</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>SrvActualizarPedido</servlet-name>
-    <url-pattern>/SrvActualizarPedido</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>SrvEliminarPedido</servlet-name>
-    <url-pattern>/SrvEliminarPedido</url-pattern>
+    <servlet-name>SrvCompra</servlet-name>
+    <url-pattern>/SrvCompra</url-pattern>
   </servlet-mapping>
 </web-app>

@@ -11,6 +11,9 @@ public class Libro implements Serializable{
 	private int id_autor;
 	private int id_editorial;
 	private int id_categoria;
+	private String nombreAutor;
+	private String nombreEditorial;
+	private String nombreCategoria;
 	
 	public Libro() {}
 
@@ -81,7 +84,18 @@ public class Libro implements Serializable{
 	public void setId_categoria(int id_categoria) {
 		this.id_categoria = id_categoria;
 	}
-	
+	public String getNombreAutor() {
+	    return nombreAutor;
+	}
+	public void setNombreAutor(String nombreAutor) {
+	    this.nombreAutor = nombreAutor;
+	}
+
+	public String getNombreEditorial() { return nombreEditorial; }
+	public void setNombreEditorial(String nombreEditorial) { this.nombreEditorial = nombreEditorial; }
+
+	public String getNombreCategoria() { return nombreCategoria; }
+	public void setNombreCategoria(String nombreCategoria) { this.nombreCategoria = nombreCategoria; }
 	
 	
 }

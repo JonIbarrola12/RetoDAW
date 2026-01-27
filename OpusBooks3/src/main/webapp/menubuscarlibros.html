@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Librería Virtual</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .contenedor {
+            width: 600px;
+            text-align: center;
+        }
+
+        .fila {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+
+        .fila label {
+            width: 120px;
+            text-align: right;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .fila input[type="text"],
+        .fila select {
+            width: 250px;
+            padding: 6px;
+        }
+
+        .radios {
+            margin: 10px 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 10px 25px;
+            font-size: 15px;
+            cursor: pointer;
+            border-radius: 10px;
+            border: 1px solid #333;
+            background-color: #f2f2f2;
+        }
+
+        button:hover {
+            background-color: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="contenedor">
+        <h1>Librería Virtual: Menú → Buscar libro</h1>
+
+        <div class="fila">
+            <label for="titulo">Título</label>
+            <input type="text" id="titulo" name="titulo">
+        </div>
+
+        <div class="radios">
+            <label>
+                <input type="radio" name="condicion" value="and"> AND
+            </label>
+            <label>
+                <input type="radio" name="condicion" value="or"> OR
+            </label>
+        </div>
+
+        <div class="fila">
+            <label for="autor">Autor</label>
+            <input type="text" id="autor" name="autor">
+        </div>
+
+        <div class="fila">
+            <label for="categoria">Categoría</label>
+            <select id="categoria" name="categoria">
+                <option value="">Cualquiera</option>
+                <option value="novela">Novela</option>
+                <option value="fantasia">Fantasía</option>
+                <option value="historia">Historia</option>
+                <option value="ciencia">Ciencia</option>
+                <option value="infantil">Infantil</option>
+            </select>
+        </div>
+
+        <h2>Orden:</h2>
+
+        <div class="radios">
+            <label>
+                <input type="radio" name="orden" value="titulo"> Título
+            </label>
+            <label>
+                <input type="radio" name="orden" value="autor"> Autor
+            </label>
+        </div>
+    <div>
+    <a href="resultadobusqueda.html">
+        <button type="submit">Buscar</button>
+        </a>
+    </div>
+
+</body>
+</html>
