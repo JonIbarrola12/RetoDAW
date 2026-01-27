@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
+  <display-name>OpusBooks</display-name>
+  <welcome-file-list>
+    <welcome-file>login.jsp</welcome-file>
+</welcome-file-list>
+<context-param>
+    <param-name>fichero_propiedades</param-name>
+    <param-value>/WEB-INF/opusbooks.properties</param-value>
+</context-param>
+  <servlet>
+    <servlet-name>SrvLogin</servlet-name>
+    <servlet-class>opusbooks.servlets.SrvLogin</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>SrvUsuarios</servlet-name>
+    <servlet-class>opusbooks.servlets.SrvUsuarios</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>SrvProcesarCliente</servlet-name>
+    <servlet-class>opusbooks.servlets.SrvProcesarUsuario</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>SrvAltaUsuario</servlet-name>
+    <servlet-class>opusbooks.servlets.SrvAltaUsuario</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>SrvLogout</servlet-name>
+    <servlet-class>opusbooks.servlets.SrvLogout</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>SrvMenu</servlet-name>
+    <servlet-class>opusbooks.servlets.SrvMenu</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>SrvCompra</servlet-name>
+    <servlet-class>opusbooks.servlets.SrvCompra</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>SrvLogin</servlet-name>
+    <url-pattern>/SrvLogin</url-pattern>
+  </servlet-mapping>  
+  <servlet-mapping>
+    <servlet-name>SrvUsuarios</servlet-name>
+    <url-pattern>/SrvUsuarios</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>SrvAltaUsuario</servlet-name>
+    <url-pattern>/SrvAltaUsuario</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>SrvLogout</servlet-name>
+    <url-pattern>/SrvLogout</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>SrvMenu</servlet-name>
+    <url-pattern>/SrvMenu</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>SrvCompra</servlet-name>
+    <url-pattern>/SrvCompra</url-pattern>
+  </servlet-mapping>
+</web-app>
