@@ -185,6 +185,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
     <meta charset="UTF-8">
     <title>OPUSCORD - Grupos</title>
     <link rel="stylesheet" href="../../css/estilos.css">
+    <script src="../../js/Perfil.js"></script>
     <style>
         .chat-messages { max-height: 500px; overflow-y: auto; }
         .message.prop { background-color: #dcf8c6; padding:5px; margin:5px 0; border-radius:5px; }
@@ -196,36 +197,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
 <div class="container">
 
     <!-- sidebar -->
-    <aside class="sidebar">
-        <h2><a href="index.php" style="text-decoration:none; color:inherit;">OPUSCORD</a></h2>
+        <aside class="sidebar">
+            <h2>OPUSCORD</h2>
 
-        <nav class="main-nav">
-            <ul>
-                <li><a href="index.php"><button>Feed</button></a></li>
-                <li><a href="chatprivado.php"><button>Mensajes</button></a></li>
-                <li><a href="amigos.php"><button>Amigos</button></a></li>
-                <li><a href="grupos.php"><button class="active">Grupos</button></a></li>
-            </ul>
-        </nav>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.php"><button>Feed</button></a></li>
+                    <li><a href="amigos.php"><button>Amigos</button></a></li>
+                    <li><a href="chatprivado.php"><button>Mensajes</button></a></li>
+                    <li><a href="grupos.php"><button>Grupos</button></a></li>
+                </ul>
+            </nav>
+            <div class="PerfilContenedor"onclick="abrirPerfil()" style="cursor:pointer;">
+            <?php
+            if (isset($_SESSION['Usuario'])) {
 
-        <hr>
-        <h3>Crear grupo</h3>
-        <form method="POST" class="crear-grupo">
-            <input type="text" name="nombre" placeholder="Nombre del grupo" required>
-            <input type="text" name="descripcion" placeholder="Descripción">
-            <button name="crear_grupo">Crear</button>
-        </form>
+                $Foto = (!empty($_SESSION['Foto'])) ? $_SESSION['Foto'] : '/Recursos/mamiy.png';
 
-        <hr>
-        <h3>📂 Mis grupos</h3>
-        <ul>
-            <?php foreach ($miembros as $m):
-                $g = GruposCRUD::obtenerPorId($m['GrupoId']);
+
+                echo '
+                <div class="perfil-horiz">
+                    <img src="' . htmlspecialchars($Foto) . '" class="profile-pic fotoPerfil">
+                    <div class="perfil-info">
+                        <p class="perfil-nombre">' . htmlspecialchars($_SESSION['Usuario']) . '</p>
+
+                    </div>
+                </div>
+                ';
+            } else {
+                echo '
+                <div class="auth-buttons">
+                    <a href="../Login/Index.php"><button class="login-btn">Iniciar Sesión</button></a>
+                    <a href="../Login/registrarse.php"><button class="register-btn">Registrarse</button></a>
+                </div>
+                ';
+            }
             ?>
-                <li><a href="grupos.php?grupo=<?= $g['id_grupo'] ?>"><?= htmlspecialchars($g['Nombre']) ?></a></li>
-            <?php endforeach; ?>
-        </ul>
-    </aside>
+            </div>
+    
+
+        </aside>
 
     <!-- chat -->
     <main class="main-content">
@@ -340,7 +351,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
             <h3>Selecciona o crea un grupo</h3>
         <?php endif; ?>
     </main>
+        <aside class="sidebar sidebar-left">
+
+        <h3>Crear grupo</h3>
+        <form method="POST" class="crear-grupo">
+            <input type="text" name="nombre" placeholder="Nombre del grupo" required>
+            <input type="text" name="descripcion" placeholder="Descripción">
+            <button name="crear_grupo">Crear</button>
+        </form>
+
+        <hr>
+        <h3>📂 Mis grupos</h3>
+        <ul>
+            <?php foreach ($miembros as $m):
+                $g = GruposCRUD::obtenerPorId($m['GrupoId']);
+            ?>
+                <li><a href="grupos.php?grupo=<?= $g['id_grupo'] ?>"><?= htmlspecialchars($g['Nombre']) ?></a></li>
+            <?php endforeach; ?>
+        </ul>
+    </aside>
 </div>
+    <div id="perfilModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="cerrarPerfil()">&times;</span>
+            <div id="perfilContenido"></div>
+        </div>
+    </div>
 </body>
 </html>
 

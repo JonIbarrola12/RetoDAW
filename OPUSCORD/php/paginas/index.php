@@ -266,7 +266,6 @@ if (isset($_GET['ajax'])) {
 </head>
 <body>
 <div class="container">
-
 <!-- menu -->
 <aside class="sidebar">
     <h2>OPUSCORD</h2>

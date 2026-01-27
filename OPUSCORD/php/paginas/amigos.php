@@ -101,6 +101,7 @@ $busqueda = $_GET['buscar'] ?? '';
     <meta charset="UTF-8">
     <title>OPUSCORD - Amigos</title>
     <link rel="stylesheet" href="../../css/estilos.css">
+    <script src="../../js/Perfil.js"></script>
 </head>
 <body>
 
@@ -111,36 +112,42 @@ $busqueda = $_GET['buscar'] ?? '';
             <nav class="main-nav">
                 <ul>
                     <li><a href="index.php"><button>Feed</button></a></li>
-                    <li><a href="mensajes.php"><button>Mensajes</button></a></li>
                     <li><a href="amigos.php"><button>Amigos</button></a></li>
-                    <li><a href="index.php"><button>Feed</button></a></li>
+                    <li><a href="chatprivado.php"><button>Mensajes</button></a></li>
+                    <li><a href="grupos.php"><button>Grupos</button></a></li>
                 </ul>
             </nav>
 
             <!-- Botones de sesión abajo -->
+
+            <div class="PerfilContenedor"onclick="abrirPerfil()" style="cursor:pointer;">
             <?php
-                if (isset($_SESSION['Usuario'])) {
+            if (isset($_SESSION['Usuario'])) {
 
-                    $Foto = (isset($_SESSION['Foto']) && !empty($_SESSION['Foto']))
-                        ? $_SESSION['Foto']
-                        : '../../Recursos/mamiy.png';
+                $Foto = (!empty($_SESSION['Foto'])) ? $_SESSION['Foto'] : '/Recursos/mamiy.png';
 
-                    echo '
-                        <img src="' . htmlspecialchars($Foto) . '" alt="Foto de perfil" class="profile-pic">
-                        <p>' . htmlspecialchars($_SESSION['Usuario']) . '</p>
-                        <a href="../Login/Logout.php">
-                            <button class="login-btn">Cerrar Sesión</button>
-                        </a>
-                    ';
-                } else {
-                    echo '
-                        <div class="auth-buttons">
-                            <a href="../Login/Index.php"><button class="login-btn">Iniciar Sesión</button></a>
-                            <a href="../Login/registrarse.php"><button class="register-btn">Registrarse</button></a>
-                        </div>
-                    ';
-                }
+
+                echo '
+                <div class="perfil-horiz">
+                    <img src="' . htmlspecialchars($Foto) . '" class="profile-pic fotoPerfil">
+                    <div class="perfil-info">
+                        <p class="perfil-nombre">' . htmlspecialchars($_SESSION['Usuario']) . '</p>
+
+                    </div>
+                </div>
+                ';
+            } else {
+                echo '
+                <div class="auth-buttons">
+                    <a href="../Login/Index.php"><button class="login-btn">Iniciar Sesión</button></a>
+                    <a href="../Login/registrarse.php"><button class="register-btn">Registrarse</button></a>
+                </div>
+                ';
+            }
             ?>
+            </div>
+    
+
         </aside>
 
     <main class="main-content">
@@ -251,6 +258,15 @@ $busqueda = $_GET['buscar'] ?? '';
         ?>
 
     </main>
+    <div id="perfilModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="cerrarPerfil()">&times;</span>
+            <div id="perfilContenido"></div>
+        </div>
+    </div>
+
+
+</div>
 </div>
 
 </body>
