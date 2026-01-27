@@ -14,6 +14,8 @@ document.getElementById("form").addEventListener("submit", function(event) {
     let inputContra = document.getElementById("contrasena");
     let inputFecha = document.getElementById("FechaNacimiento");
 
+    let inputAmigo = document.getElementById("formAmigo");
+
     // Limpiar errores
     let errorNombre = document.getElementById("error-nombre");
     let errorApellido = document.getElementById("error-apellido");
@@ -21,6 +23,7 @@ document.getElementById("form").addEventListener("submit", function(event) {
     let errorUsu = document.getElementById("error-usu");
     let errorContra = document.getElementById("error-contra");
     let errorFecha = document.getElementById("error-fecha");
+    
 
     errorNombre.textContent = "";
     errorApellido.textContent = "";

@@ -10,7 +10,7 @@
 /* Contenedor principal */
 .container {
     display: flex;
-    min-height: 100vh;
+    height: 100vh;
     overflow: auto;
 }
 .section {
@@ -26,7 +26,8 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between; /* separa la parte superior de la inferior */
-    min-height: 100vh;
+    height: 100vh;
+    flex-shrink: 0;
 }
 
 /* Navegación */

@@ -311,7 +311,7 @@ if (isset($_GET['ajax'])) {
     
 
         </aside>
-
+    
 <main class="main-content">
 
 <!--  buscador  -->
@@ -331,7 +331,7 @@ if (isset($_GET['ajax'])) {
         </option>
     </select>
 </section>
-
+       
 
 <!-- crear publicacion desplegable -->
 <section class="crear-publicacion">
