@@ -77,7 +77,6 @@
     --
 
     /*!40000 ALTER TABLE `amigos` DISABLE KEYS */;
-    INSERT INTO `amigos` VALUES (NULL,1,2,'aceptado',NOW(),NOW());
     /*!40000 ALTER TABLE `amigos` ENABLE KEYS */;
 
     --
@@ -105,7 +104,7 @@
     --
 
     /*!40000 ALTER TABLE `publicaciones` DISABLE KEYS */;
-    INSERT INTO `publicaciones` VALUES (NULL,1,'Hola, esta es mi primera publicación',NULL,NOW(),'publica');
+
     /*!40000 ALTER TABLE `publicaciones` ENABLE KEYS */;
 
 
@@ -135,7 +134,6 @@
     --
 
     /*!40000 ALTER TABLE `comentarios` DISABLE KEYS */;
-    INSERT INTO `comentarios` VALUES (NULL,1,2,'Buen post',NOW());
     /*!40000 ALTER TABLE `comentarios` ENABLE KEYS */;
 
     --
@@ -162,7 +160,6 @@
     --
 
     /*!40000 ALTER TABLE `likes` DISABLE KEYS */;
-    INSERT INTO `likes` VALUES (NULL,2,1);
     /*!40000 ALTER TABLE `likes` ENABLE KEYS */;
 
     --
@@ -192,7 +189,6 @@
     --
 
     /*!40000 ALTER TABLE `mensajesPrivados` DISABLE KEYS */;
-    INSERT INTO `mensajesPrivados` VALUES (NULL,1,2,'Hola Ana',NOW(),0);
     /*!40000 ALTER TABLE `mensajesPrivados` ENABLE KEYS */;
 
     --
@@ -221,7 +217,6 @@
     --
 
     /*!40000 ALTER TABLE `mensajesGrupos` DISABLE KEYS */;
-    INSERT INTO `mensajesGrupos` VALUES (NULL,1,2,'Hola Ana',NOW());
     /*!40000 ALTER TABLE `mensajesGrupos` ENABLE KEYS */;
 
     --
@@ -249,7 +244,6 @@
     --
 
     /*!40000 ALTER TABLE `grupos` DISABLE KEYS */;
-    INSERT INTO `grupos` VALUES (NULL,'Programación','Grupo de programadores',1,NULL,NOW());
     /*!40000 ALTER TABLE `grupos` ENABLE KEYS */;
 
     --
@@ -278,7 +272,6 @@
     --
 
     /*!40000 ALTER TABLE `miembros` DISABLE KEYS */;
-    INSERT INTO `miembros` VALUES (NULL,1,1,'admin',NOW());
     /*!40000 ALTER TABLE `miembros` ENABLE KEYS */;
 
     /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
