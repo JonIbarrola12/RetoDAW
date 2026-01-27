@@ -19,6 +19,50 @@ window.onclick = function(e) {
     if (e.target === modal) cerrarPerfil();
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+
+    const modal = document.getElementById('perfilAmigoModal');
+    const contenido = document.getElementById('perfilAmigoContenido');
+    const cerrar = document.getElementById('cerrarPerfilAmigoModal');
+
+    // Función para abrir modal
+    function abrirPerfilAmigo(idAmigo) {
+        fetch(`PerfilAmigo.php?id=${idAmigo}`)
+            .then(res => res.text())
+            .then(html => {
+                contenido.innerHTML = html;
+                modal.style.display = 'flex';
+            })
+            .catch(err => console.error('Error cargando perfil:', err));
+    }
+
+    // Cerrar modal al hacer click en la X
+    cerrar.addEventListener('click', () => {
+        modal.style.display = 'none';
+        contenido.innerHTML = '';
+    });
+
+    // Cerrar modal al hacer click fuera del contenido
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+            contenido.innerHTML = '';
+        }
+    });
+
+    // Detectar click en cualquier amigo
+    document.querySelectorAll('.perfil-horiz').forEach(div => {
+        div.addEventListener('click', () => {
+            const idAmigo = div.dataset.usuarioId; // asegúrate que cada .perfil-horiz tiene data-usuario-id
+            if (idAmigo) {
+                abrirPerfilAmigo(idAmigo);
+            }
+        });
+    });
+
+});
+
+
 // --- BroadcastChannel para actualizar foto en otras pestañas ---
 const canalFoto = new BroadcastChannel('fotoPerfil');
 
@@ -62,13 +106,23 @@ document.addEventListener('click', function(e){
                         console.log('Foto actualizada en la BD');
 
                         // Actualizar todas las fotos de perfil en la página actual
-                        const imgs = document.querySelectorAll('.fotoPerfil');
+                        const imgs = document.querySelectorAll('.foto-mia');
                         imgs.forEach(img => {
-                            img.src = data.nuevaFoto + '?t=' + new Date().getTime();
+                            img.src = data.nuevaFoto + '?t=' + Date.now();
                         });
 
                         // Enviar mensaje a otras pestañas para actualizar allí también
-                        canalFoto.postMessage({ nuevaFoto: data.nuevaFoto });
+                        canalFoto.postMessage({
+                            tipo: 'miFoto',
+                            nuevaFoto: data.nuevaFoto
+                         });
+                        canalFoto.onmessage = (e) => {
+                            if (e.data.tipo === 'miFoto') {
+                                document.querySelectorAll('.foto-mia').forEach(img => {
+                                    img.src = e.data.nuevaFoto + '?t=' + Date.now();
+                                });
+                            }
+                        };
 
                     } else {
                         alert('Error al subir la foto: ' + data.msg);
@@ -83,7 +137,33 @@ document.addEventListener('click', function(e){
     }
 });
 
-document.addEventListener('click', function(e){
+    setInterval(() => {
+        fetch('../Funcionalidades/actualizar_estado.php');
+    }, 10000); // cada 10 segundos
+    setInterval(() => {
+        fetch('../Funcionalidades/obtener_estados_amigos.php')
+            .then(res => res.json())
+            .then(amigos => {
+                amigos.forEach(amigo => {
+                    const contenedor = document.querySelector(
+                        `[data-usuario-id="${amigo.id_usuario}"]`
+                    );
+
+                    if (!contenedor) return;
+
+                    const dot = contenedor.querySelector('.estado-dot');
+                    const texto = contenedor.querySelector('.estado-texto');
+
+                    dot.classList.toggle('online', amigo.estado === 'Online');
+                    dot.classList.toggle('offline', amigo.estado === 'Offline');
+
+                    texto.textContent =
+                        amigo.estado === 'Online' ? 'En línea' : 'Desconectado';
+                });
+            });
+    }, 5000); // cada 5 segundos
+
+    document.addEventListener('click', function(e){
 
     // Entrar en modo edición
     if(e.target && e.target.id === 'editarPerfilBtn'){
@@ -208,7 +288,7 @@ document.addEventListener('click', function (e) {
 
                 // Actualizar texto en pantalla
                 document.getElementById('usernameTexto').textContent = nuevoUsername;
-                document.querySelectorAll('.perfil-nombre').forEach(el => {
+                document.querySelectorAll('.nombre-mio').forEach(el => {
                     el.textContent = nuevoUsername;
                 });
 
@@ -222,3 +302,181 @@ document.addEventListener('click', function (e) {
     }
 
 });
+
+// Cada 5 segundos revisa si hay cambios en la lista de amigos
+setInterval(() => {
+    fetch('../Funcionalidades/obtener_amigos.php')
+        .then(res => res.json())
+        .then(amigos => {
+            const contenedor = document.querySelector('.lista-amigos');
+            if (!contenedor) return;
+
+            // Crear un set de IDs actuales
+            const idsActuales = new Set();
+            amigos.forEach(a => idsActuales.add(a.id_usuario));
+
+            // Eliminar amigos que ya no están
+            contenedor.querySelectorAll('.perfil-horiz').forEach(div => {
+                const id = parseInt(div.dataset.usuarioId);
+                if (!idsActuales.has(id)) {
+                    div.closest('.message').remove();
+                }
+            });
+
+            // Actualizar o añadir amigos
+            amigos.forEach(amigo => {
+                let div = contenedor.querySelector(`[data-usuario-id="${amigo.id_usuario}"]`);
+                if (div) {
+                    // 🔹 Actualizar nombre
+                    const nombre = div.querySelector('.perfil-nombre');
+                    if (nombre.textContent !== amigo.Username) {
+                        nombre.textContent = amigo.Username;
+                    }
+
+                    // 🔹 Actualizar foto
+                    const img = div.querySelector('img.profile-pic');
+                    const nuevaFoto = amigo.Pfp || '../../Recursos/mamiy.png';
+                    if (img.src !== nuevaFoto && !img.src.endsWith(nuevaFoto)) {
+                        img.src = nuevaFoto;
+                    }
+
+                    // 🔹 Actualizar estado
+                    const dot = div.querySelector('.estado-dot');
+                    const texto = div.querySelector('.estado-texto');
+
+                    dot.classList.toggle('online', amigo.estado === 'Online');
+                    dot.classList.toggle('offline', amigo.estado !== 'Online');
+
+                    texto.textContent =
+                        amigo.estado === 'Online' ? 'En línea' : 'Desconectado';
+                }
+
+                 else {
+                    // Crear nuevo amigo
+                    const div = document.createElement('div');
+                    div.classList.add('message');
+                    div.innerHTML = `
+                        <div class="perfil-horiz" data-usuario-id="${amigo.id_usuario}">
+                            <img src="${amigo.Pfp || '../../Recursos/mamiy.png'}" class="profile-pic fotoPerfil" alt="Foto de ${amigo.Username}">
+                            <div class="perfil-info">
+                                <p class="perfil-nombre">${amigo.Username}</p>
+                                <div class="estado-usuario">
+                                    <span class="estado-dot ${amigo.estado === 'Online' ? 'online' : 'offline'}"></span>
+                                    <span class="estado-texto">${amigo.estado === 'Online' ? 'En línea' : 'Desconectado'}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    contenedor.appendChild(div);
+
+                    // Aquí puedes añadir el listener para abrir modal del amigo
+                    div.querySelector('.perfil-horiz').addEventListener('click', () => abrirPerfilAmigo(amigo.id_usuario));
+                }
+            });
+        })
+        .catch(err => console.error(err));
+}, 5000);
+
+setInterval(() => {
+    fetch('../Funcionalidades/obtener_chats.php')
+        .then(res => res.json())
+        .then(chats => {
+            const contenedor = document.querySelector('.lista-chats');
+            if (!contenedor) return;
+
+            contenedor.innerHTML = '';
+
+            if (chats.length === 0) {
+                contenedor.innerHTML = '<p class="sin-amigos">No tienes chats</p>';
+                return;
+            }
+
+            chats.forEach(amigo => {
+                const a = document.createElement('a');
+                a.href = `chatprivado.php?usuario=${amigo.id_usuario}`;
+                a.className = 'chat-amigo';
+
+                a.innerHTML = `
+                    <div class="perfil-horiz" data-usuario-id="${amigo.id_usuario}">
+                        <img 
+                            src="${amigo.Pfp || '../../Recursos/mamiy.png'}"
+                            class="profile-pic"
+                        >
+                        <div class="perfil-info">
+                            <p class="perfil-nombre">${amigo.Username}</p>
+                            <div class="estado-usuario">
+                                <span class="estado-dot ${amigo.estado === 'Online' ? 'online' : 'offline'}"></span>
+                                <span class="estado-texto">
+                                    ${amigo.estado === 'Online' ? 'En línea' : 'Desconectado'}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                contenedor.appendChild(a);
+            });
+        });
+}, 5000);
+
+function abrirConfirmEliminar() {
+    document.getElementById('confirmEliminarOverlay').style.display = 'flex';
+}
+
+function cerrarConfirmEliminar() {
+    document.getElementById('confirmEliminarOverlay').style.display = 'none';
+}
+
+function aceptarConfirmEliminar() {
+    document.getElementById('formEliminarAmigo').submit();
+}
+
+setInterval(() => {
+    fetch('../Funcionalidades/obtener_solicitudes.php')
+        .then(res => res.json())
+        .then(solicitudes => {
+            const contenedor = document.getElementById('listaSolicitudes');
+            if (!contenedor) return;
+
+            contenedor.innerHTML = '';
+
+            if (solicitudes.length === 0) {
+                contenedor.innerHTML = '<p>No hay solicitudes.</p>';
+                return;
+            }
+
+            solicitudes.forEach(usuario => {
+                const div = document.createElement('div');
+                div.classList.add('message', 'solicitud');
+
+                div.innerHTML = `
+                    <div class="perfil-horiz">
+                        <img src="${usuario.Pfp || '../../Recursos/mamiy.png'}" class="profile-pic">
+                        <div class="perfil-info">
+                            <p class="perfil-nombre">${usuario.Username}</p>
+                            <div class="estado-usuario">
+                                <span class="estado-dot ${usuario.estado === 'Online' ? 'online' : 'offline'}"></span>
+                                <span class="estado-texto">
+                                    ${usuario.estado === 'Online' ? 'En línea' : 'Desconectado'}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="acciones-solicitud">
+                        <form method="POST">
+                            <input type="hidden" name="aceptar_amigo" value="${usuario.id_amigo}">
+                            <button class="btn-aceptar">✔</button>
+                        </form>
+
+                        <form method="POST">
+                            <input type="hidden" name="rechazar_amigo" value="${usuario.id_amigo}">
+                            <button class="btn-rechazar">✖</button>
+                        </form>
+                    </div>
+                `;
+
+                contenedor.appendChild(div);
+            });
+        })
+        .catch(err => console.error(err));
+}, 5000); // cada 5 segundos
