@@ -4,7 +4,7 @@ class MensajesGrupos {
 
     private ?int $mensajeGrupoId = null;
     private int $emisorId;
-    private int $receptorId; // id del grupo
+    private int $receptorId; 
     private string $contenido;
     private DateTime $fechaEnvio;
 

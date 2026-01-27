@@ -1,104 +1,161 @@
 <?php
-require_once 'conexion.php';
+require_once '../conexion.php';
 require_once '../Clases/Miembro.php';
 
 class MiembrosCRUD {
-    public static function recibirRegistros() {
+
+    // obtener todos los miembros
+    public static function recibirRegistros(): array {
         global $conexion;
         $sql = "SELECT * FROM miembros";
+        $query = mysqli_query($conexion, $sql);
 
-        try {
-            $query = mysqli_query($conexion, $sql);
-            if (!$query) {
-                throw new Exception("Error en la consulta: " . mysqli_error($conexion));
-            }
-
-            $resultados = [];
-            while ($fila = mysqli_fetch_assoc($query)) {
-                $resultados[] = $fila;
-            }
-
-            return $resultados;
-
-        } catch (Exception $e) {
-            echo "Error al obtener miembros: " . $e->getMessage();
-            return [];
-        }
+        return mysqli_fetch_all($query, MYSQLI_ASSOC);
     }
 
-    // Añadir un miembro a un grupo
-    public static function añadirMiembro(Miembro $miembro) {
+    // añadir un miembro a un grupo
+    public static function añadirMiembro(Miembro $miembro): bool {
         global $conexion;
 
-        $sql = "INSERT INTO miembros (UsuarioId, GrupoId, Rol, FechaIngreso) VALUES (?, ?, ?, ?)";
+        $sql = "INSERT INTO miembros (id_usuario, GrupoId, Rol, FechaIngreso)
+                VALUES (?, ?, ?, ?)";
 
-        try {
-            $stmt = mysqli_prepare($conexion, $sql);
-            if (!$stmt) {
-                throw new Exception("Error al preparar INSERT: " . mysqli_error($conexion));
-            }
+        $stmt = mysqli_prepare($conexion, $sql);
+        if (!$stmt) return false;
 
-            $usuarioId = $miembro->getUsuarioId();
-            $grupoId = $miembro->getGrupoId();
-            $rol = $miembro->getRol();
-            $fecha = $miembro->getFechaIngreso()->format('Y-m-d H:i:s');
+        $usuarioId = $miembro->getUsuarioId();
+        $grupoId   = $miembro->getGrupoId();
+        $rol       = $miembro->getRol();
+        $fecha     = $miembro->getFechaIngreso()->format('Y-m-d H:i:s');
 
-            mysqli_stmt_bind_param($stmt, "iiss", $usuarioId, $grupoId, $rol, $fecha);
+        mysqli_stmt_bind_param($stmt, "iiss", $usuarioId, $grupoId, $rol, $fecha);
 
-            if (!mysqli_stmt_execute($stmt)) {
-                throw new Exception("Error al ejecutar INSERT: " . mysqli_stmt_error($stmt));
-            }
+        $ok = mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
 
-            mysqli_stmt_close($stmt);
-
-        } catch (Exception $e) {
-            echo "Error al añadir miembro: " . $e->getMessage();
-        }
+        return $ok;
     }
 
-    // Eliminar un miembro
-    public static function eliminarMiembro(int $miembroId) {
+    // eliminar un miembro
+    public static function eliminarMiembro(int $idMiembro): bool {
         global $conexion;
-        $sql = "DELETE FROM miembros WHERE MiembroId = ?";
 
-        try {
-            $stmt = mysqli_prepare($conexion, $sql);
-            if (!$stmt) throw new Exception("Error al preparar DELETE: " . mysqli_error($conexion));
+        $sql = "DELETE FROM miembros WHERE id_miembro = ?";
+        $stmt = mysqli_prepare($conexion, $sql);
+        if (!$stmt) return false;
 
-            mysqli_stmt_bind_param($stmt, "i", $miembroId);
+        mysqli_stmt_bind_param($stmt, "i", $idMiembro);
+        $ok = mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
 
-            if (!mysqli_stmt_execute($stmt)) {
-                throw new Exception("Error al ejecutar DELETE: " . mysqli_stmt_error($stmt));
-            }
-
-            mysqli_stmt_close($stmt);
-
-        } catch (Exception $e) {
-            echo "Error al eliminar miembro: " . $e->getMessage();
-        }
+        return $ok;
     }
 
-    // Modificar rol de un miembro
-    public static function modificarRol(Miembro $miembro, int $miembroId) {
+    // modificar rol de un miembro
+    public static function modificarRol(int $idMiembro, string $rol): bool {
         global $conexion;
-        $sql = "UPDATE miembros SET Rol = ? WHERE MiembroId = ?";
 
-        try {
-            $stmt = mysqli_prepare($conexion, $sql);
-            if (!$stmt) throw new Exception("Error al preparar UPDATE: " . mysqli_error($conexion));
+        $sql = "UPDATE miembros SET Rol = ? WHERE id_miembro = ?";
+        $stmt = mysqli_prepare($conexion, $sql);
+        if (!$stmt) return false;
 
-            $rol = $miembro->getRol();
-            mysqli_stmt_bind_param($stmt, "si", $rol, $miembroId);
+        mysqli_stmt_bind_param($stmt, "si", $rol, $idMiembro);
+        $ok = mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
 
-            if (!mysqli_stmt_execute($stmt)) {
-                throw new Exception("Error al ejecutar UPDATE: " . mysqli_stmt_error($stmt));
-            }
+        return $ok;
+    }
 
-            mysqli_stmt_close($stmt);
+    // obtener grupos a los que pertenece un usuario
+    public static function obtenerGruposUsuario(int $idUsuario): array {
+        global $conexion;
 
-        } catch (Exception $e) {
-            echo "Error al modificar rol: " . $e->getMessage();
-        }
+        $sql = "SELECT * FROM miembros WHERE id_usuario = ?";
+        $stmt = mysqli_prepare($conexion, $sql);
+        if (!$stmt) return [];
+
+        mysqli_stmt_bind_param($stmt, "i", $idUsuario);
+        mysqli_stmt_execute($stmt);
+
+        $res = mysqli_stmt_get_result($stmt);
+        $grupos = mysqli_fetch_all($res, MYSQLI_ASSOC);
+
+        mysqli_stmt_close($stmt);
+        return $grupos;
+    }
+
+    // comprobar si el usuario es admin del grupo
+    public static function esAdmin(int $idUsuario, int $idGrupo): bool {
+        global $conexion;
+
+        $sql = "SELECT 1 FROM miembros 
+                WHERE id_usuario = ? AND GrupoId = ? AND Rol = 'admin'";
+
+        $stmt = mysqli_prepare($conexion, $sql);
+        if (!$stmt) return false;
+
+        mysqli_stmt_bind_param($stmt, "ii", $idUsuario, $idGrupo);
+        mysqli_stmt_execute($stmt);
+
+        $res = mysqli_stmt_get_result($stmt);
+        $esAdmin = mysqli_num_rows($res) > 0;
+
+        mysqli_stmt_close($stmt);
+        return $esAdmin;
+    }
+
+    // comprobar si un usuario ya pertenece a un grupo
+    public static function existeMiembro(int $idUsuario, int $idGrupo): bool {
+        global $conexion;
+
+        $sql = "SELECT 1 FROM miembros WHERE id_usuario = ? AND GrupoId = ?";
+        $stmt = mysqli_prepare($conexion, $sql);
+        if (!$stmt) return false;
+
+        mysqli_stmt_bind_param($stmt, "ii", $idUsuario, $idGrupo);
+        mysqli_stmt_execute($stmt);
+
+        $res = mysqli_stmt_get_result($stmt);
+        $existe = mysqli_num_rows($res) > 0;
+
+        mysqli_stmt_close($stmt);
+        return $existe;
+    }
+
+    // obtener un miembro por usuario y grupo
+    public static function obtenerPorUsuarioYGrupo(int $idUsuario, int $idGrupo): ?array {
+        global $conexion;
+
+        $sql = "SELECT * FROM miembros WHERE id_usuario = ? AND GrupoId = ?";
+        $stmt = mysqli_prepare($conexion, $sql);
+        if (!$stmt) return null;
+
+        mysqli_stmt_bind_param($stmt, "ii", $idUsuario, $idGrupo);
+        mysqli_stmt_execute($stmt);
+
+        $res = mysqli_stmt_get_result($stmt);
+        $fila = mysqli_fetch_assoc($res);
+
+        mysqli_stmt_close($stmt);
+        return $fila ?: null;
+    }
+
+    // obtener un miembro por su id
+    public static function obtenerPorId(int $idMiembro): ?array {
+        global $conexion;
+
+        $sql = "SELECT * FROM miembros WHERE id_miembro = ?";
+        $stmt = mysqli_prepare($conexion, $sql);
+        if (!$stmt) return null;
+
+        mysqli_stmt_bind_param($stmt, "i", $idMiembro);
+        mysqli_stmt_execute($stmt);
+
+        $res = mysqli_stmt_get_result($stmt);
+        $fila = mysqli_fetch_assoc($res);
+
+        mysqli_stmt_close($stmt);
+        return $fila ?: null;
     }
 
 }
