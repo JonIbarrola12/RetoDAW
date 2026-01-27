@@ -3,9 +3,9 @@ require_once '../conexion.php';
 
 class PublicacionesCRUD {
 
-    public static function recibirRegistros() {
+    public static function recibirRegistros($orden = "FechaPublicacion DESC") {
         global $conexion;
-        $selectSql = "SELECT * from publicaciones";
+        $selectSql = "SELECT * FROM publicaciones ORDER BY $orden";
 
         try {
             $query = mysqli_query($conexion, $selectSql);
@@ -25,6 +25,7 @@ class PublicacionesCRUD {
             return [];
         }
     }
+
 
     public static function añadirPublicacion(Publicacion $publicacion) {
         global $conexion;
@@ -66,27 +67,31 @@ class PublicacionesCRUD {
 
     public static function eliminarPublicacion(int $publicacionId) {
         global $conexion;
-        $deleteSql = "DELETE from publicaciones where id_publicacion = ?";
 
         try {
-            $stmt = mysqli_prepare($conexion, $deleteSql);
-            if (!$stmt) {
-                throw new Exception("Error al preparar la consulta: " . mysqli_error($conexion));
-            }
-
+            // borrar likes
+            $stmt = mysqli_prepare($conexion, "DELETE FROM likes WHERE id_publicacion = ?");
             mysqli_stmt_bind_param($stmt, "i", $publicacionId);
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_close($stmt);
 
-            $resultado = mysqli_stmt_execute($stmt);
-            if (!$resultado) {
-                throw new Exception("Error al ejecutar el DELETE: " . mysqli_stmt_error($stmt));
-            }
+            // 2borrar comentarios
+            $stmt = mysqli_prepare($conexion, "DELETE FROM comentarios WHERE id_publicacion = ?");
+            mysqli_stmt_bind_param($stmt, "i", $publicacionId);
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_close($stmt);
 
+            // borrar publicación
+            $stmt = mysqli_prepare($conexion, "DELETE FROM publicaciones WHERE id_publicacion = ?");
+            mysqli_stmt_bind_param($stmt, "i", $publicacionId);
+            mysqli_stmt_execute($stmt);
             mysqli_stmt_close($stmt);
 
         } catch (Exception $e) {
             echo "Error al eliminar publicación: " . $e->getMessage();
         }
     }
+
 
     public static function modificarPublicacion(Publicacion $publicacion, int $publicacionIdOriginal) {
         global $conexion;
@@ -127,4 +132,6 @@ class PublicacionesCRUD {
         $publicaciones = self::recibirRegistros();
         return count($publicaciones);
     }
+
+    
 }
