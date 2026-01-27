@@ -29,9 +29,9 @@
     `Username` varchar(25) NOT NULL,
     `Email` varchar(75) NOT NULL,
     `Password` varchar(225) NOT NULL,
-    `Pfp` VARCHAR(225) DEFAULT NULL,
+    `Pfp` VARCHAR(225) DEFAULT '../../Recursos/fotousuario.png',
     `Bio` VARCHAR(225) DEFAULT 'Estoy usando OPUSCORD!',
-    `Estado` ENUM('Online','Offline') DEFAULT 'Offline';
+    `FechaNacimiento` DATE NULL,
     `FechaRegistro` datetime DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`id_usuario`),
     UNIQUE KEY `Username` (`Username`),
@@ -44,7 +44,9 @@
     --
 
     /*!40000 ALTER TABLE `usuarios` DISABLE KEYS */;
-    INSERT INTO `usuarios` VALUES (NULL,'Cristian','Bermudo','Cremu','cremu@email.com','1234',NULL,NULL,NOW()),(NULL,'Eder','Nieves','Eder27','eder27@email.com','1234',NULL,NULL,NOW());
+    ALTER TABLE usuarios 
+    ADD estado ENUM('Online','Offline') DEFAULT 'Offline',
+    ADD last_activity DATETIME;
     /*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
 
 

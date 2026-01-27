@@ -6,7 +6,7 @@ if (!isset($_SESSION['Usuario'])) {
     exit;
 }
 
-$foto = (!empty($_SESSION['Foto'])) ? $_SESSION['Foto'] : '/Recursos/mamiy.png';
+$foto = (!empty($_SESSION['Foto'])) ? $_SESSION['Foto'] : '/Recursos/fotousuario.png';
 ?>
 
 <div id="perfilModalContent">
@@ -15,7 +15,7 @@ $foto = (!empty($_SESSION['Foto'])) ? $_SESSION['Foto'] : '/Recursos/mamiy.png';
     <div class="perfil-header">
 
         <div class="perfil-foto-container">
-            <img id="perfilImagen" src="<?php echo htmlspecialchars($foto); ?>" class="perfil-foto">
+            <img id="perfilImagen" src="<?php echo htmlspecialchars($foto); ?>" class="perfil-foto foto-mia">
             <div class="overlay">
                 <img src="../../Recursos/camara.png" alt="Cambiar foto" class="camara-icon">
             </div>

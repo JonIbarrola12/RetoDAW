@@ -22,37 +22,50 @@
     <br> <br> <br>
     <div class="container d-flex justify-content-center align-items-center" >
         <div class="card shadow p-4" style="width: 22rem;">
-            <h3 class="text-center mb-4">Iniciar sesión</h3>
+            <h3 class="text-center mb-4">Registrarse</h3>
 
-            <form action="crearUsuario.php" method="POST">
+            <form action="crearUsuario.php" method="POST" id="form">
                 <div class="mb-3">
                     <label for="name" class="form-label">Nombre</label>
-                    <input type="text" class="form-control" id="name" name="nombre" placeholder="Ingresa tu nombre" required>
+                    <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Ingresa tu nombre">
+                    <span id="error-nombre" class="textoerror"></span>
                 </div>
                 <div class="mb-3">
                     <label for="surname" class="form-label">Apellido</label>
-                    <input type="text" class="form-control" id="surname" name="apellido" placeholder="Ingresa tu apellido" required>
+                    <input type="text" class="form-control" id="apellido" name="apellido" placeholder="Ingresa tu apellido">
+                    <span id="error-apellido" class="textoerror"></span>
                 </div>
                 <div class="mb-3">
                     <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control" id="email" name="email" placeholder="Ingresa tu email" required>
+                    <input type="text" class="form-control" id="email" name="email" placeholder="Ingresa tu email">
+                    <span id="error-email" class="textoerror"></span>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Fecha Nacimiento</label>
+                    <input type="date" class="form-control" id="FechaNacimiento" name="FechaNacimiento" placeholder="Ingresa tu fecha de nacimiento">
+                    <span id="error-fecha" class="textoerror"></span>
                 </div>
                 <div class="mb-3">
                     <label for="usuario" class="form-label">Usuario</label>
-                    <input type="text" class="form-control" id="usuario" name="usuario" placeholder="Ingresa tu usuario" required>
+                    <input type="text" class="form-control" id="usuario" name="usuario" placeholder="Ingresa tu usuario">
+                    <span id="error-usu" class="textoerror"></span>
                 </div>
 
                 <div class="mb-3">
                     <label for="contrasena" class="form-label">Contraseña</label>
-                    <input type="password" class="form-control" id="contrasena" name="contrasena" placeholder="Ingresa tu contraseña" required>
+                    <input type="password" class="form-control" id="contrasena" name="contrasena" placeholder="Ingresa tu contraseña">
+                    <span id="error-contra" class="textoerror"></span>
+                    <a href="index.php" id="registroTexto"><p id="registroTexto">¿Ya tienes cuenta?</p></a>
                 </div>
 
-                <button type="submit" class="btn btn-purple w-100 mb-2 mt-3">Registrarse</button>
+                <button type="submit" class="btn btn-purple w-100 mb-2 mt-3 boton-sesion">Registrarse</button>
             </form>
         </div>
     </div>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../../js/validaciones.js"></script>
 </body>
 </html>
+

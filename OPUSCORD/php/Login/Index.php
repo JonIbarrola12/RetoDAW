@@ -33,9 +33,18 @@
                 <div class="mb-3">
                     <label for="contrasena" class="form-label">Contraseña</label>
                     <input type="password" class="form-control" id="contrasena" name="contrasena" placeholder="Ingresa tu contraseña" required>
+                    <?php
+                    session_start();
+                    if (isset($_SESSION['error_login'])) {
+                        echo '<div class="text-danger mt-2">' . $_SESSION['error_login'] . '</div>';
+                        unset($_SESSION['error_login']);
+                    }
+                    ?>
+                    <a href="registrarse.php" id="registroTexto"><p id="registroTexto">Registrarse</p></a>
                 </div>
+                
 
-                <button type="submit" class="btn btn-purple w-100 mb-2 mt-3">Ingresar</button>
+                <button type="submit" class="btn btn-purple w-100 mb-2 mt-3 boton-sesion">Ingresar</button>
             </form>
         </div>
     </div>

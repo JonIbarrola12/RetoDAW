@@ -83,7 +83,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editar_grupo']) && $g
         $nuevaDescripcion = trim($_POST['descripcion_editar'] ?? '');
 
         if ($nuevoNombre !== '') {
-            GruposCRUD::modificarGrupo($grupoActivoId, $nuevoNombre, $nuevaDescripcion);
+            $grupo = new Grupo($nuevoNombre, $nuevaDescripcion, $idUsuario);
+
+            GruposCRUD::modificarGrupo($grupo, $grupoActivoId);
+
             $_SESSION['mensaje'] = "Grupo actualizado correctamente";
             header("Location: grupos.php?grupo=$grupoActivoId");
             exit;
@@ -189,7 +192,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
     <style>
         .chat-messages { max-height: 500px; overflow-y: auto; }
         .message.prop { background-color: #dcf8c6; padding:5px; margin:5px 0; border-radius:5px; }
-        .message.otro { background-color: #f1f0f0; padding:5px; margin:5px 0; border-radius:5px; }
+        .message.otro { background-color: #949494; padding:5px; margin:5px 0; border-radius:5px; }
         .chat-input { display:flex; gap:5px; margin-top:10px; }
     </style>
 </head>
@@ -212,7 +215,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
             <?php
             if (isset($_SESSION['Usuario'])) {
 
-                $Foto = (!empty($_SESSION['Foto'])) ? $_SESSION['Foto'] : '/Recursos/mamiy.png';
+                $Foto = (!empty($_SESSION['Foto'])) ? $_SESSION['Foto'] : '/Recursos/fotousuario.png';
 
 
                 echo '
@@ -361,7 +364,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
         </form>
 
         <hr>
-        <h3>📂 Mis grupos</h3>
+        <h3>Mis Grupos</h3>
         <ul>
             <?php foreach ($miembros as $m):
                 $g = GruposCRUD::obtenerPorId($m['GrupoId']);
