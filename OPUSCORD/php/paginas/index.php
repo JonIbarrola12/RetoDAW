@@ -263,39 +263,60 @@ if (isset($_GET['ajax'])) {
 <title>opuscord</title>
 <link rel="stylesheet" href="../../css/estilos.css">
 <link rel="stylesheet" href="../../css/publicaciones.css">
+<script src="../../js/Perfil.js"></script>
 </head>
 <body>
 <div class="container">
 <!-- menu -->
-<aside class="sidebar">
-    <h2>OPUSCORD</h2>
+        <aside class="sidebar">
+            <h2>OPUSCORD</h2>
+            <!-- Navegación arriba -->
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.php"><button>Feed</button></a></li>
+                    <li><a href="amigos.php"><button>Amigos</button></a></li>
+                    <li><a href="chatprivado.php"><button>Mensajes</button></a></li>
+                    <li><a href="grupos.php"><button>Grupos</button></a></li>
+                </ul>
+            </nav>
 
-    <!-- navegación -->
-    <nav class="main-nav">
-        <ul>
-            <li><a href="index.php"><button>Feed</button></a></li>
-            <li><a href="amigos.php"><button>Amigos</button></a></li>
-            <li><a href="chatprivado.php"><button>Mensajes</button></a></li>
-            <li><a href="grupos.php"><button>Grupos</button></a></li>
-        </ul>
-    </nav>
+            <!-- Botones de sesión abajo -->
 
-    <!-- parte inferior -->
-    <div class="user-info">
-        <img src="<?= $_SESSION['Foto'] ?? '../../Recursos/mamiy.png' ?>" class="profile-pic">
-        <p><?= htmlspecialchars($_SESSION['Usuario'] ?? 'Usuario') ?></p>
-        <a href="../login/logout.php">
-            <button class="login-btn">Cerrar sesión</button>
-        </a>
-    </div>
-</aside>
+            <div class="PerfilContenedor"onclick="abrirPerfil()" style="cursor:pointer;">
+            <?php
+            if (isset($_SESSION['Usuario'])) {
 
+                $Foto = (!empty($_SESSION['Foto'])) ? $_SESSION['Foto'] : '/Recursos/mamiy.png';
+
+
+                echo '
+                <div class="perfil-horiz">
+                    <img src="' . htmlspecialchars($Foto) . '" class="profile-pic fotoPerfil">
+                    <div class="perfil-info">
+                        <p class="perfil-nombre">' . htmlspecialchars($_SESSION['Usuario']) . '</p>
+
+                    </div>
+                </div>
+                ';
+            } else {
+                echo '
+                <div class="auth-buttons">
+                    <a href="../Login/Index.php"><button class="login-btn">Iniciar Sesión</button></a>
+                    <a href="../Login/registrarse.php"><button class="register-btn">Registrarse</button></a>
+                </div>
+                ';
+            }
+            ?>
+            </div>
+    
+
+        </aside>
 
 <main class="main-content">
 
 <!--  buscador  -->
 <section class="search-form">
-    <input type="text" id="buscador" placeholder="buscar usuario...">
+    <input type="text" id="buscador" placeholder="Buscar Usuario...">
     <div id="resultados-buscador" class="resultados-buscador"></div>
 </section>
 
@@ -326,17 +347,17 @@ if (isset($_GET['ajax'])) {
             <input type="file" name="imagen" accept="image/*">
 
             <div style="position: relative; display: inline-block;">
-                <button type="button" class="btn-visibilidad">visibilidad: publica ▼</button>
+                <button type="button" class="btn-visibilidad">Visibilidad: Publica ▼</button>
                 <div class="desplegable-visibilidad">
-                    <button type="button" data-value="publica">publica</button>
-                    <button type="button" data-value="privada">privada</button>
+                    <button type="button" data-value="publica">Publica</button>
+                    <button type="button" data-value="privada">Privada</button>
                 </div>
             </div>
 
             <input type="hidden" name="visibilidad" value="publica">
 
             <button type="submit" name="crear_publicacion" class="publicar">
-                publicar
+                Publicar
             </button>
         </form>
     </div>
@@ -363,7 +384,7 @@ if (isset($_GET['ajax'])) {
     <div class="post-header">
         <?= htmlspecialchars($usuariosPorId[$p['id_usuario']] ?? 'Usuario') ?>
     </div>
-
+        
     <!-- contenido -->
     <p><?= htmlspecialchars($p['Contenido']) ?></p>
 
@@ -638,8 +659,8 @@ toggleBtn.onclick = () => {
     const abierto = contenidoPub.style.display === 'block';
     contenidoPub.style.display = abierto ? 'none' : 'block';
     toggleBtn.textContent = abierto
-        ? ' Crear publicación'
-        : ' Cerrar publicación';
+        ? ' Crear Publicación'
+        : ' Cerrar Publicación';
 };
 
 //filtrado de post
@@ -650,5 +671,11 @@ function cambiarOrden(valor) {
 }
 
 </script>
+    <div id="perfilModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="cerrarPerfil()">&times;</span>
+            <div id="perfilContenido"></div>
+        </div>
+    </div>
 </body>
 </html>
