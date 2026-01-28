@@ -244,7 +244,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
     <!-- chat -->
     <main class="main-content">
         <?php if (isset($_SESSION['mensaje'])): ?>
-            <div class="mensaje-solicitud"><?= $_SESSION['mensaje'] ?></div>
+            <div class="mensaje-solicitud" id="mensajeFlash">
+                <?= $_SESSION['mensaje'] ?>
+            </div>
             <?php unset($_SESSION['mensaje']); ?>
         <?php endif; ?>
 
@@ -380,6 +382,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
             <div id="perfilContenido"></div>
         </div>
     </div>
+
+<script>
+//mensaje que desaparece al de 3 segundos 
+document.addEventListener("DOMContentLoaded", () => {
+    const mensaje = document.getElementById("mensajeFlash");
+
+    if (mensaje) {
+        setTimeout(() => {
+            mensaje.style.transition = "opacity 0.5s ease";
+            mensaje.style.opacity = "0";
+
+            setTimeout(() => mensaje.remove(), 500);
+        }, 3000);
+    }
+});
+</script>
 </body>
 </html>
+
 
