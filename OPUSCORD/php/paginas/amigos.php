@@ -30,10 +30,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_amigo'])) {
     $idAmigo = (int)$_POST['id_amigo'];
 
     if ($idAmigo != $idUsuario) {
-        // evitar solicitudes duplicadas
+
         $yaExiste = false;
-        $amigosExistentes = AmigosCRUD::recibirRegistros();
-        foreach ($amigosExistentes as $a) {
+        foreach ($amigos as $a) {
             if (
                 ($a['id_usuario'] == $idUsuario && $a['id_amigo_usuario'] == $idAmigo) ||
                 ($a['id_usuario'] == $idAmigo && $a['id_amigo_usuario'] == $idUsuario)
@@ -47,23 +46,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_amigo'])) {
             $amigo = new Amigo($idUsuario, $idAmigo, Amigo::ESTADO_PENDIENTE);
             AmigosCRUD::añadirAmigo($amigo);
 
-            $nombreAmigo = '';
-            if (isset($usuariosPorId[$idAmigo])) {
-                $nombreAmigo = !empty($usuariosPorId[$idAmigo]['Nombre']) 
-                    ? $usuariosPorId[$idAmigo]['Nombre'] 
-                    : $usuariosPorId[$idAmigo]['Username'];
-            } else {
-                $nombreAmigo = 'usuario desconocido'; //si no encuentra al usuario
-            }
-            
-            // guardamos mensaje en la sesión
-            $_SESSION['mensaje_solicitud'] = "Se ha enviado la solicitud a " . $nombreAmigo;
+            $_SESSION['mensaje'] = "Solicitud enviada correctamente ";
+        } else {
+            $_SESSION['mensaje'] = "Ya existe una solicitud";
         }
     }
 
     header("Location: amigos.php");
     exit;
 }
+
 
 // aceptar solicitud
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['aceptar_amigo'])) {
@@ -154,13 +146,12 @@ $busqueda = $_GET['buscar'] ?? '';
 
     <main class="main-content">
         
-        <!--mensaje de solicitud enviada -->
-        <?php
-            if (isset($_SESSION['mensaje_solicitud'])) {
-                echo '<div class="mensaje-solicitud">' . htmlspecialchars($_SESSION['mensaje_solicitud']) . '</div>';
-                unset($_SESSION['mensaje_solicitud']); // borramos para que no aparezca siempre
-            }
-        ?>
+        <?php if (isset($_SESSION['mensaje'])): ?>
+            <div class="mensaje-solicitud" id="mensajeFlash">
+                <?= htmlspecialchars($_SESSION['mensaje']) ?>
+            </div>
+            <?php unset($_SESSION['mensaje']); ?>
+        <?php endif; ?>
 
         <h2>👥 Amigos</h2>
 
@@ -369,6 +360,22 @@ $busqueda = $_GET['buscar'] ?? '';
         </div>
     </div>
 </div>
+
+<script>
+//mensaje que desaparece al de 3 segundos 
+document.addEventListener("DOMContentLoaded", () => {
+    const mensaje = document.getElementById("mensajeFlash");
+
+    if (mensaje) {
+        setTimeout(() => {
+            mensaje.style.transition = "opacity 0.5s ease";
+            mensaje.style.opacity = "0";
+
+            setTimeout(() => mensaje.remove(), 300);
+        }, 3000); // 5 segundos
+    }
+});
+</script>
 
 </body>
 </html>
