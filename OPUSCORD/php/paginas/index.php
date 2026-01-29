@@ -390,8 +390,13 @@ if (isset($_GET['ajax'])) {
 
     <!-- imagen si existe -->
     <?php if ($p['ImagenUrl']): ?>
-        <img src="../../<?= $p['ImagenUrl'] ?>">
+        <img 
+            src="../../<?= $p['ImagenUrl'] ?>" 
+            onclick="abrirImagen(this.src)" 
+            style="cursor:pointer;"
+        >
     <?php endif; ?>
+
 
     <!-- boton like -->
     <button class="like-btn <?= $likeUsuario ? 'liked' : '' ?>" data-id="<?= $p['id_publicacion'] ?>">
@@ -432,6 +437,24 @@ if (isset($_GET['ajax'])) {
 
 </main>
 </div>
+<!-- Modal para ver imagen -->
+<div id="imagenModal" style="
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.8);
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+">
+    <img id="imagenModalContenido" src="" style="
+        max-width:90%;
+        max-height:90%;
+        border-radius:10px;
+        cursor:pointer;
+    ">
+</div>
+
 
 <script>
 // visibilidad
@@ -670,6 +693,29 @@ function cambiarOrden(valor) {
     window.location.href = url.toString();
 }
 
+// abrir imagen en modal
+function abrirImagen(src) {
+    const modal = document.getElementById('imagenModal');
+    const img = document.getElementById('imagenModalContenido');
+    img.src = src;
+    modal.style.display = 'flex';
+}
+
+// cerrar modal al hacer clic fuera de la imagen
+const modal = document.getElementById('imagenModal');
+modal.onclick = function(e) {
+    if(e.target === modal) { // solo si clic en el fondo
+        modal.style.display = 'none';
+    }
+};
+
+// cerrar modal al hacer clic sobre la imagen (opcional)
+document.getElementById('imagenModalContenido').onclick = () => {
+    modal.style.display = 'none';
+};
+
+
+
 </script>
     <div id="perfilModal" class="modal">
         <div class="modal-content">
@@ -677,5 +723,6 @@ function cambiarOrden(valor) {
             <div id="perfilContenido"></div>
         </div>
     </div>
+
 </body>
 </html>
