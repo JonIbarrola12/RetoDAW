@@ -423,7 +423,7 @@ case 'verMasComentarios':
 
     <!-- imagen si existe -->
     <?php if ($p['ImagenUrl']): ?>
-        <img 
+        <img class = "imagenpublicacion"
             src="../../<?= $p['ImagenUrl'] ?>" 
             onclick="abrirImagen(this.src)" 
             style="cursor:pointer;"

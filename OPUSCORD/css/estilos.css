@@ -280,7 +280,7 @@
 }
 
 
-.post img {
+.postimagen {
     max-width: 100%;   
     height: auto;      
 }
@@ -1166,10 +1166,9 @@ hr {
 }
 
 /* Imagen dentro del post */
-.feed .post img {
+.postimagen {
     width: 95%;         
     height: auto;       
-    border-radius: 10px;
     display: block;
     margin: 10px 0 0 0;  
     object-fit: cover;   
@@ -1219,11 +1218,11 @@ hr {
 
 
 /* imagenes */
-.postimagen {
+.imagenpublicacion {
     width: 100%;
     height: auto; /* ajusta la altura según el ancho */
     max-width: 100%;
-    border-radius: 10px;
+    border-radius: 15px;
     display: block;
     margin-top: 8px;
     object-fit: contain; /* opcional, asegura que no se corte */
