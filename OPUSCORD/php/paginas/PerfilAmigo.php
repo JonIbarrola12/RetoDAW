@@ -42,7 +42,7 @@ $foto = !empty($amigo['Pfp']) ? $amigo['Pfp'] : '/Recursos/fotousuario.png';
         <div class="perfil-info-texto">
 
             <div class="bio-header">
-                <h2><?= htmlspecialchars($amigo['Username']) ?></h2>
+                <h2 class="compreTexto"><?= htmlspecialchars($amigo['Username']) ?></h2>
             </div>
 
             <div class="estado-usuario">

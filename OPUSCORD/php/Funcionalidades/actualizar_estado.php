@@ -11,4 +11,4 @@ $stmt = $pdo->prepare("
     SET Estado = 'Online', last_activity = NOW()
     WHERE id_usuario = ?
 ");
-$stmt->execute([$_SESSION['id_usuario']]);
+$stmt->execute([$_SESSION['id_usuario']]);  

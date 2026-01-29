@@ -123,14 +123,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_mensaje']) && 
             <?php
             if (isset($_SESSION['Usuario'])) {
 
-                $Foto = (!empty($_SESSION['Foto'])) ? $_SESSION['Foto'] : '/Recursos/mamiy.png';
+                $Foto = (!empty($_SESSION['Foto'])) ? $_SESSION['Foto'] : '/Recursos/fotousuario.png';
 
 
                 echo '
                 <div class="perfil-horiz">
-                    <img src="' . htmlspecialchars($Foto) . '" class="profile-pic fotoPerfil">
+                    <img src="' . htmlspecialchars($Foto) . '" class="profile-pic fotoPerfil foto-mia" id="perfilImagen">
                     <div class="perfil-info">
-                        <p class="perfil-nombre">' . htmlspecialchars($_SESSION['Usuario']) . '</p>
+                        <p class="perfil-nombre nombre-mio">' . htmlspecialchars($_SESSION['Usuario']) . '</p>
 
                     </div>
                 </div>
@@ -144,6 +144,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_mensaje']) && 
                 ';
             }
             ?>
+
             </div>
     
 

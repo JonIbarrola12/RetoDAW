@@ -32,10 +32,11 @@ $usuarios = UsuariosCRUD::recibirRegistros();
 
 // creamos array del id_usuario con el username
 $usuariosPorId = [];
-foreach ($usuarios as $u) {
-    $usuariosPorId[$u['id_usuario']] = $u['Username'];
-}
 
+$stmt = $pdo->query("SELECT id_usuario, Username, Pfp FROM usuarios");
+while ($u = $stmt->fetch(PDO::FETCH_ASSOC)) {
+    $usuariosPorId[$u['id_usuario']] = $u;
+}
 /* crear publicacion */
 
 // comprobamos si se envio el formulario
@@ -291,9 +292,9 @@ if (isset($_GET['ajax'])) {
 
                 echo '
                 <div class="perfil-horiz">
-                    <img src="' . htmlspecialchars($Foto) . '" class="profile-pic fotoPerfil">
+                    <img src="' . htmlspecialchars($Foto) . '" class="profile-pic fotoPerfil usuario-actual">
                     <div class="perfil-info">
-                        <p class="perfil-nombre">' . htmlspecialchars($_SESSION['Usuario']) . '</p>
+                        <p class="perfil-nombre nombre-mio">' . htmlspecialchars($_SESSION['Usuario']) . '</p>
 
                     </div>
                 </div>
@@ -331,7 +332,7 @@ if (isset($_GET['ajax'])) {
         </option>
     </select>
 </section>
-       
+            
 
 <!-- crear publicacion desplegable -->
 <section class="crear-publicacion">
@@ -352,7 +353,7 @@ if (isset($_GET['ajax'])) {
                     <button type="button" data-value="publica">Publica</button>
                     <button type="button" data-value="privada">Privada</button>
                 </div>
-            </div>
+            </div> 
 
             <input type="hidden" name="visibilidad" value="publica">
 
@@ -382,9 +383,27 @@ if (isset($_GET['ajax'])) {
 
     <!-- nombre usuario -->
     <div class="post-header">
-        <?= htmlspecialchars($usuariosPorId[$p['id_usuario']] ?? 'Usuario') ?>
+        <div 
+            class="perfil-horiz post-user"
+            data-usuario-id="<?= $p['id_usuario'] ?>"
+            style="cursor:pointer;"
+        >
+            <img
+                src="<?= htmlspecialchars(
+                    $usuariosPorId[$p['id_usuario']]['Pfp'] 
+                    ?? '/Recursos/fotousuario.png'
+                ) ?>"
+                class="pfppubli"
+            >
+
+            <div class="perfil-info">
+                <p class="perfil-nombre">
+                    <?= htmlspecialchars($usuariosPorId[$p['id_usuario']]['Username'] ?? 'Usuario') ?>
+                </p>
+            </div>
+        </div>
+        <hr>
     </div>
-        
     <!-- contenido -->
     <p><?= htmlspecialchars($p['Contenido']) ?></p>
 
@@ -395,6 +414,7 @@ if (isset($_GET['ajax'])) {
             onclick="abrirImagen(this.src)" 
             style="cursor:pointer;"
         >
+
     <?php endif; ?>
 
 
@@ -427,8 +447,8 @@ if (isset($_GET['ajax'])) {
 
     <!-- formulario agregar comentario -->
     <form class="comentario-form" data-id="<?= $p['id_publicacion'] ?>">
-        <input type="text" placeholder="añade un comentario..." required>
-        <button>publicar</button>
+        <input type="text" placeholder="Escribe un comentario..." required>
+        <button>Comentar</button>
     </form>
 
 </div>
@@ -717,11 +737,22 @@ document.getElementById('imagenModalContenido').onclick = () => {
 
 
 </script>
+<script>
+document.getElementById('cerrarPerfilAmigoModal')
+    .addEventListener('click', () => {
+        document.getElementById('perfilAmigoModal').style.display = 'none';
+    });
+</script>
     <div id="perfilModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="cerrarPerfil()">&times;</span>
             <div id="perfilContenido"></div>
         </div>
+    </div>
+
+        <div id="perfilAmigoModal" class="perfil-modal" style="display:none;">
+        <div id="perfilAmigoContenido" class="perfil-modal-content"></div>
+        <span id="cerrarPerfilAmigoModal" class="cerrar-modal">&times;</span>
     </div>
 
 </body>

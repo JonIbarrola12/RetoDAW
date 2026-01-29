@@ -1,4 +1,18 @@
 // --- Abrir y cerrar modal de perfil ---
+let grupoIdActivo = null;
+document.addEventListener("DOMContentLoaded", () => {
+    const mensaje = document.getElementById("mensajeFlash");
+
+    if (mensaje) {
+        setTimeout(() => {
+            mensaje.style.transition = "opacity 0.5s ease";
+            mensaje.style.opacity = "0";
+
+            setTimeout(() => mensaje.remove(), 500);
+        }, 3000);
+    }
+});
+
 function abrirPerfil() {
     fetch('../paginas/Perfil.php')
         .then(res => res.text())
@@ -480,3 +494,259 @@ setInterval(() => {
         })
         .catch(err => console.error(err));
 }, 5000); // cada 5 segundos
+
+function abrirPerfilUsuario(idUsuario, esAmigo) {
+    const url = esAmigo
+        ? `../paginas/perfilAmigo.php?id=${idUsuario}`
+        : `../paginas/perfil_usuario.php?id=${idUsuario}`;
+
+    fetch(url)
+        .then(res => res.text())
+        .then(html => {
+            document.getElementById('perfilAmigoContenido').innerHTML = html;
+            document.getElementById('perfilAmigoModal').style.display = 'flex';
+        });
+}
+
+
+document.addEventListener('click', function (e) {
+    const perfil = e.target.closest('.post-user');
+    if (!perfil) return;
+
+    const idUsuario = perfil.dataset.usuarioId;
+
+    fetch(`../paginas/perfil_usuario.php?id=${idUsuario}`)
+        .then(res => res.text())
+        .then(html => {
+            document.getElementById('perfilAmigoContenido').innerHTML = html;
+            document.getElementById('perfilAmigoModal').style.display = 'flex';
+        });
+});
+
+document.addEventListener('click', e => {
+    const grupo = e.target.closest('.grupo-header');
+    if (!grupo) return;
+
+    const idGrupo = grupo.dataset.grupoId;
+
+    fetch(`../paginas/perfil_grupo.php?id=${idGrupo}`)
+        .then(res => res.text())
+        .then(html => {
+            document.getElementById('modalGrupoContenido').innerHTML = html;
+            document.getElementById('modalPerfilGrupo').classList.remove('hidden');
+        });
+});
+
+document.addEventListener('click', e => {
+    const fotoGrupo = e.target.closest('#fotoGrupo');
+    if (!fotoGrupo) return;
+
+    grupoIdActivo = fotoGrupo.dataset.grupoId; // 🔥 GUARDAMOS ID
+    document.getElementById('inputFotoGrupo').click();
+});
+
+document.addEventListener('change', e => {
+    if (e.target.id !== 'inputFotoGrupo') return;
+
+    if (!grupoIdActivo) return;
+
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('foto', file);
+    formData.append('id_grupo', grupoIdActivo);
+
+    fetch('../Funcionalidades/subir_foto_grupo.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === 'ok') {
+
+            const nuevaUrl = data.nuevaFoto + '?t=' + Date.now();
+
+            // 🔥 modal
+            document.getElementById('fotoGrupo').src = nuevaUrl;
+
+            // 🔥 header de grupos
+            document.querySelectorAll(
+                `.grupo-foto-header[data-grupo-id="${grupoIdActivo}"]`
+            ).forEach(img => {
+                img.src = nuevaUrl;
+            });
+
+        } else {
+            alert(data.msg);
+        }
+    });
+});
+function obtenerGrupoIdActivo() {
+    return document
+        .getElementById('perfilModalContent')
+        ?.dataset.grupoId;
+}
+
+
+document.addEventListener('click', e => {
+
+    /* EDITAR NOMBRE */
+    if (e.target.closest('#btnEditarNombre')) {
+        document.getElementById('grupoNombreTexto').classList.add('hidden');
+        document.getElementById('btnEditarNombre').classList.add('hidden');
+
+        const input = document.getElementById('inputGrupoNombre');
+        input.classList.remove('hidden');
+        input.focus();
+    }
+
+    /* EDITAR DESCRIPCIÓN */
+    if (e.target.closest('#btnEditarDescripcion')) {
+        document.getElementById('grupoDescripcionTexto').classList.add('hidden');
+        document.getElementById('btnEditarDescripcion').classList.add('hidden');
+
+        const textarea = document.getElementById('inputGrupoDescripcion');
+        textarea.classList.remove('hidden');
+        textarea.focus();
+    }
+});
+document.addEventListener('blur', e => {
+    if (e.target.id === 'inputGrupoNombre') {
+        guardarNombreGrupo();
+    }
+}, true);
+
+document.addEventListener('keydown', e => {
+    if (e.target.id === 'inputGrupoNombre' && e.key === 'Enter') {
+        e.preventDefault();
+        guardarNombreGrupo();
+    }
+});
+function guardarNombreGrupo() {
+    const input = document.getElementById('inputGrupoNombre');
+    const nuevoNombre = input.value.trim();
+    if (!nuevoNombre) return;
+
+    fetch('../Funcionalidades/editar_grupo_ajax.php', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({
+            campo: 'Nombre',
+            valor: nuevoNombre,
+            id_grupo: obtenerGrupoIdActivo()
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === 'ok') {
+            document.getElementById('grupoNombreTexto').textContent = nuevoNombre;
+        }
+        input.classList.add('hidden');
+        document.getElementById('grupoNombreTexto').classList.remove('hidden');
+        document.getElementById('btnEditarNombre').classList.remove('hidden');
+    });
+}
+
+document.addEventListener('blur', e => {
+    if (e.target.id === 'inputGrupoDescripcion') {
+        guardarDescripcionGrupo();
+    }
+}, true);
+
+
+document.addEventListener('click', e => {
+
+    /* Abrir edición */
+    if (e.target.closest('#editarDescripcionGrupoBtn')) {
+        const texto = document.getElementById('grupoDescripcionTexto');
+        const textarea = document.getElementById('grupoDescripcionInput');
+        const footer = document.getElementById('grupoBioFooter');
+        const actions = document.getElementById('grupoBioActions');
+
+        textarea.value = texto.textContent.trim() === 'Sin descripción'
+            ? ''
+            : texto.textContent.trim();
+
+        texto.style.display = 'none';
+        textarea.style.display = 'block';
+        footer.style.display = 'block';
+        actions.style.display = 'flex';
+
+        actualizarContadorGrupo();
+        textarea.focus();
+    }
+
+    /* Guardar */
+    if (e.target.closest('#guardarDescripcionGrupoBtn')) {
+        guardarDescripcionGrupo();
+    }
+
+    /* Cancelar */
+    if (e.target.closest('#cancelarDescripcionGrupoBtn')) {
+        cancelarEdicionDescripcionGrupo();
+    }
+});
+
+/* contador */
+document.addEventListener('input', e => {
+    if (e.target.id === 'grupoDescripcionInput') {
+        actualizarContadorGrupo();
+    }
+});
+
+function actualizarContadorGrupo() {
+    const textarea = document.getElementById('grupoDescripcionInput');
+    document.getElementById('grupoBioContador').textContent = textarea.value.length;
+}
+
+/* guardar AJAX */
+function guardarDescripcionGrupo() {
+    const textarea = document.getElementById('grupoDescripcionInput');
+    const nuevaDescripcion = textarea.value.trim();
+
+    fetch('../Funcionalidades/editar_grupo_ajax.php', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({
+            campo: 'Descripcion',
+            valor: nuevaDescripcion,
+            id_grupo: obtenerGrupoIdActivo()
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === 'ok') {
+            document.getElementById('grupoDescripcionTexto').textContent =
+                nuevaDescripcion || 'Sin descripción';
+        }
+        cerrarEdicionDescripcionGrupo();
+    });
+}
+
+/* cancelar */
+function cancelarEdicionDescripcionGrupo() {
+    cerrarEdicionDescripcionGrupo();
+}
+
+function cerrarEdicionDescripcionGrupo() {
+    document.getElementById('grupoDescripcionTexto').style.display = 'block';
+    document.getElementById('grupoDescripcionInput').style.display = 'none';
+    document.getElementById('grupoBioFooter').style.display = 'none';
+    document.getElementById('grupoBioActions').style.display = 'none';
+}
+
+// cerrar modal
+document.addEventListener('click', e => {
+    if (
+        e.target.classList.contains('cerrar-modalgrupo') ||
+        e.target.id === 'modalPerfilGrupo'
+    ) {
+        document.getElementById('modalPerfilGrupo').classList.add('hidden');
+    }
+});
+document.addEventListener('click', e => {
+    if (e.target.id === 'btnMostrarInvitar') {
+        document.getElementById('invitarBox').classList.toggle('hidden');
+    }
+});
