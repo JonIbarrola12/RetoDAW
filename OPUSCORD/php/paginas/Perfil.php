@@ -25,7 +25,7 @@ $foto = (!empty($_SESSION['Foto'])) ? $_SESSION['Foto'] : '/Recursos/fotousuario
         <div class="perfil-info-texto">
 
             <div class="bio-header">
-                <h2 id="usernameTexto">
+                <h2 id="usernameTexto" class="compreTexto">
                     <?php echo htmlspecialchars($_SESSION['Usuario']); ?>
                 </h2>
                 <button id="editarUsernameBtn" class="perfil-btn botonlapiz" title="Editar Username">
