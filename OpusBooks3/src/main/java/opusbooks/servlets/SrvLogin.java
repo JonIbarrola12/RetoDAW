@@ -53,13 +53,13 @@ public class SrvLogin extends HttpServlet {
             return;
         }
 
-        boolean correcto = bd.validarUsuario(user, password);
+        String dni = bd.obtenerDniUsuario(user, password); // <-- aquí llamas a la función
         bd.cerrarConexion();
 
-        if (correcto) {
+        if (dni != null) {
             HttpSession sesion = request.getSession(true);
-            sesion.setAttribute("user", user);
-            // REDIRIGIR al servlet que carga los libros
+            sesion.setAttribute("user", user);  // nombre de usuario
+            sesion.setAttribute("dni", dni);    // DNI real para las compras
             response.sendRedirect("SrvMenu");
         } else {
             request.setAttribute("errorLogin", "Usuario o contraseña incorrectos");

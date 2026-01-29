@@ -8,6 +8,8 @@ import java.util.Properties;
 
 import javax.servlet.ServletContext;
 
+import opusbooks.beans.Compra;
+import opusbooks.beans.DatosCompra;
 import opusbooks.beans.Libro;
 import opusbooks.beans.Usuario;
 import opusbooks.config.Configuracion;
@@ -159,7 +161,7 @@ public class BdOperaciones extends BdBase {
         Libro libro = null;
 
         String sql = "SELECT l.isbn, l.titulo, l.precio, l.stock, " +
-                     "CONCAT(a.nombre, ' ', a.apellido1) AS autor, " +
+                     "CONCAT(a.nombre, ' ', a.apellidos) AS autor, " +
                      "e.nombre AS editorial, " +
                      "c.nombre AS categoria " +
                      "FROM libros l " +
@@ -190,6 +192,71 @@ public class BdOperaciones extends BdBase {
 
         return libro;
     }
+    
+    public int insertarCompra(Compra compra) {
+        String sql = "INSERT INTO compras (fecha_compra, dni) VALUES (?, ?)";
+
+        try (PreparedStatement ps = conexion.prepareStatement(
+                sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+
+            ps.setDate(1, compra.getFecha_compra());
+            ps.setString(2, compra.getDni());
+            ps.executeUpdate();
+
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                return rs.getInt(1); // id_compra generado
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1; // error
+    }
+    public boolean insertarDatosCompra(DatosCompra datosCompra) {
+        String sql = "INSERT INTO datoscompras (id_compra, isbn, cantidad) VALUES (?, ?, ?)";
+
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+            ps.setInt(1, datosCompra.getId_compra());
+            ps.setString(2, datosCompra.getIsbn());
+            ps.setInt(3, datosCompra.getCantidad());
+            ps.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    public boolean actualizarStock(String isbn, int nuevoStock) {
+        String sql = "UPDATE libros SET stock = ? WHERE isbn = ?";
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+            ps.setInt(1, nuevoStock);
+            ps.setString(2, isbn);
+            ps.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    public String obtenerDniUsuario(String usuario, String contrasena) {
+        String dni = null;
+        String sql = "SELECT dni FROM usuarios WHERE usuario = ? AND contrasena = ?";
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+            ps.setString(1, usuario);
+            ps.setString(2, contrasena);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                dni = rs.getString("dni");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return dni;
+    }
+
 
 
 }

@@ -14,6 +14,7 @@ import javax.servlet.http.HttpSession;
 
 import opusbooks.bd.BdOperaciones;
 import opusbooks.beans.DatosCompra;
+import opusbooks.beans.ItemCompra;
 import opusbooks.beans.Libro;
 
 /**
@@ -61,10 +62,21 @@ public class SrvCompra extends HttpServlet {
         }
 
         String[] librosSeleccionados = request.getParameterValues("librosSeleccionados");
+
         if (librosSeleccionados == null || librosSeleccionados.length == 0) {
             request.setAttribute("errorCompra", "No seleccionaste ningún libro.");
-            RequestDispatcher rd = request.getRequestDispatcher("compra.jsp");
-            rd.forward(request, response);
+            
+            // Volvemos a cargar los libros
+            BdOperaciones bd = new BdOperaciones(getServletContext());
+            if (!bd.abrirConexion()) {
+                response.getWriter().println("Error al conectar con la base de datos.");
+                return;
+            }
+            List<Libro> libros = bd.getLibros();
+            bd.cerrarConexion();
+            
+            request.setAttribute("libros", libros); // Muy importante
+            request.getRequestDispatcher("compra.jsp").forward(request, response);
             return;
         }
 
@@ -74,36 +86,42 @@ public class SrvCompra extends HttpServlet {
             return;
         }
 
-        List<Libro> librosCompra = new ArrayList<>();
+        List<ItemCompra> itemsCompra = new ArrayList<>();
 
         for (String isbn : librosSeleccionados) {
+
+        	System.out.println("Procesando ISBN: " + isbn);
             Libro libro = bd.getLibroPorIsbn(isbn);
-            if (libro != null) {
-                // obtener la cantidad ingresada en el formulario
-                String cantidadStr = request.getParameter("cantidad_" + isbn);
-                int cantidad = 1;
+            if (libro == null) {
+                System.out.println("No se encontró el libro con ISBN: " + isbn);
+                continue;
+            }
+            System.out.println("Libro encontrado: " + libro.getTitulo());
+
+            String cantidadStr = request.getParameter("cantidad_" + isbn);
+            int cantidad = 1;
+
+            if (cantidadStr != null) {
                 try {
                     cantidad = Integer.parseInt(cantidadStr);
-                    if (cantidad > libro.getStock()) cantidad = libro.getStock();
-                    if (cantidad < 1) cantidad = 1;
                 } catch (NumberFormatException e) {
                     cantidad = 1;
                 }
-
-                // Guardamos la cantidad seleccionada en el libro
-                //libro.setCantidadSeleccionada(cantidad);
-
-                librosCompra.add(libro);
             }
+
+            if (cantidad < 1) cantidad = 1;
+            if (cantidad > libro.getStock()) cantidad = libro.getStock();
+
+            ItemCompra item = new ItemCompra(libro, cantidad);
+            itemsCompra.add(item);
         }
 
-        bd.cerrarConexion();
+        // Guardar en sesión
+        request.getSession().setAttribute("itemsCompra", itemsCompra);
 
-        // Guardamos la lista de libros seleccionados en el request para mostrar en resumenCompra.jsp
-        request.setAttribute("librosCompra", librosCompra);
-
-        RequestDispatcher rd = request.getRequestDispatcher("resumenCompra.jsp");
-        rd.forward(request, response);
+        // Enviar al resumen
+        request.setAttribute("itemsCompra", itemsCompra);
+        request.getRequestDispatcher("resumenCompra.jsp").forward(request, response);
     }
 
 }

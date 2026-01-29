@@ -229,7 +229,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
     <main class="main-content">
         
         <?php if (isset($_SESSION['mensaje'])): ?>
-            <div class="mensaje-solicitud"><?= $_SESSION['mensaje'] ?></div>
+            <div class="mensaje-solicitud" id="mensajeFlash">
+                <?= $_SESSION['mensaje'] ?>
+            </div>
             <?php unset($_SESSION['mensaje']); ?>
         <?php endif; ?>
 
@@ -368,6 +370,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
             <div id="perfilContenido"></div>
         </div>
     </div>
+    
 <div id="modalPerfilGrupo" class="modalgrupo hidden">
     <div class="modalgrupo-contenido">
         <button class="cerrar-modalgrupo">✖</button>
@@ -378,4 +381,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
 
 </body>
 </html>
+
 

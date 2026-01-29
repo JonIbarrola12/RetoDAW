@@ -60,14 +60,21 @@
         }
 
         .finalizar button {
-            padding: 12px 25px;
-            font-size: 16px;
-            background: #27ae60;
-            border: none;
-            color: #fff;
-            border-radius: 4px;
-            cursor: pointer;
-        }
+		    padding: 12px 25px;
+		    font-size: 16px;
+		    border: none;
+		    color: #fff;
+		    border-radius: 4px;
+		    cursor: pointer;
+		}
+		
+		.finalizar button[type="submit"] {
+		    background: #27ae60; /* verde para finalizar */
+		}
+		
+		.finalizar button[type="button"] {
+		    background: #2980b9; /* azul para volver */
+		}
     </style>
 
     <script>
@@ -95,7 +102,7 @@
     <input type="text" id="buscador" class="buscador"
            placeholder="Buscar libro..." onkeyup="filtrarLibros()">
 
-    <form method="post" action="FinalizarCompra">
+    <form method="post" action="SrvCompra">
 
         <div class="libros-container">
             <%
@@ -134,8 +141,10 @@
         </div>
 
         <div class="finalizar">
-            <button type="submit">Finalizar compra</button>
-        </div>
+		    <button type="submit">Finalizar compra</button>
+		    &nbsp;&nbsp; <!-- espacio entre botones -->
+		    <button type="button" onclick="window.location.href='SrvMenu'">Volver</button>
+		</div>
 
     </form>
 
