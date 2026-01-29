@@ -420,6 +420,7 @@ case 'verMasComentarios':
     </div>
     <!-- contenido -->
     <p><?= htmlspecialchars($p['Contenido']) ?></p>
+    <hr>
 
     <!-- imagen si existe -->
     <?php if ($p['ImagenUrl']): ?>
