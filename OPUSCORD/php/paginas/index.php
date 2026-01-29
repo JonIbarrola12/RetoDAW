@@ -86,7 +86,7 @@ $publicaciones = [];
 foreach (PublicacionesCRUD::recibirRegistros() as $p) {
 
     // obtenemos el nombre del usuario de la publicacion
-    $nombreUsuario = $usuariosPorId[$p['id_usuario']] ?? '';
+    $nombreUsuario = $usuariosPorId[$p['id_usuario']]['Username'] ?? '';
 
     // comprobamos la visibilidad y filtro de busqueda
     if (
@@ -176,34 +176,46 @@ if (isset($_GET['ajax'])) {
             ]);
             exit;
 
-        /* comentario */
         case 'comentario':
 
-            $idPub = (int)($_POST['id_publicacion'] ?? 0);
-            $contenido = trim($_POST['contenido'] ?? '');
+    $idPub = isset($_POST['id_publicacion']) ? (int)$_POST['id_publicacion'] : 0;
+    $contenido = trim($_POST['contenido'] ?? '');
 
-            if ($idPub > 0 && $contenido !== '') {
+    if ($idPub > 0 && $contenido !== '') {
 
-                // añadir comentario
-                ComentariosCRUD::añadirComentario(
-                    new Comentario($idPub, $idUsuario, $contenido)
-                );
+        // añadir comentario
+        ComentariosCRUD::añadirComentario(
+            new Comentario($idPub, $idUsuario, $contenido)
+        );
 
-                // obtener ultimo comentario
-                $comentarios = ComentariosCRUD::obtenerPorPublicacion($idPub);
-                $ultimo = end($comentarios);
+        // obtener último comentario de la publicación
+        $comentarios = ComentariosCRUD::obtenerPorPublicacion($idPub);
+        $ultimo = end($comentarios);
 
-                // devolver los datos del comentario
-                echo json_encode([
-                    'id_comentario' => $ultimo['id_comentario'],
-                    'usuario'       => $usuariosPorId[$idUsuario] ?? 'Usuario',
-                    'contenido'     => $contenido,
-                    'propio'        => true
-                ]);
-            } else {
-                echo json_encode(['error' => 'datos invalidos']);
-            }
-            exit;
+        // obtener solo el nombre de usuario
+        $usuarioArray = $usuariosPorId[$idUsuario] ?? null;
+        $nombreUsuario = is_array($usuarioArray) && isset($usuarioArray['Username'])
+            ? $usuarioArray['Username']
+            : 'Usuario';
+
+        // asegurar que el contenido sea string
+        $contenidoComentario = is_array($contenido)
+            ? implode(' ', $contenido)
+            : (string)$contenido;
+
+        // devolver los datos del comentario como JSON
+        echo json_encode([
+            'id_comentario' => $ultimo['id_comentario'],
+            'usuario'       => $nombreUsuario,
+            'contenido'     => $contenidoComentario,
+            'propio'        => true
+        ], JSON_UNESCAPED_UNICODE);
+
+    } else {
+        echo json_encode(['error' => 'datos invalidos']);
+    }
+
+    exit;
 
         /*  borrar comentario  */
         case 'borrarComentario':
@@ -236,23 +248,24 @@ if (isset($_GET['ajax'])) {
             exit;
 
         /*  ver mas comentarios */
-        case 'verMasComentarios':
+case 'verMasComentarios':
 
-            $idPub = (int)($_GET['id_publicacion'] ?? 0);
-            $comentarios = ComentariosCRUD::obtenerPorPublicacion($idPub);
-            $result = [];
+    $idPub = (int)($_GET['id_publicacion'] ?? 0);
+    $comentarios = ComentariosCRUD::obtenerPorPublicacion($idPub);
+    $result = [];
 
-            foreach ($comentarios as $c) {
-                $result[] = [
-                    'id_comentario' => $c['id_comentario'],
-                    'usuario'       => $usuariosPorId[$c['id_usuario']] ?? 'Usuario',
-                    'contenido'     => $c['Contenido'],
-                    'propio'        => $c['id_usuario'] == $idUsuario
-                ];
-            }
+    foreach ($comentarios as $c) {
+        $usuarioArray = $usuariosPorId[$c['id_usuario']] ?? null;
+        $result[] = [
+            'id_comentario' => $c['id_comentario'],
+            'usuario'       => $usuarioArray['Username'] ?? 'Usuario', // solo el nombre
+            'contenido'     => is_array($c['Contenido']) ? implode(' ', $c['Contenido']) : $c['Contenido'], // convertir arrays a string
+            'propio'        => $c['id_usuario'] == $idUsuario
+        ];
+    }
 
-            echo json_encode($result);
-            exit;
+    echo json_encode($result);
+    exit;
     }
 }
 ?>
@@ -287,12 +300,12 @@ if (isset($_GET['ajax'])) {
             <?php
             if (isset($_SESSION['Usuario'])) {
 
-                $Foto = (!empty($_SESSION['Foto'])) ? $_SESSION['Foto'] : '/Recursos/mamiy.png';
+                $Foto = (!empty($_SESSION['Foto'])) ? $_SESSION['Foto'] : '/Recursos/fotousuario.png';
 
 
                 echo '
                 <div class="perfil-horiz">
-                    <img src="' . htmlspecialchars($Foto) . '" class="profile-pic fotoPerfil usuario-actual">
+                    <img src="' . htmlspecialchars($Foto) . '" class="profile-pic fotoPerfil foto-mia" id="perfilImagen">
                     <div class="perfil-info">
                         <p class="perfil-nombre nombre-mio">' . htmlspecialchars($_SESSION['Usuario']) . '</p>
 
@@ -308,6 +321,7 @@ if (isset($_GET['ajax'])) {
                 ';
             }
             ?>
+
             </div>
     
 
@@ -425,8 +439,13 @@ if (isset($_GET['ajax'])) {
     $comentariosMostrar = array_slice($comentarios, -3); // ultimos 3
     foreach ($comentariosMostrar as $c): ?>
         <div class="comentario" data-id="<?= $c['id_comentario'] ?>">
-            <strong><?= htmlspecialchars($usuariosPorId[$c['id_usuario']] ?? 'Usuario') ?></strong>
-            <span><?= htmlspecialchars($c['Contenido']) ?></span>
+            <strong>
+            <?= htmlspecialchars($usuariosPorId[$c['id_usuario']]['Username'] ?? 'Usuario') ?>
+            </strong>
+
+            <span>
+            <?= htmlspecialchars(is_array($c['Contenido']) ? implode(' ', $c['Contenido']) : $c['Contenido']) ?>
+            </span>
             <?php if ($c['id_usuario'] == $idUsuario): ?>
                 <button class="comentario-borrar" data-id="<?= $c['id_comentario'] ?>">✖</button>
             <?php endif; ?>
@@ -702,7 +721,7 @@ document.getElementById('cerrarPerfilAmigoModal')
             <div id="perfilContenido"></div>
         </div>
     </div>
-        <div id="perfilAmigoModal" class="perfil-modal" style="display:none;">
+    <div id="perfilAmigoModal" class="perfil-modal" style="display:none;">
         <div id="perfilAmigoContenido" class="perfil-modal-content"></div>
         <span id="cerrarPerfilAmigoModal" class="cerrar-modal">&times;</span>
     </div>
