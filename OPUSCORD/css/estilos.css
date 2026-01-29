@@ -113,15 +113,20 @@
     padding: 10px;
 }
 
+.pfppubli {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ffffff;
+}
+
 .post-header {
     font-weight: bold;
     margin-bottom: 10px;
 }
 
-.post img {
-    width: 100%;
-    border-radius: 10px;
-}
+
 
 .caption {
     margin-top: 10px;
@@ -144,6 +149,7 @@
 .hidden {
     display: none;
 }
+
 /* Lista de conversaciones */
 .conversations {
     width: 200px;
@@ -274,7 +280,7 @@
 }
 
 /* Imagenes uniformes */
-.post img {
+.postimagen {
     width: 100%;          /* ocupa todo el ancho del post */
     max-width: 400px;     /* límite máximo de ancho */
     height: 250px;        /* altura fija */
@@ -438,12 +444,68 @@
 .estado-texto {
     color: #bbb;
 }
+.grupo-nombre-editable h2 {
+    max-width: 260px; /* ajusta a tu modal */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: clamp(16px, 2.5vw, 22px);
+}
+.grupo-nombre-editable h2 {
+    cursor: help;
+}
+.grupo-header:hover {
+    background-color: rgb(37, 37, 37);
+    padding: 6px;
+    border-radius: 25px;
+    margin-right: 80%;
+
+}
+
+#inputGrupoNombre {
+    background-color: rgb(57, 56, 56);
+    color: white;
+}
+.nombre-mio {
+    max-width: 140px; /* ajusta al ancho de la sidebar */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.nombre-mio {
+    cursor: help;
+}
+
+.perfil-info {
+    min-width: 0; /* MUY IMPORTANTE */
+}
+.perfil-horiz {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.compreTexto {
+    max-width: 202px; /* ajusta a tu modal */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: clamp(16px, 2.5vw, 22px);
+}
+.compreTexto {
+    cursor: help;
+}
+
 
 /* Foto de perfil circular */
 .perfil-foto-container {
     position: relative;
     width: 120px;
     height: 120px;
+    flex-shrink: 0;
     border-radius: 50%;
     overflow: hidden;
     cursor: pointer;
@@ -482,11 +544,6 @@
     height: 40px;
 }
 
-.perfil-nombre {
-    font-weight: bold;
-    font-size: 1rem;
-}
-
 /* Info al lado de la foto */
 .perfil-info {
     display: flex;
@@ -511,6 +568,21 @@
 .perfil-bio {
     margin-top: 20px;
 }
+.grupo-header-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+
+.perfil-bio p,
+.perfil-bio textarea {
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
 
 .PerfilContenedor {
     display: flex;
@@ -771,12 +843,12 @@
 .message.solicitud-item {
     display: flex;
     align-items: center;
-    justify-content: space-between; /* 🔥 esto empuja el botón */
+    justify-content: space-between;
     width: 100%;
 }
 
 .acciones-solicitud {
-    margin-left: auto; /* 🔥 fuerza a irse a la derecha */
+    margin-left: auto;
     display: flex;
     align-items: center;
 }
@@ -787,11 +859,140 @@
     to { opacity: 1; }
 }
 
+.modalgrupo {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modalgrupo.hidden {
+    display: none;
+}
+
+.modalgrupo-contenido {
+    background: #242424;
+    margin: auto;
+    padding: 20px;
+    color: white;
+    border-radius: 10px;
+    width: 500px;
+    max-width: 90%;
+    position: relative;
+}
+
+.cerrar-modalgrupo {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    float: right;
+    cursor: pointer;
+}
+.contador-miembros {
+    font-weight: normal;
+    opacity: 0.7;
+    font-size: 0.9em;
+}
+
 .crear-grupo {
     background-color: #2f3136;
     padding: 10px;
     border-radius: 10px;
     margin-bottom: 20px;
+}
+.lista-miembros {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.rol {
+    font-size: 0.8em;
+    opacity: 0.85;   
+}
+
+
+.rol.admin { color: gold; }
+.rol.mod { color: #6cf; }
+.grupo-header-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.grupo-header-info h2 {
+    margin: 0;
+    font-size: 1.6em;
+}
+.agregar-miembro-btn {
+    color: white;
+    background-color: #3c3a3a;
+    border-radius: 10px;
+    padding: 3px;
+}
+gregar-miembro-btn:hover {
+    background-color: #656161;
+}
+.btn-añadir-miembro {
+    margin-left: auto; /* 👈 ESTO lo manda a la derecha */
+    background: #5865f2;
+    color: white;
+    border: none;
+    padding: 4px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85em;
+}
+.input-añadir {
+    background-color: #1e1e20;
+    color: white;
+}
+.btn-añadir-miembro:hover {
+    background: #4752c4;
+}
+
+.input-editar {
+    width: 100%;
+    padding: 6px;
+    font-size: 16px;
+}
+
+.btn-editar {
+    margin-left: 8px;
+    cursor: pointer;
+    background: none;
+    border: none;
+}
+
+.hidden {
+    display: none;
+}
+
+.btn-expulsar {
+    background: #c0392b;
+    border: none;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8em;
+}
+
+.btn-expulsar:hover {
+    background: #e74c3c;
+}
+
+.miembro-item {
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.miembro-item:hover {
+    background: rgba(255,255,255,0.05);
 }
 
 .crear-grupo input {
@@ -921,7 +1122,7 @@ hr {
 
 
 
-.post img {
+.postimagen {
     width: 100%;
     max-height: 500px;
     object-fit: cover;
@@ -970,7 +1171,7 @@ hr {
 }
 
 /* imagenes */
-.post img {
+.postimagen {
     width: 100%;
     height: auto; /* ajusta la altura según el ancho */
     max-width: 100%;

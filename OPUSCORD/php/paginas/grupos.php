@@ -74,25 +74,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['crear_grupo'])) {
     }
 }
 
-// editar grupo
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editar_grupo']) && $grupoActivoId) {
-
-    if (MiembrosCRUD::esAdmin($idUsuario, $grupoActivoId)) {
-
-        $nuevoNombre = trim($_POST['nombre_editar'] ?? '');
-        $nuevaDescripcion = trim($_POST['descripcion_editar'] ?? '');
-
-        if ($nuevoNombre !== '') {
-            $grupo = new Grupo($nuevoNombre, $nuevaDescripcion, $idUsuario);
-
-            GruposCRUD::modificarGrupo($grupo, $grupoActivoId);
-
-            $_SESSION['mensaje'] = "Grupo actualizado correctamente";
-            header("Location: grupos.php?grupo=$grupoActivoId");
-            exit;
-        }
-    }
-}
 
 // eliminar grupo
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar_grupo']) && $grupoActivoId) {
@@ -202,7 +183,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
     <!-- sidebar -->
         <aside class="sidebar">
             <h2>OPUSCORD</h2>
-
+            <!-- Navegación arriba -->
             <nav class="main-nav">
                 <ul>
                     <li><a href="index.php"><button>Feed</button></a></li>
@@ -211,6 +192,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
                     <li><a href="grupos.php"><button>Grupos</button></a></li>
                 </ul>
             </nav>
+
+            <!-- Botones de sesión abajo -->
+
             <div class="PerfilContenedor"onclick="abrirPerfil()" style="cursor:pointer;">
             <?php
             if (isset($_SESSION['Usuario'])) {
@@ -220,9 +204,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
 
                 echo '
                 <div class="perfil-horiz">
-                    <img src="' . htmlspecialchars($Foto) . '" class="profile-pic fotoPerfil">
+                    <img src="' . htmlspecialchars($Foto) . '" class="profile-pic fotoPerfil foto-mia" id="perfilImagen">
                     <div class="perfil-info">
-                        <p class="perfil-nombre">' . htmlspecialchars($_SESSION['Usuario']) . '</p>
+                        <p class="perfil-nombre nombre-mio">' . htmlspecialchars($_SESSION['Usuario']) . '</p>
 
                     </div>
                 </div>
@@ -236,37 +220,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
                 ';
             }
             ?>
+
             </div>
     
 
         </aside>
-
     <!-- chat -->
     <main class="main-content">
+        
         <?php if (isset($_SESSION['mensaje'])): ?>
             <div class="mensaje-solicitud"><?= $_SESSION['mensaje'] ?></div>
             <?php unset($_SESSION['mensaje']); ?>
         <?php endif; ?>
 
         <?php if ($grupoActivo): ?>
-            <h2><?= htmlspecialchars($grupoActivo['Nombre']) ?></h2>
-            <p><?= htmlspecialchars($grupoActivo['Descripcion']) ?></p>
+            <div 
+                class="perfil-horiz grupo-header"
+                data-grupo-id="<?= $grupoActivo['id_grupo'] ?>"
+                style="cursor:pointer;"
+            >
 
-            <?php if (MiembrosCRUD::esAdmin($idUsuario, $grupoActivoId)): ?>
-                <hr><h3>⚙️ Editar grupo</h3>
-                <form method="POST" class="crear-grupo editar">
-                    <input type="text" name="nombre_editar" value="<?= htmlspecialchars($grupoActivo['Nombre']) ?>" required>
-                    <input type="text" name="descripcion_editar" value="<?= htmlspecialchars($grupoActivo['Descripcion']) ?>">
-                    <button name="editar_grupo">Guardar cambios</button>
-                    <button name="eliminar_grupo" class="eliminar"
-                            onclick="return confirm('¿Estás seguro de eliminar este grupo?');">Eliminar grupo</button>
-                </form>
+                <img
+                    src="<?= htmlspecialchars($grupoActivo['Pfp'] ?: '../../Recursos/fotogrupo.png') ?>"
+                    class="profile-pic grupo-foto-header"
+                    data-grupo-id="<?= $grupoActivo['id_grupo'] ?>"
+                >
+                <div class="perfil-info">
+                    <p class="perfil-nombre">
+                        <?= htmlspecialchars($grupoActivo['Nombre']) ?>
+                    </p>
 
-                <form method="POST" class="invitar-form">
-                    <input type="text" name="usuario_invitar" placeholder="Username del usuario">
-                    <button name="invitar">Invitar</button>
-                </form>
-            <?php endif; ?>
+                </div>
+            </div>
+
+
+
 
             <div class="chat-messages">
                 <?php foreach ($mensajes as $msg):
@@ -380,6 +368,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
             <div id="perfilContenido"></div>
         </div>
     </div>
+<div id="modalPerfilGrupo" class="modalgrupo hidden">
+    <div class="modalgrupo-contenido">
+        <button class="cerrar-modalgrupo">✖</button>
+        <div id="modalGrupoContenido"></div>
+    </div>
+</div>
+
+
 </body>
 </html>
 
