@@ -1522,6 +1522,7 @@ hr {
     width: 100%;
     padding: 10px;
     font-weight: bold;
+    border-radius: 10px;
     cursor: pointer;
     background-color: #41498d;
     color: white;
