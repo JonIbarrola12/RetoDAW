@@ -1,5 +1,18 @@
 // --- Abrir y cerrar modal de perfil ---
 let grupoIdActivo = null;
+document.addEventListener("DOMContentLoaded", () => {
+    const mensaje = document.getElementById("mensajeFlash");
+
+    if (mensaje) {
+        setTimeout(() => {
+            mensaje.style.transition = "opacity 0.5s ease";
+            mensaje.style.opacity = "0";
+
+            setTimeout(() => mensaje.remove(), 500);
+        }, 3000);
+    }
+});
+
 function abrirPerfil() {
     fetch('../paginas/Perfil.php')
         .then(res => res.text())
