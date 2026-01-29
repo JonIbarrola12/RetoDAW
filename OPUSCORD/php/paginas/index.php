@@ -339,10 +339,10 @@ case 'verMasComentarios':
     <label for="orden">Ordenar por:</label>
     <select id="orden" onchange="cambiarOrden(this.value)">
         <option value="reciente" <?= $orden === 'reciente' ? 'selected' : '' ?>>
-            Más recientes
+            Recientes
         </option>
         <option value="likes" <?= $orden === 'likes' ? 'selected' : '' ?>>
-            Más likes
+            Likes
         </option>
     </select>
 </section>
@@ -358,8 +358,23 @@ case 'verMasComentarios':
     <div id="contenido-publicacion" class="contenido-publicacion">
         <form action="index.php" method="POST" enctype="multipart/form-data">
             <textarea name="contenido" placeholder="que estas pensando?" required></textarea>
+            <br>
+        <div class="upload-imagen">
+            <label for="imagen" class="btn-imagen">+</label>
+            <span id="nombre-archivo">Ningún archivo</span>
 
-            <input type="file" name="imagen" accept="image/*">
+            <input type="file" id="imagen" name="imagen" accept="image/*" hidden>
+        </div>
+        <script>
+        document.getElementById('imagen').addEventListener('change', function () {
+            const nombre = this.files.length > 0
+                ? this.files[0].name
+                : 'Ningún archivo';
+
+            document.getElementById('nombre-archivo').textContent = nombre;
+        });
+        </script>
+        <br>
 
             <div style="position: relative; display: inline-block;">
                 <button type="button" class="btn-visibilidad">Visibilidad: Publica ▼</button>

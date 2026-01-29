@@ -13,6 +13,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
+
+
 function abrirPerfil() {
     fetch('../paginas/Perfil.php')
         .then(res => res.text())
