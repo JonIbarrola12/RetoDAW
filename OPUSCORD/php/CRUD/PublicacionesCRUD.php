@@ -133,5 +133,40 @@ class PublicacionesCRUD {
         return count($publicaciones);
     }
 
+    public static function recibirPorUsuario(int $idUsuario) {
+        global $conexion;
+
+        $sql = "SELECT * 
+                FROM publicaciones 
+                WHERE id_usuario = ?
+                ORDER BY FechaPublicacion DESC";
+
+        try {
+            $stmt = mysqli_prepare($conexion, $sql);
+            if (!$stmt) {
+                throw new Exception("Error al preparar la consulta: " . mysqli_error($conexion));
+            }
+
+            mysqli_stmt_bind_param($stmt, "i", $idUsuario);
+            mysqli_stmt_execute($stmt);
+
+            $resultado = mysqli_stmt_get_result($stmt);
+
+            $publicaciones = [];
+            while ($fila = mysqli_fetch_assoc($resultado)) {
+                $publicaciones[] = $fila;
+            }
+
+            mysqli_stmt_close($stmt);
+
+            return $publicaciones;
+
+        } catch (Exception $e) {
+            echo "Error al obtener publicaciones del usuario: " . $e->getMessage();
+            return [];
+        }
+    }
+
+
     
 }

@@ -1,0 +1,423 @@
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+}
+
+body, html {
+    width: 100%;
+    height: 100%;
+    background-color: #36393f;
+    color: #fff;
+    overflow-x: hidden;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Contenedor principal */
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 200px;
+    background-color: #2f3136;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.sidebar h2 {
+    margin-bottom: 20px;
+    font-size: 22px;
+    text-align: center;
+}
+
+.sidebar nav ul {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+}
+
+.sidebar nav ul li {
+    margin-bottom: 10px;
+}
+
+.sidebar nav ul li a button {
+    width: 100%;
+    padding: 8px;
+    border: none;
+    border-radius: 5px;
+    background-color: #36393f;
+    color: #fff;
+    cursor: pointer;
+}
+
+.sidebar nav ul li a button:hover {
+    background-color: #7289da;
+}
+
+/* Perfil en sidebar */
+.perfil-horiz {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.perfil-horiz img.fotoPerfil.sidebar-foto {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #fff;
+}
+
+.perfil-horiz p.nombre-usuario {
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Botón de Seguidos */
+.btn-seguidos {
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: none;
+    background-color: #7289da;
+    color: #fff;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.btn-seguidos:hover {
+    background-color: #5b6eae;
+}
+
+/* Contenido principal */
+.main-content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* CENTRAR TODO */
+}
+
+/* Buscador */
+.buscador-galeria {
+    margin-bottom: 15px;
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    justify-content: center;
+}
+
+.buscador-galeria input {
+    width: 100%;
+    padding: 8px;
+    border-radius: 5px;
+    border: none;
+    background-color: #40444b;
+    color: #fff;
+}
+
+/* Header galería */
+.perfil-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    justify-content: center; /* CENTRAR */
+}
+
+.perfil-header img.foto-perfil.header-foto {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #fff;
+}
+
+
+.perfil-header p.nombre-usuario {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.btn-seguir {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #0095f6;
+    color: #fff;
+    cursor: pointer;
+}
+
+.btn-seguir:hover {
+    background-color: #007acc;
+}
+
+/* Subir foto */
+.subir-foto-container {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center; /* CENTRAR */
+    gap: 10px;
+}
+
+.subir-foto-container input[type="file"] {
+    padding: 5px;
+    border-radius: 5px;
+    border: none;
+    background-color: #40444b;
+    color: #fff;
+}
+
+.subir-foto-container button {
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: none;
+    background-color: #7289da;
+    color: #fff;
+    cursor: pointer;
+}
+
+.subir-foto-container button:hover {
+    background-color: #5b6eae;
+}
+
+/* Galería */
+.galeria-container {
+    max-width: 900px;
+    width: 100%;
+}
+
+.galeria-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px; /* separación entre imágenes */
+    justify-items: center; /* CENTRAR las imágenes */
+}
+
+.galeria-grid img {
+    width: 100%;
+    height: 200px; /* fijo */
+    object-fit: cover; /* recorta para llenar el contenedor */
+    display: block;   /* elimina espacios extra que generan diferencias de tamaño */
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+
+.galeria-grid img:hover {
+    transform: scale(1.05);
+}
+
+/* Modal imagen */
+.modal-imagen {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.modal-imagen img {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-around;
+    }
+
+    .main-content {
+        padding: 10px;
+    }
+
+    .perfil-header {
+        flex-direction: column;
+    }
+
+    .galeria-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+}
+/* Buscador dropdown */
+.buscador-galeria {
+    position: relative; /* importante para posicionar resultados */
+    max-width: 400px;   /* opcional, ajusta al tamaño que quieras */
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+#resultados-buscador {
+    position: absolute;
+    top: 100%; /* justo debajo del input */
+    left: 0;
+    width: 100%;
+    background-color: #40444b;
+    border: 1px solid #7289da;
+    border-top: none;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 100; /* encima de todo excepto modales */
+    border-radius: 0 0 5px 5px;
+}
+
+/* Cada resultado */
+.resultado-usuario {
+    padding: 8px 10px;
+    cursor: pointer;
+    color: #fff;
+    transition: background 0.2s;
+}
+
+.resultado-usuario:hover {
+    background-color: #7289da;
+    color: #fff;
+}
+
+/* Botones juntos en el header */
+.botones-header {
+    display: flex;
+    gap: 10px; /* espacio entre los botones */
+    margin-top: 10px; /* separar del nombre de usuario */
+}
+
+/* Estilos ya existentes para los botones */
+.botones-header button {
+    padding: 5px 12px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#btn-seguir {
+    background-color: #0095f6;
+    color: #fff;
+}
+
+#btn-seguir:hover {
+    background-color: #007acc;
+}
+
+#btn-seguidos {
+    background-color: #7289da;
+    color: #fff;
+}
+
+#btn-seguidos:hover {
+    background-color: #5b6eae;
+}
+
+.lista-seguidos {
+    position: absolute;
+    background-color: #40444b;
+    border: 1px solid #7289da;
+    border-radius: 5px;
+    max-height: 200px;
+    overflow-y: auto;
+    margin-top: 5px;
+    width: 200px;
+    z-index: 1000;
+}
+
+.lista-seguidos div {
+    padding: 8px 10px;
+    cursor: pointer;
+    transition: background 0.2s;
+    color: #fff;
+}
+
+.lista-seguidos div:hover {
+    background-color: #7289da;
+}
+
+.seguidores-contador {
+    font-size: 14px;
+    color: #aaa;
+    margin-top: 4px;
+}
+
+.fotos-contador {
+    font-size: 14px;
+    color: #aaa;
+    margin-top: 2px;
+}
+
+
+.seguidores-contador,
+.fotos-contador {
+    font-size: 14px;
+    color: #aaa;
+    margin: 2px 0;
+    text-align: center;
+}
+
+.perfil-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.perfil-info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.fila-superior {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.nombre-usuario {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.contadores-perfil {
+    display: flex;
+    gap: 6px;
+    font-size: 14px;
+    color: #ccc;
+}
+
+.foto-item {
+    width: 100%;
+    height: 200px; /* mismo alto que img */
+    overflow: hidden; /* recorta cualquier exceso */
+}
+
+
+
+
+
