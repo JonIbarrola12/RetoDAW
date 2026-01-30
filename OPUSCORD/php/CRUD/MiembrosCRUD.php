@@ -70,7 +70,7 @@ class MiembrosCRUD {
     public static function obtenerGruposUsuario(int $idUsuario): array {
         global $conexion;
 
-        $sql = "SELECT * FROM miembros WHERE id_usuario = ?";
+        $sql = "SELECT * FROM miembros WHERE id_usuario = ? AND activo = 1";
         $stmt = mysqli_prepare($conexion, $sql);
         if (!$stmt) return [];
 
@@ -108,7 +108,7 @@ class MiembrosCRUD {
     public static function existeMiembro(int $idUsuario, int $idGrupo): bool {
         global $conexion;
 
-        $sql = "SELECT 1 FROM miembros WHERE id_usuario = ? AND GrupoId = ?";
+        $sql = "SELECT 1 FROM miembros WHERE id_usuario = ? AND GrupoId = ? and activo = 1";
         $stmt = mysqli_prepare($conexion, $sql);
         if (!$stmt) return false;
 

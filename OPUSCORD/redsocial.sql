@@ -266,13 +266,38 @@
     CONSTRAINT `miembros_ibfk_2` FOREIGN KEY (`GrupoId`) REFERENCES `grupos` (`id_grupo`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
     /*!40101 SET character_set_client = @saved_cs_client */;
+    ALTER TABLE miembros ADD activo TINYINT(1) DEFAULT 1;
 
     --
-    -- Dumping data for table `miembros`
+    -- Dumping data for table `seguidores`
     --
 
-    /*!40000 ALTER TABLE `miembros` DISABLE KEYS */;
-    /*!40000 ALTER TABLE `miembros` ENABLE KEYS */;
+
+    --
+    -- Table structure for table `seguidores`
+    --
+
+    DROP TABLE IF EXISTS `seguidores`;
+    /*!40101 SET @saved_cs_client     = @@character_set_client */;
+    /*!50503 SET character_set_client = utf8mb4 */;
+    CREATE TABLE `seguidores` (
+    `id` int(10) NOT NULL AUTO_INCREMENT,
+    `id_seguidor` int(11) NOT NULL,
+    `id_seguido` int(11) NOT NULL,
+    UNIQUE KEY `unico_seguimiento` (`id_seguidor`,`id_seguido`),
+    PRIMARY KEY (`id`),
+    CONSTRAINT `seguidores_ibfk_1` FOREIGN KEY (`id_seguidor`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE,
+    CONSTRAINT `seguidores_ibfk_2` FOREIGN KEY (`id_seguido`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    /*!40101 SET character_set_client = @saved_cs_client */;
+
+    --
+    -- Dumping data for table `seguidores`
+    --
+
+
+    /*!40000 ALTER TABLE `seguidores` DISABLE KEYS */;
+    /*!40000 ALTER TABLE `seguidores` ENABLE KEYS */;
 
     /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

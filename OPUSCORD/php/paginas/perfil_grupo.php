@@ -31,7 +31,7 @@ if (!$grupo) {
 /* comprobar rol del usuario */
 $stmt = $pdo->prepare("
     SELECT Rol FROM miembros
-    WHERE id_usuario = ? AND GrupoId = ?
+    WHERE id_usuario = ? AND GrupoId = ? AND activo = 1
 ");
 $stmt->execute([$idUsuario, $idGrupo]);
 $miembro = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -55,7 +55,7 @@ $stmt = $pdo->prepare("
 $stmt->execute([$idGrupo]);
 $miembros = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
-<div id="perfilModalContent" data-grupo-id="<?= $idGrupo ?>">
+<div class="perfilModalContent" data-grupo-id="<?= $idGrupo ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <div class="perfil-header">
 
@@ -116,6 +116,7 @@ $miembros = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
     </div>
+    
     <?php if ($esAdmin): ?>
     <div id="invitarBox" class="invitar-box hidden">
         <form method="POST" action="../Funcionalidades/anadir_miembro.php">
@@ -211,5 +212,41 @@ $miembros = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div> 
         <?php endforeach; ?>
     </div>
+    <div class="grupo-acciones-final">
 
+    <?php if (!$esAdmin): ?>
+        <!-- BOTÓN ABANDONAR -->
+        <form 
+            method="POST" 
+            action="../Funcionalidades/abandonar_grupo.php"
+            onsubmit="return confirm('¿Seguro que quieres abandonar el grupo?');"
+        >
+            <input type="hidden" name="id_grupo" value="<?= $idGrupo ?>">
+            <button class="btn-abandonar">
+                Abandonar Grupo
+            </button>
+        </form>
+    <?php endif; ?>
+
+    <?php if ($esAdmin): ?>
+        <!-- BOTÓN ELIMINAR -->
+        <form 
+            method="POST" 
+            action="../Funcionalidades/eliminar_grupo.php"
+            onsubmit="return confirm('⚠️ Esto eliminará el grupo para todos. ¿Continuar?');"
+        >
+            <input type="hidden" name="id_grupo" value="<?= $idGrupo ?>">
+            <button class="btn-eliminar">
+                Eliminar Grupo
+            </button>
+        </form>
+    <?php endif; ?>
+</div>
+
+</div>
+
+<div id="perfilAmigoModal" class="perfil-modalgru" style="display:none;">
+    <div id="perfilAmigoContenido" class="perfil-modal-contentgru">
+        <span id="cerrarPerfilAmigoModal" class="cerrar-modalgru">&times;</span>
+    </div>
 </div>

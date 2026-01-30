@@ -18,10 +18,10 @@
         />
         <link href="../../css/estilos.css" rel="stylesheet"/>
     </head>
-<body class="bg-light">
+<body class="formregistro">
     <br> <br> <br>
-    <div class="container d-flex justify-content-center align-items-center" >
-        <div class="card shadow p-4" style="width: 22rem;">
+    <div class="container d-flex justify-content-center align-items-center " >
+        <div class="card shadow p-4 formuregistro" style="width: 22rem;">
             <h3 class="text-center mb-4">Iniciar sesión</h3>
 
             <form action="login.php" method="POST">

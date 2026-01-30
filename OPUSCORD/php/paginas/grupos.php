@@ -243,7 +243,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
             >
 
                 <img
-                    src="<?= htmlspecialchars($grupoActivo['Pfp'] ?: '../../Recursos/fotogrupo.png') ?>"
+                    src="<?= htmlspecialchars($grupoActivo['Pfp'] ?: '/Recursos/fotogrupo.png') ?>"
                     class="profile-pic grupo-foto-header"
                     data-grupo-id="<?= $grupoActivo['id_grupo'] ?>"
                 >
@@ -344,7 +344,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
             <h3>Selecciona o crea un grupo</h3>
         <?php endif; ?>
     </main>
-        <aside class="sidebar sidebar-left">
+    <aside class="sidebar sidebar-left">
 
         <h3>Crear grupo</h3>
         <form method="POST" class="crear-grupo">
@@ -354,15 +354,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
         </form>
 
         <hr>
+
         <h3>Mis Grupos</h3>
-        <ul>
-            <?php foreach ($miembros as $m):
-                $g = GruposCRUD::obtenerPorId($m['GrupoId']);
-            ?>
-                <li><a href="grupos.php?grupo=<?= $g['id_grupo'] ?>"><?= htmlspecialchars($g['Nombre']) ?></a></li>
-            <?php endforeach; ?>
-        </ul>
+
+        <div class="grupos-scroll">
+            <ul>
+                <?php foreach ($miembros as $m):
+                    $g = GruposCRUD::obtenerPorId($m['GrupoId']);
+                ?>
+                    <li class="grupo-item">
+                        <a href="grupos.php?grupo=<?= $g['id_grupo'] ?>" class="grupo-link">
+                            <img 
+                                src="<?= htmlspecialchars($g['Pfp'] ?: '/Recursos/fotogrupo.png') ?>" 
+                                class="grupo-foto-sidebar"
+                                data-grupo-id="<?= $g['id_grupo'] ?>"
+                            >
+
+                            <span class="grupo-nombre">
+                                <?= htmlspecialchars($g['Nombre']) ?>
+                            </span>
+                        </a>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+
     </aside>
+
 </div>
     <div id="perfilModal" class="modal">
         <div class="modal-content">

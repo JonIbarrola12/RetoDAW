@@ -18,6 +18,14 @@
 
 }
 /* Contenedor principal de la sidebar */
+.formregistro {
+    background-color: #343434;
+}
+.formuregistro {
+
+    background-color: #2a2a2c;
+    color: white;
+}
 .sidebar {
     width: 200px;
     background-color: #2f3136;
@@ -111,6 +119,35 @@
     flex-direction: column;
     gap: 10px;
 }
+.perfil-modalgru {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.perfil-modal-contentgru {
+    position: relative;
+    background: #1e1e1e;
+    max-height: 90vh;
+    overflow-y: auto;
+    width: 420px;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.cerrar-modalgru {
+    position: absolute;
+    top: 12px;
+    right: 15px;
+    font-size: 26px;
+    cursor: pointer;
+    color: white;
+    z-index: 10000;
+}
 
 /* Botones de iniciar sesión y registrarse */
 .login-btn {
@@ -121,9 +158,12 @@
     color: red;
 }
 .boton-sesion {
-    background-color: rgb(87, 158, 251);
+    background-color: #7289da;
     color: white;
     font-weight: bolder;
+}
+.formregtext {
+    font-weight: bold;
 }
 .boton-sesion:hover{
     background-color: #d5e1ff;
@@ -180,7 +220,9 @@
 .caption {
     margin-top: 10px;
 }
-
+.formregistro {
+    background-color: bl
+}
 /* Mensajes */
 .messages {
     display: flex;
@@ -515,6 +557,42 @@
     text-overflow: ellipsis;
     font-size: clamp(16px, 2.5vw, 22px);
 }
+
+.grupo-acciones-final {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.btn-abandonar {
+    background: #c0392b;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    font-weight: bold;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.btn-abandonar:hover {
+    background: #a93226;
+}
+
+.btn-eliminar {
+    background: #c0392b;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    font-weight: bold;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.btn-eliminar:hover {
+    background: #a93226;
+}
+
+
 .grupo-nombre-editable h2 {
     cursor: help;
 }
@@ -617,11 +695,12 @@
 
 .logout-btn {
     width: 30%;
-    padding: 10px;
+    padding: 7px;
     background-color: #cd313c;
     border: none;
     border-radius: 5px;
     color: #fff;
+    font-weight: bold;
     cursor: pointer;
     transition: background 0.2s;
 }
@@ -1104,9 +1183,54 @@ gregar-miembro-btn:hover {
     background-color: #36393f;
     transition: background 0.2s;
 }
+.grupo-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+}
+
+.grupo-foto-sidebar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+.grupos-scroll {
+    flex: 1;                  /* ocupa el espacio restante */
+    overflow-y: auto;
+    padding-right: 6px;       /* espacio para scrollbar */
+}
+
+.grupos-scroll::-webkit-scrollbar {
+    width: 6px;
+}
+
+.grupos-scroll::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.2);
+    border-radius: 4px;
+}
+
+.grupos-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar-left {
+    height: 100vh;            /* ocupa toda la pantalla */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;         /* evita que rompa la página */
+}
+
+.grupo-nombre {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
 .sidebar ul li a:hover {
-    background-color: #7289da;
+    background-color: rgb(50, 50, 50);
 }
 .lista-chats {
     display: flex;

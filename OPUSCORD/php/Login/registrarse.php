@@ -18,11 +18,11 @@
         />
         <link href="../../css/estilos.css" rel="stylesheet"/>
     </head>
-<body class="bg-light">
+<body class="formregistro">
     <br> <br> <br>
     <div class="container d-flex justify-content-center align-items-center" >
-        <div class="card shadow p-4" style="width: 22rem;">
-            <h3 class="text-center mb-4">Registrarse</h3>
+        <div class="card shadow p-4 formuregistro" style="width: 22rem;">
+            <h3 class="text-center mb-4 formregtext">Registrarse</h3>
 
             <form action="crearUsuario.php" method="POST" id="form">
                 <div class="mb-3">
@@ -39,6 +39,18 @@
                     <label for="email" class="form-label">Email</label>
                     <input type="text" class="form-control" id="email" name="email" placeholder="Ingresa tu email">
                     <span id="error-email" class="textoerror"></span>
+                    <?php if (isset($_GET['error']) && $_GET['error'] === 'email'): ?>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', () => {
+                                const emailInput = document.getElementById('email');
+                                const errorEmail = document.getElementById('error-email');
+
+                                errorEmail.textContent = 'Este email ya está en uso';
+                                emailInput.classList.add('is-invalid');
+                            });
+                        </script>
+                    <?php endif; ?>
+                    <span id="error-email" class="textoerror"></span>
                 </div>
                 <div class="mb-3">
                     <label for="email" class="form-label">Fecha Nacimiento</label>
@@ -49,7 +61,20 @@
                     <label for="usuario" class="form-label">Usuario</label>
                     <input type="text" class="form-control" id="usuario" name="usuario" placeholder="Ingresa tu usuario">
                     <span id="error-usu" class="textoerror"></span>
+
+                    <?php if (isset($_GET['error']) && $_GET['error'] === 'usuario'): ?>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', () => {
+                                const input = document.getElementById('usuario');
+                                const error = document.getElementById('error-usu');
+
+                                error.textContent = 'Este usuario ya está en uso';
+                                input.classList.add('is-invalid');
+                            });
+                        </script>
+                    <?php endif; ?>
                 </div>
+
 
                 <div class="mb-3">
                     <label for="contrasena" class="form-label">Contraseña</label>

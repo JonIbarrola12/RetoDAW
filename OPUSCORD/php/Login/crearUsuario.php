@@ -12,7 +12,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // 4. Encriptar contraseña
     $passwordHash = password_hash($contrasena, PASSWORD_DEFAULT);
 
-    // 5. Preparar consulta SQL (segura)
+    $stmt = $conexion->prepare("SELECT id_usuario FROM usuarios WHERE Email = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $stmt->store_result();
+
+    if ($stmt->num_rows > 0) {
+        header("Location: registrarse.php?error=email");
+        exit;
+    }
+    $stmt->close();
+
+
+    $stmt = $conexion->prepare("SELECT id_usuario FROM usuarios WHERE Username = ?");
+    $stmt->bind_param("s", $usuario);
+    $stmt->execute();
+    $stmt->store_result();
+
+    if ($stmt->num_rows > 0) {
+        header("Location: registrarse.php?error=usuario");
+        exit;
+    }
+    $stmt->close();
+
+
     $sql = "INSERT INTO usuarios (Nombre, Apellido, Email, Username, Password)
             VALUES (?, ?, ?, ?, ?)";
 

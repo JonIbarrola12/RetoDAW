@@ -769,8 +769,6 @@ document.getElementById('imagenModalContenido').onclick = () => {
     modal.style.display = 'none';
 };
 
-
-
 </script>
 <script>
 document.getElementById('cerrarPerfilAmigoModal')
@@ -785,7 +783,6 @@ document.getElementById('cerrarPerfilAmigoModal')
         </div>
     </div>
     <div id="perfilAmigoModal" class="perfil-modal" style="display:none;">
-        <div id="perfilAmigoModal" class="perfil-modal" style="display:none;">
         <div id="perfilAmigoContenido" class="perfil-modal-content"></div>
         <span id="cerrarPerfilAmigoModal" class="cerrar-modal">&times;</span>
     </div>

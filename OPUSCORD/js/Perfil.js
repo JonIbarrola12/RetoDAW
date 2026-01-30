@@ -550,14 +550,15 @@ document.addEventListener('click', e => {
 document.addEventListener('change', e => {
     if (e.target.id !== 'inputFotoGrupo') return;
 
-    if (!grupoIdActivo) return;
-
     const file = e.target.files[0];
     if (!file) return;
 
+    const fotoGrupo = document.getElementById('fotoGrupo');
+    const idGrupo = fotoGrupo.dataset.grupoId;
+
     const formData = new FormData();
     formData.append('foto', file);
-    formData.append('id_grupo', grupoIdActivo);
+    formData.append('id_grupo', idGrupo);
 
     fetch('../Funcionalidades/subir_foto_grupo.php', {
         method: 'POST',
@@ -567,23 +568,27 @@ document.addEventListener('change', e => {
     .then(data => {
         if (data.status === 'ok') {
 
-            const nuevaUrl = data.nuevaFoto + '?t=' + Date.now();
+            const nuevaFoto = data.nuevaFoto + '?t=' + Date.now();
 
-            // 🔥 modal
-            document.getElementById('fotoGrupo').src = nuevaUrl;
+            // 🔹 MODAL DEL GRUPO
+            fotoGrupo.src = nuevaFoto;
 
-            // 🔥 header de grupos
+            // 🔹 HEADER DEL CHAT
             document.querySelectorAll(
-                `.grupo-foto-header[data-grupo-id="${grupoIdActivo}"]`
-            ).forEach(img => {
-                img.src = nuevaUrl;
-            });
+                `.grupo-foto-header[data-grupo-id="${idGrupo}"]`
+            ).forEach(img => img.src = nuevaFoto);
 
-        } else {
+            // 🔥 SIDEBAR
+            document.querySelectorAll(
+                `.grupo-foto-sidebar[data-grupo-id="${idGrupo}"]`
+            ).forEach(img => img.src = nuevaFoto);
+        }
+        else {
             alert(data.msg);
         }
     });
 });
+
 function obtenerGrupoIdActivo() {
     return document
         .getElementById('perfilModalContent')
@@ -625,6 +630,8 @@ document.addEventListener('keydown', e => {
         guardarNombreGrupo();
     }
 });
+
+
 function guardarNombreGrupo() {
     const input = document.getElementById('inputGrupoNombre');
     const nuevoNombre = input.value.trim();
@@ -649,6 +656,18 @@ function guardarNombreGrupo() {
         document.getElementById('btnEditarNombre').classList.remove('hidden');
     });
 }
+document.addEventListener('click', function (e) {
+    const modal = document.getElementById('perfilAmigoModal');
+    const contenido = document.getElementById('perfilAmigoContenido');
+
+    if (!modal || modal.style.display !== 'flex') return;
+
+    // click fuera del contenido
+    if (!contenido.contains(e.target)) {
+        modal.style.display = 'none';
+        contenido.innerHTML = '';
+    }
+});
 
 document.addEventListener('blur', e => {
     if (e.target.id === 'inputGrupoDescripcion') {

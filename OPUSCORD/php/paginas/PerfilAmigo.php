@@ -30,6 +30,10 @@ $foto = !empty($amigo['Pfp']) ? $amigo['Pfp'] : '/Recursos/fotousuario.png';
 ?>
 
 <div id="perfilModalContent">
+    
+       <!-- BOTÓN CERRAR -->
+    <span class="cerrar-modal-amigo" onclick="cerrarPerfilAmigo()">✖</span>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <div class="perfil-header">

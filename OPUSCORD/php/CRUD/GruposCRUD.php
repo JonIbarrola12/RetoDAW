@@ -18,11 +18,12 @@ class GruposCRUD {
     public static function añadirGrupo(Grupo $grupo): int {
         global $conexion;
 
-        $sql = "INSERT INTO grupos (Nombre, Descripcion, id_creador, FechaCreacion)
-                VALUES (?, ?, ?, ?)";
+        $sql = "INSERT INTO grupos (Nombre, Descripcion, id_creador, FechaCreacion, Pfp)
+                VALUES (?, ?, ?, ?, ?)";
+
 
         $stmt = mysqli_prepare($conexion, $sql);
-
+        $pfp = '../../Recursos/fotogrupo.png';
         $nombre = $grupo->getNombre();
         $descripcion = $grupo->getDescripcion();
         $creadorId = $grupo->getCreadorId();
@@ -30,11 +31,12 @@ class GruposCRUD {
 
         mysqli_stmt_bind_param(
             $stmt,
-            "ssis",
+            "ssiss",
             $nombre,
             $descripcion,
             $creadorId,
-            $fecha
+            $fecha,
+            $pfp
         );
 
         mysqli_stmt_execute($stmt);
