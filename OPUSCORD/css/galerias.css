@@ -18,71 +18,14 @@ a {
     text-decoration: none;
     color: inherit;
 }
-
-/* Contenedor principal */
-.container {
-    display: flex;
-    min-height: 100vh;
-}
-
-/* Sidebar */
-.sidebar {
-    width: 200px;
-    background-color: #2f3136;
-    padding: 20px;
+.PerfilContenedor {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    flex-shrink: 0;
-}
-
-.sidebar h2 {
-    margin-bottom: 20px;
-    font-size: 22px;
-    text-align: center;
-}
-
-.sidebar nav ul {
-    list-style: none;
-    padding: 0;
-    width: 100%;
-}
-
-.sidebar nav ul li {
-    margin-bottom: 10px;
-}
-
-.sidebar nav ul li a button {
-    width: 100%;
-    padding: 8px;
-    border: none;
-    border-radius: 5px;
-    background-color: #36393f;
-    color: #fff;
-    cursor: pointer;
-}
-
-.sidebar nav ul li a button:hover {
-    background-color: #7289da;
-}
-
-/* Perfil en sidebar */
-.perfil-horiz {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     gap: 10px;
-    margin-top: 20px;
+    border-radius: 15px;
+    padding: 12px;
+    background-color: rgb(34, 34, 34);
 }
-
-.perfil-horiz img.fotoPerfil.sidebar-foto {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid #fff;
-}
-
 .perfil-horiz p.nombre-usuario {
     font-weight: bold;
     text-align: center;
@@ -90,18 +33,12 @@ a {
 
 /* Botón de Seguidos */
 .btn-seguidos {
-    padding: 5px 10px;
-    border-radius: 5px;
-    border: none;
-    background-color: #7289da;
-    color: #fff;
-    cursor: pointer;
-    margin-top: 10px;
+    all: unset;
+    cursor: pointer; /* opcional: que siga siendo clickeable */
+    margin-left: 10px;
+
 }
 
-.btn-seguidos:hover {
-    background-color: #5b6eae;
-}
 
 /* Contenido principal */
 .main-content {
@@ -130,19 +67,75 @@ a {
     background-color: #40444b;
     color: #fff;
 }
-
-/* Header galería */
-.perfil-header {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 20px;
-    justify-content: center; /* CENTRAR */
+.galeria-grid img {
+    width: 100%;
+    height: 200px; /* fijo /
+    object-fit: cover; / recorta para llenar el contenedor /
+    display: block;   / elimina espacios extra que generan diferencias de tamaño */
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+.foto-item {
+    width: 100%;
+    height: 200px; /* mismo alto que img /
+    overflow: hidden; / recorta cualquier exceso */
+}
+.lista-seguidos {
+    position: absolute;
+    background-color: #40444b;
+    border: 1px solid #7289da;
+    border-radius: 5px;
+    max-height: 200px;
+    overflow-y: auto;
+    margin-top: 5px;
+    width: 200px;
+    z-index: 1000;
 }
 
+.lista-seguidos div {
+    padding: 8px 10px;
+    cursor: pointer;
+    transition: background 0.2s;
+    color: #fff;
+}
+
+.lista-seguidos div:hover {
+    background-color: #7289da;
+}
+.nombre-usuario {
+    margin-bottom: 4px;
+}
+.subir-foto-container {
+    margin-top: 20px;
+}
+.galeria-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.mai::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.2);
+    border-radius: 4px;
+}
+.main-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.main-content::-webkit-scrollbar-thumb {
+    background-color: #7289da;
+    border-radius: 3px;
+}
+
+.main-content::-webkit-scrollbar-track {
+    background-color: #2f3136;
+}
+
+.galeria-container::-webkit-scrollbar-track {
+    background: transparent;
+}
 .perfil-header img.foto-perfil.header-foto {
-    width: 80px;
-    height: 80px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
     object-fit: cover;
     border: 2px solid #fff;
@@ -158,7 +151,7 @@ a {
     padding: 5px 10px;
     border: none;
     border-radius: 5px;
-    background-color: #0095f6;
+    background-color: #7289da;
     color: #fff;
     cursor: pointer;
 }
@@ -200,8 +193,95 @@ a {
 .galeria-container {
     max-width: 900px;
     width: 100%;
+    margin-top: 30px;
+}
+.boton-subir {
+    margin-left: 20px;
+}
+.sidebar {
+    width: 200px;
+    background-color: #2f3136;
+    color: #fff;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* separa la parte superior de la inferior */
+    height: 100vh;
+    flex-shrink: 0;
 }
 
+/* Navegación */
+.sidebar nav ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+.sidebar nav ul li {
+    margin-bottom: 10px;
+}
+.sidebar button {
+    width: 100%;
+    padding: 10px;
+    background-color: #36393f;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.sidebar button:hover {
+    background-color: #7289da;
+}
+/* lista de grupos */
+.sidebar ul {
+    list-style: none; /* quita el punto de lista */
+    padding-left: 0;
+    margin-top: 10px;
+}
+
+.sidebar ul li {
+    margin-bottom: 10px;
+}
+
+/* links de grupos */
+.sidebar ul li a {
+    text-decoration: none; /* quita el subrayado */
+    color: #fff;
+    display: block;
+    padding: 8px;
+    border-radius: 5px;
+    background-color: #36393f;
+    transition: background 0.2s;
+}
+
+
+.sidebar-left {
+    height: 100vh;            /* ocupa toda la pantalla */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;         /* evita que rompa la página */
+}
+.perfil-foto {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    margin: 0 auto 10px;
+}
+.profile-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ffffff;
+}
+
+.sidebar ul li a:hover {
+    background-color: rgb(50, 50, 50);
+}
 .galeria-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -241,183 +321,3 @@ a {
     border-radius: 10px;
     cursor: pointer;
 }
-
-/* Responsive */
-@media screen and (max-width: 768px) {
-    .container {
-        flex-direction: column;
-    }
-
-    .sidebar {
-        width: 100%;
-        flex-direction: row;
-        justify-content: space-around;
-    }
-
-    .main-content {
-        padding: 10px;
-    }
-
-    .perfil-header {
-        flex-direction: column;
-    }
-
-    .galeria-grid {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    }
-}
-/* Buscador dropdown */
-.buscador-galeria {
-    position: relative; /* importante para posicionar resultados */
-    max-width: 400px;   /* opcional, ajusta al tamaño que quieras */
-    width: 100%;
-    margin-bottom: 20px;
-}
-
-#resultados-buscador {
-    position: absolute;
-    top: 100%; /* justo debajo del input */
-    left: 0;
-    width: 100%;
-    background-color: #40444b;
-    border: 1px solid #7289da;
-    border-top: none;
-    max-height: 200px;
-    overflow-y: auto;
-    z-index: 100; /* encima de todo excepto modales */
-    border-radius: 0 0 5px 5px;
-}
-
-/* Cada resultado */
-.resultado-usuario {
-    padding: 8px 10px;
-    cursor: pointer;
-    color: #fff;
-    transition: background 0.2s;
-}
-
-.resultado-usuario:hover {
-    background-color: #7289da;
-    color: #fff;
-}
-
-/* Botones juntos en el header */
-.botones-header {
-    display: flex;
-    gap: 10px; /* espacio entre los botones */
-    margin-top: 10px; /* separar del nombre de usuario */
-}
-
-/* Estilos ya existentes para los botones */
-.botones-header button {
-    padding: 5px 12px;
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-#btn-seguir {
-    background-color: #0095f6;
-    color: #fff;
-}
-
-#btn-seguir:hover {
-    background-color: #007acc;
-}
-
-#btn-seguidos {
-    background-color: #7289da;
-    color: #fff;
-}
-
-#btn-seguidos:hover {
-    background-color: #5b6eae;
-}
-
-.lista-seguidos {
-    position: absolute;
-    background-color: #40444b;
-    border: 1px solid #7289da;
-    border-radius: 5px;
-    max-height: 200px;
-    overflow-y: auto;
-    margin-top: 5px;
-    width: 200px;
-    z-index: 1000;
-}
-
-.lista-seguidos div {
-    padding: 8px 10px;
-    cursor: pointer;
-    transition: background 0.2s;
-    color: #fff;
-}
-
-.lista-seguidos div:hover {
-    background-color: #7289da;
-}
-
-.seguidores-contador {
-    font-size: 14px;
-    color: #aaa;
-    margin-top: 4px;
-}
-
-.fotos-contador {
-    font-size: 14px;
-    color: #aaa;
-    margin-top: 2px;
-}
-
-
-.seguidores-contador,
-.fotos-contador {
-    font-size: 14px;
-    color: #aaa;
-    margin: 2px 0;
-    text-align: center;
-}
-
-.perfil-header {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    justify-content: center;
-    margin-bottom: 20px;
-}
-
-.perfil-info {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.fila-superior {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.nombre-usuario {
-    font-size: 18px;
-    font-weight: bold;
-}
-
-.contadores-perfil {
-    display: flex;
-    gap: 6px;
-    font-size: 14px;
-    color: #ccc;
-}
-
-.foto-item {
-    width: 100%;
-    height: 200px; /* mismo alto que img */
-    overflow: hidden; /* recorta cualquier exceso */
-}
-
-
-
-
-

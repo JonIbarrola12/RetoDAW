@@ -107,6 +107,7 @@ $busqueda = $_GET['buscar'] ?? '';
                     <li><a href="amigos.php"><button>Amigos</button></a></li>
                     <li><a href="chatprivado.php"><button>Mensajes</button></a></li>
                     <li><a href="grupos.php"><button>Grupos</button></a></li>
+                    <li><a href="galerias.php?id=<?= $_SESSION['id_usuario'] ?>"><button>Galería</button></a></li>
                 </ul>
             </nav>
 

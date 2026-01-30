@@ -140,31 +140,64 @@ $numeroFotos = count($publicaciones);
 <head>
 <meta charset="UTF-8">
 <title>Galería de <?= htmlspecialchars($nombreUsuario) ?></title>
+<script src="../../js/Perfil.js"></script>
+<link rel="stylesheet" href="../../css/estilos.css">
+
 <link rel="stylesheet" href="../../css/galerias.css">
+
 </head>
 <body>
 
 <div class="container">
 
     <!-- Sidebar -->
-    <aside class="sidebar">
-        <h2>OPUSCORD</h2>
-        <nav class="main-nav">
-            <ul>
-                <li><a href="index.php"><button>Feed</button></a></li>
-                <li><a href="amigos.php"><button>Amigos</button></a></li>
-                <li><a href="chatprivado.php"><button>Mensajes</button></a></li>
-                <li><a href="grupos.php"><button>Grupos</button></a></li>
-                <li><a href="galerias.php?id=<?= $idUsuario ?>"><button>Mi Galería</button></a></li>
-            </ul>
-        </nav>
+        <aside class="sidebar">
+            <h2>OPUSCORD</h2>
+            <!-- Navegación arriba -->
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.php"><button>Feed</button></a></li>
+                    <li><a href="amigos.php"><button>Amigos</button></a></li>
+                    <li><a href="chatprivado.php"><button>Mensajes</button></a></li>
+                    <li><a href="grupos.php"><button>Grupos</button></a></li>
+                    <li><a href="galerias.php?id=<?= $_SESSION['id_usuario'] ?>"><button>Galería</button></a></li>
 
-        <!-- Perfil usuario logueado -->
-        <div class="perfil-horiz">
-            <img src="<?= htmlspecialchars($_SESSION['Foto'] ?? '/Recursos/fotousuario.png') ?>" class="fotoPerfil sidebar-foto">
-            <p class="nombre-usuario"><?= htmlspecialchars($_SESSION['Usuario']) ?></p>
-        </div>
-    </aside>
+                </ul>
+            </nav>
+
+            <!-- Botones de sesión abajo -->
+
+            <div class="PerfilContenedor"onclick="abrirPerfil()" style="cursor:pointer;">
+            <?php
+            if (isset($_SESSION['Usuario'])) {
+
+                $Foto = (!empty($_SESSION['Foto'])) ? $_SESSION['Foto'] : '/Recursos/fotousuario.png';
+
+
+                echo '
+                <div class="perfil-horiz">
+                    <img src="' . htmlspecialchars($Foto) . '" class="profile-pic fotoPerfil foto-mia" id="perfilImagen">
+                    <div class="perfil-info">
+                        <p class="perfil-nombre nombre-mio">' . htmlspecialchars($_SESSION['Usuario']) . '</p>
+
+                    </div>
+                </div>
+                ';
+            } else {
+                echo '
+                <div class="auth-buttons">
+                    <a href="../Login/Index.php"><button class="login-btn">Iniciar Sesión</button></a>
+                    <a href="../Login/registrarse.php"><button class="register-btn">Registrarse</button></a>
+                </div>
+                ';
+            }
+            ?>
+
+            </div>
+    
+
+        </aside>
+        
 
     <!-- Contenido principal -->
     <main class="main-content">
@@ -177,12 +210,12 @@ $numeroFotos = count($publicaciones);
 
         <!-- Header galería -->
         <div class="perfil-header">
-            <img src="<?= htmlspecialchars($fotoPerfil) ?>" class="foto-perfil header-foto">
+            <img src="<?= htmlspecialchars($fotoPerfil) ?>" class="foto-perfil header-foto profile-pic fotoPerfil foto-mia">
+
 
             <div class="perfil-info">
                 <div class="fila-superior">
                     <p class="nombre-usuario"><?= htmlspecialchars($nombreUsuario) ?></p>
-
                     <div class="botones-header">
                     <?php if (!$esPropio): ?>
                         <button id="btn-seguir" class="btn-seguir" data-sigo="<?= $sigo ? 1 : 0 ?>">
@@ -190,18 +223,18 @@ $numeroFotos = count($publicaciones);
                         </button>
                     <?php endif; ?>
 
-                    <?php if ($esPropio): ?>
-                        <button id="btn-seguidos" class="btn-seguidos">Seguidos</button>
-                        <div id="lista-seguidos" class="lista-seguidos" style="display: none;"></div>
-                    <?php endif; ?>
                 </div>
 
                 </div>
 
                 <div class="contadores-perfil">
-                    <span><?= $numeroSeguidores ?> seguidores</span>
+                    <span><?= $numeroSeguidores ?> Seguidores</span>
                     <span>·</span>
-                    <span><?= $numeroFotos ?> fotos</span>
+                    <span><?= $numeroFotos ?> Fotos</span>
+                    <?php if ($esPropio): ?>
+                        <button id="btn-seguidos" class="btn-seguidos">Seguidos</button>
+                        <div id="lista-seguidos" class="lista-seguidos" style="display: none;"></div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -210,10 +243,27 @@ $numeroFotos = count($publicaciones);
         <?php if ($esPropio): ?>
         <div class="subir-foto-container">
             <form method="POST" enctype="multipart/form-data">
-                <input type="file" name="imagen" accept="image/*" required>
-                <button type="submit" name="subir_foto">Subir</button>
-            </form>
+                        <div class="upload-imagen">
+            <label for="imagen" class="btn-imagen">+</label>
+            <span id="nombre-archivo">Ningún archivo</span>
+                <button type="submit" name="subir_foto" class="boton-subir">Subir</button>
+
+
+            <input type="file" id="imagen" name="imagen" accept="image/*" hidden>
         </div>
+            <script>
+            document.getElementById('imagen').addEventListener('change', function () {
+                const nombre = this.files.length > 0
+                    ? this.files[0].name
+                    : 'Ningún archivo';
+
+                document.getElementById('nombre-archivo').textContent = nombre;
+            });
+            </script>
+        </form>
+            
+        </div>
+
         <?php endif; ?>
 
 
@@ -289,7 +339,7 @@ buscador.addEventListener('input', () => {
         .then(res => res.json())
         .then(data => {
             if (data.length === 0) {
-                resultadosDiv.innerHTML = '<div class="resultado-usuario">No hay usuarios</div>';
+
                 return;
             }
 
@@ -349,3 +399,9 @@ if(btnSeguidos){
 </html>
 
 
+    <div id="perfilModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="cerrarPerfil()">&times;</span>
+            <div id="perfilContenido"></div>
+        </div>
+    </div>

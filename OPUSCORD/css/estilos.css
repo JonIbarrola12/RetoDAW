@@ -1666,6 +1666,19 @@ hr {
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
 }
+.main-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.main-content::-webkit-scrollbar-thumb {
+    background-color: #7289da;
+    border-radius: 3px;
+}
+
+.main-content::-webkit-scrollbar-track {
+    background-color: #2f3136;
+}
+
 
 /* boton para ver comentarios */
 .ver-mas {
