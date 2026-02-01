@@ -392,6 +392,18 @@ if(btnSeguidos){
     };
 }
 
+// Cerrar lista de seguidos al hacer clic fuera
+document.addEventListener('click', function(e) {
+    const btn = document.getElementById('btn-seguidos');
+    const lista = document.getElementById('lista-seguidos');
+
+    // Si la lista está visible y el clic no es ni en el botón ni en la lista
+    if (lista.style.display === 'block' && !lista.contains(e.target) && e.target !== btn) {
+        lista.style.display = 'none';
+    }
+});
+
+
 
 </script>
 <div id="alertaCustom" class="alerta-custom"></div>
