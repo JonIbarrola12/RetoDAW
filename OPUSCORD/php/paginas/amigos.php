@@ -348,7 +348,7 @@ $busqueda = $_GET['buscar'] ?? '';
         <span id="cerrarPerfilAmigoModal" class="cerrar-modal">&times;</span>
     </div>
 
-
+            
 </div>
 </div>
 <div id="confirmEliminarOverlay" class="confirm-overlay" style="display:none;">
@@ -377,6 +377,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 </script>
+<div id="alertaCustom" class="alerta-custom"></div>
 
 </body>
 </html>

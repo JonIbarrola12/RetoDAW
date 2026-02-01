@@ -89,3 +89,4 @@ $foto = $usuario['Pfp'] ?: '/Recursos/fotousuario.png';
 <?php endif; ?>
 
 </div>
+<div id="alertaCustom" class="alerta-custom"></div>

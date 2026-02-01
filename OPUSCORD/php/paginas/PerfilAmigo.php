@@ -103,3 +103,4 @@ $foto = !empty($amigo['Pfp']) ? $amigo['Pfp'] : '/Recursos/fotousuario.png';
     </form>
     <?php endif; ?>
 </div>
+<div id="alertaCustom" class="alerta-custom"></div>

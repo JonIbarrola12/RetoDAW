@@ -615,16 +615,22 @@ document.querySelectorAll('.comentario-borrar').forEach(btn => {
 
 //  eliminar publicacion si eres propietario
 document.querySelectorAll('.eliminar-publicacion').forEach(btn => {
-    btn.onclick = () => {
-        if (!confirm('quieres eliminar esta publicacion?')) return;
+    btn.onclick = async () => {
+
+        const confirmado = await confirmCustom('¿Quieres eliminar esta publicación?');
+        if (!confirmado) return;
+
         fetch('index.php?ajax=eliminarPublicacion', {
             method: 'POST',
             body: new URLSearchParams({ id_publicacion: btn.dataset.id })
         })
         .then(res => res.json())
         .then(data => {
-            if (data.status==='ok') btn.closest('.post').remove();
-            else alert('no puedes eliminar esta publicacion');
+            if (data.status === 'ok') {
+                btn.closest('.post').remove();
+            } else {
+                confirmCustom('No puedes eliminar esta publicación');
+            }
         });
     };
 });
@@ -787,6 +793,18 @@ document.getElementById('cerrarPerfilAmigoModal')
         <div id="perfilAmigoContenido" class="perfil-modal-content"></div>
         <span id="cerrarPerfilAmigoModal" class="cerrar-modal">&times;</span>
     </div>
+<div id="alertaCustom" class="alerta-custom"></div>
 
 </body>
 </html>
+<div id="confirmModal" class="confirm-modal">
+    <div class="confirm-box">
+        <h3 id="confirmTitle">Confirmación</h3>
+        <p id="confirmMessage">¿Estás seguro?</p>
+
+        <div class="confirm-actions">
+            <button id="confirmCancel" class="btn-cancelar">Cancelar</button>
+            <button id="confirmOk" class="btn-confirmar">Confirmar</button>
+        </div>
+    </div>
+</div>

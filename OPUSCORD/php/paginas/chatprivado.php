@@ -268,5 +268,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_mensaje']) && 
             <div id="perfilContenido"></div>
         </div>
     </div>
+    <div id="alertaCustom" class="alerta-custom"></div>
+
 </body>
 </html>

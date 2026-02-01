@@ -52,9 +52,12 @@ $stmt = $pdo->prepare("
         FIELD(m.Rol, 'admin','moderador','miembro'),
         u.Username ASC
 ");
+
+
 $stmt->execute([$idGrupo]);
 $miembros = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
+
 <div class="perfilModalContent" data-grupo-id="<?= $idGrupo ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <div class="perfil-header">
@@ -91,9 +94,12 @@ $miembros = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <input 
                     type="text" 
                     id="inputGrupoNombre"
-                    class="input-editar hidden" placeholder="Nombre"
+                    class="input-editar hidden"
+                    placeholder="Nombre"
+                    maxlength="12"
                     value="<?= htmlspecialchars($grupo['Nombre']) ?>"
                 >
+
             <?php endif; ?>
 
                 <?php if ($esAdmin): ?>
@@ -119,6 +125,8 @@ $miembros = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
     <?php if ($esAdmin): ?>
     <div id="invitarBox" class="invitar-box hidden">
+        <script src="../../js/Perfil.js"></script>
+
         <form method="POST" action="../Funcionalidades/anadir_miembro.php">
             <input type="hidden" name="id_grupo" value="<?= $idGrupo ?>">
 
@@ -227,26 +235,37 @@ $miembros = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </button>
         </form>
     <?php endif; ?>
-
     <?php if ($esAdmin): ?>
-        <!-- BOTÓN ELIMINAR -->
-        <form 
-            method="POST" 
-            action="../Funcionalidades/eliminar_grupo.php"
-            onsubmit="return confirm('⚠️ Esto eliminará el grupo para todos. ¿Continuar?');"
-        >
-            <input type="hidden" name="id_grupo" value="<?= $idGrupo ?>">
-            <button class="btn-eliminar">
-                Eliminar Grupo
-            </button>
-        </form>
+    <form 
+        method="POST" 
+        action="../Funcionalidades/eliminar_grupo.php"
+        class="form-eliminar-grupo"
+    >
+        <input type="hidden" name="id_grupo" value="<?= $idGrupo ?>">
+        <button type="submit" class="btn-eliminar">
+            Eliminar Grupo
+        </button>
+    </form>
     <?php endif; ?>
+
 </div>
 
 </div>
+<div id="alertaCustom" class="alerta-custom"></div>
 
 <div id="perfilAmigoModal" class="perfil-modalgru" style="display:none;">
     <div id="perfilAmigoContenido" class="perfil-modal-contentgru">
         <span id="cerrarPerfilAmigoModal" class="cerrar-modalgru">&times;</span>
     </div>
 </div>
+
+<div id="confirmModalgru" class="confirmgru-modal hidden">
+    <div class="confirmgru-box">
+        <p id="confirmMensajegru"></p>
+        <div class="confirmgru-actions">
+            <button id="confirmSigru" class="btn-confirmargru">Eliminar</button>
+            <button id="confirmNogru" class="btn-cancelar">Cancelar</button>
+        </div>
+    </div>
+</div>
+        <script src="../../js/Perfil.js"></script>

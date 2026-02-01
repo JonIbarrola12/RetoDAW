@@ -14,7 +14,55 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
+function confirmCustom(mensaje) {
+    return new Promise(resolve => {
+        const modal = document.getElementById('confirmModal');
+        document.getElementById('confirmMessage').textContent = mensaje;
 
+        modal.style.display = 'flex';
+
+        const ok = document.getElementById('confirmOk');
+        const cancel = document.getElementById('confirmCancel');
+
+        ok.onclick = () => {
+            modal.style.display = 'none';
+            resolve(true);
+        };
+
+        cancel.onclick = () => {
+            modal.style.display = 'none';
+            resolve(false);
+        };
+    });
+}
+    function confirmCustomGru(mensaje) {
+    return new Promise(resolve => {
+
+        const modal = document.getElementById('confirmModalgru');
+        const texto = document.getElementById('confirmMensajegru');
+        const btnSi = document.getElementById('confirmSigru');
+        const btnNo = document.getElementById('confirmNogru');
+
+        texto.textContent = mensaje;
+        modal.classList.remove('hidden');
+
+        const limpiar = () => {
+            modal.classList.add('hidden');
+            btnSi.onclick = null;
+            btnNo.onclick = null;
+        };
+
+        btnSi.onclick = () => {
+            limpiar();
+            resolve(true);   // ✅ MUY IMPORTANTE
+        };
+
+        btnNo.onclick = () => {
+            limpiar();
+            resolve(false);  // ✅ MUY IMPORTANTE
+        };
+    });
+}
 function abrirPerfil() {
     fetch('../paginas/Perfil.php')
         .then(res => res.text())
@@ -77,6 +125,24 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 });
+
+document.addEventListener('submit', async function (e) {
+
+    const form = e.target;
+
+    if (!form.classList.contains('form-eliminar-grupo')) return;
+
+    e.preventDefault();
+
+    const confirmado = await confirmCustomGru(
+        'Esto eliminará el grupo para todos. ¿Continuar?'
+    );
+
+    if (confirmado) {
+        form.submit();
+    }
+});
+
 
 
 // --- BroadcastChannel para actualizar foto en otras pestañas ---
@@ -287,9 +353,19 @@ document.addEventListener('click', function (e) {
 
         const input = document.getElementById('usernameInput');
         const nuevoUsername = input.value.trim();
+        const errorSpan = document.getElementById('error-username');
 
+        // limpiar error
+        errorSpan.textContent = '';
+
+        // validaciones front
         if (nuevoUsername.length < 3) {
-            alert('El nombre debe tener al menos 3 caracteres');
+            errorSpan.textContent = 'El nombre debe tener al menos 3 caracteres';
+            return;
+        }
+
+        if (nuevoUsername.length > 12) {
+            errorSpan.textContent = 'Máximo 12 caracteres';
             return;
         }
 
@@ -300,24 +376,44 @@ document.addEventListener('click', function (e) {
         })
         .then(res => res.json())
         .then(data => {
+
             if (data.status === 'ok') {
 
-                // Actualizar texto en pantalla
+                // actualizar texto en pantalla
                 document.getElementById('usernameTexto').textContent = nuevoUsername;
                 document.querySelectorAll('.nombre-mio').forEach(el => {
                     el.textContent = nuevoUsername;
                 });
 
-                // Cerrar modal
+                // cerrar modal
                 document.getElementById('usernameModal').style.display = 'none';
+
+                // limpiar input y error
+                input.value = '';
+                errorSpan.textContent = '';
+
             } else {
-                alert(data.msg);
+                // ERROR desde backend (usuario en uso, etc)
+                errorSpan.textContent = data.msg;
             }
         })
-        .catch(() => alert('Error de conexión'));
+        .catch(() => {
+            errorSpan.textContent = 'Error de conexión';
+        });
     }
 
 });
+
+function mostrarAlerta(msg, tipo = 'error') {
+    const alerta = document.getElementById('alertaCustom');
+    alerta.textContent = msg;
+    alerta.className = `alerta-custom ${tipo}`;
+    alerta.style.display = 'block';
+
+    setTimeout(() => {
+        alerta.style.display = 'none';
+    }, 3000);
+}
 
 // Cada 5 segundos revisa si hay cambios en la lista de amigos
 setInterval(() => {
@@ -675,6 +771,106 @@ document.addEventListener('blur', e => {
     }
 }, true);
 
+document.addEventListener('keydown', e => {
+    if (e.target.id === 'inputGrupoNombre' && e.key === 'Enter') {
+        e.preventDefault();
+        guardarNombreGrupo();
+    }
+
+    if (e.target.id === 'inputGrupoNombre' && e.key === 'Escape') {
+        cancelarEdicionNombreGrupo();
+    }
+});
+
+/* Abrir edición */
+document.addEventListener('click', e => {
+    if (e.target.closest('#btnEditarNombre')) {
+        const texto = document.getElementById('grupoNombreTexto');
+        const input = document.getElementById('inputGrupoNombre');
+        const btn = document.getElementById('btnEditarNombre');
+
+        input.value = texto.textContent.trim();
+
+        texto.classList.add('hidden');
+        btn.classList.add('hidden');
+        input.classList.remove('hidden');
+
+        input.focus();
+        input.select();
+    }
+});
+
+/* Guardar con ENTER / Cancelar con ESC */
+document.addEventListener('keydown', e => {
+    if (e.target.id !== 'inputGrupoNombre') return;
+
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        guardarNombreGrupo();
+    }
+
+    if (e.key === 'Escape') {
+        cancelarEdicionNombreGrupo();
+    }
+});
+
+/* Guardar AJAX */
+function guardarNombreGrupo() {
+    const input = document.getElementById('inputGrupoNombre');
+    const nuevoNombre = input.value.trim();
+
+    if (!nuevoNombre) {
+        cancelarEdicionNombreGrupo();
+        return;
+    }
+
+    const idGrupo = document
+        .querySelector('.perfilModalContent')
+        .dataset.grupoId;
+
+    fetch('../Funcionalidades/editar_grupo_ajax.php', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({
+            campo: 'Nombre',
+            valor: nuevoNombre,
+            id_grupo: idGrupo
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === 'ok') {
+            document.getElementById('grupoNombreTexto').textContent = nuevoNombre;
+        }
+        cerrarEdicionNombreGrupo();
+    });
+}
+function cancelarEdicionNombreGrupo() {
+    const input = document.getElementById('inputGrupoNombre');
+    const texto = document.getElementById('grupoNombreTexto');
+    const btn = document.getElementById('btnEditarNombre');
+
+    input.classList.add('hidden');
+    texto.classList.remove('hidden');
+    btn.classList.remove('hidden');
+}
+
+/* Cancelar */
+function cancelarEdicionNombreGrupo() {
+    cerrarEdicionNombreGrupo();
+}
+
+/* Cerrar edición (una sola función 💅) */
+function cerrarEdicionNombreGrupo() {
+    const input = document.getElementById('inputGrupoNombre');
+    const texto = document.getElementById('grupoNombreTexto');
+    const btn = document.getElementById('btnEditarNombre');
+
+    input.classList.add('hidden');
+    texto.classList.remove('hidden');
+    btn.classList.remove('hidden');
+}
+
 
 document.addEventListener('click', e => {
 
@@ -726,13 +922,16 @@ function guardarDescripcionGrupo() {
     const textarea = document.getElementById('grupoDescripcionInput');
     const nuevaDescripcion = textarea.value.trim();
 
+    const contenedor = document.querySelector('.perfilModalContent');
+    const idGrupo = contenedor.dataset.grupoId;
+
     fetch('../Funcionalidades/editar_grupo_ajax.php', {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify({
             campo: 'Descripcion',
             valor: nuevaDescripcion,
-            id_grupo: obtenerGrupoIdActivo()
+            id_grupo: idGrupo
         })
     })
     .then(res => res.json())
@@ -740,9 +939,12 @@ function guardarDescripcionGrupo() {
         if (data.status === 'ok') {
             document.getElementById('grupoDescripcionTexto').textContent =
                 nuevaDescripcion || 'Sin descripción';
+        } else {
+            console.error(data.msg);
         }
         cerrarEdicionDescripcionGrupo();
-    });
+    })
+    .catch(err => console.error(err));
 }
 
 /* cancelar */

@@ -394,6 +394,7 @@ if(btnSeguidos){
 
 
 </script>
+<div id="alertaCustom" class="alerta-custom"></div>
 
 </body>
 </html>

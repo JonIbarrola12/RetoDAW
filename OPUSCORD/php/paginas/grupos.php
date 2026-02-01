@@ -370,10 +370,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
                                 class="grupo-foto-sidebar"
                                 data-grupo-id="<?= $g['id_grupo'] ?>"
                             >
-
-                            <span class="grupo-nombre">
-                                <?= htmlspecialchars($g['Nombre']) ?>
-                            </span>
+                                <span class="grupo-nombre">
+                                    <?= htmlspecialchars($g['Nombre']) ?>
+                                </span>
                         </a>
                     </li>
                 <?php endforeach; ?>
@@ -396,6 +395,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
         <div id="modalGrupoContenido"></div>
     </div>
 </div>
+<div id="alertaCustom" class="alerta-custom"></div>
 
 
 </body>
