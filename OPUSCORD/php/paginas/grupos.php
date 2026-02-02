@@ -48,26 +48,17 @@ if(isset($_GET['ajax']) && $_GET['ajax'] == 1 && $grupoActivoId){
 
         // procesar enlaces de imagenes y PDFs
         $contenido = $msg['Contenido'];
-        $contenido = preg_replace('/<a href=[\'"](.+?\.(?:jpg|jpeg|png|gif|webp))[\'"] target=[\'"]_blank[\'"]>📎 (.+?)<\/a>/i',
-            '<a href="$1" target="_blank"><img src="$1" style="max-width:200px;max-height:200px;border-radius:5px;margin:2px;" alt="$2"></a>', 
-            $contenido);
+        $contenido = preg_replace(
+            '/<a href=[\'"](.+?\.(?:jpg|jpeg|png|gif|webp))[\'"] target=[\'"]_blank[\'"]>📎 (.+?)<\/a>/i',
+            '<img src="$1" style="max-width:200px;max-height:200px;border-radius:5px;margin:2px;cursor:pointer;" onclick="abrirImagen(\'$1\')" alt="$2">',
+            $contenido
+        );
+
 
         echo "<div class='message $clase'><strong>".htmlspecialchars($emisor).":</strong> $contenido</div>";
     endforeach;
     exit;
 }
-
-// AJAX para obtener datos actualizados del grupo
-if (isset($_GET['ajaxGrupo']) && $_GET['ajaxGrupo'] == 1 && $grupoActivoId) {
-    $grupo = GruposCRUD::obtenerPorId($grupoActivoId);
-
-    echo json_encode([
-        'nombre' => $grupo['Nombre']
-    ]);
-
-    exit;
-}
-
 
 // crear grupo
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['crear_grupo'])) {
@@ -318,19 +309,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
                     .catch(err => console.error(err));
             }
 
-            function actualizarNombreGrupo() {
-                fetch('grupos.php?grupo=<?= $grupoActivoId ?>&ajaxGrupo=1')
-                    .then(res => res.json())
-                    .then(data => {
-                        const titulo = document.getElementById('perfilGrupoNombre');
-                        if (titulo) {
-                            titulo.textContent = data.nombre;
-                        }
-                    })
-                    .catch(err => console.error(err));
-            }
-
-
             // enviar archivo automáticamente
             fileInput.addEventListener('change', function() {
                 if(this.files.length > 0){
@@ -362,18 +340,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
                 }).catch(err => console.error(err));
             });
 
-            // actualizar mensajes
-            setInterval(() => {
-                actualizarMensajes();
-                actualizarNombreGrupo();
-            }, 1000);
-
+            // actualizar mensajes cada 5 segundos
+            setInterval(actualizarMensajes, 5000);
 
             // al cargar la página, hacer scroll al final
             window.addEventListener('load', () => {
                 chatMessages.scrollTop = chatMessages.scrollHeight;
-                actualizarNombreGrupo();
-
             });
             </script>
 
@@ -437,6 +409,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
         <div id="perfilAmigoContenido" class="perfil-modal-content"></div>
         <span id="cerrarPerfilAmigoModal" class="cerrar-modal">&times;</span>
     </div>
+
+<!-- Modal para ver imagen en chats -->
+<div id="imagenModal" style="
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.8);
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+">
+    <img id="imagenModalContenido" src="" style="
+        max-width:90%;
+        max-height:90%;
+        border-radius:10px;
+        cursor:pointer;
+    ">
+</div>
+
+<script>
+function abrirImagen(src) {
+    const modal = document.getElementById('imagenModal');
+    const img = document.getElementById('imagenModalContenido');
+    img.src = src;
+    modal.style.display = 'flex';
+}
+
+const modal = document.getElementById('imagenModal');
+
+modal.onclick = function(e) {
+    if (e.target === modal) {
+        modal.style.display = 'none';
+    }
+};
+
+document.getElementById('imagenModalContenido').onclick = () => {
+    modal.style.display = 'none';
+};
+</script>
+
 </body>
 </html>
 
