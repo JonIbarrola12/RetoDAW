@@ -33,6 +33,20 @@ if (isset($_POST['ajax']) && $_POST['ajax'] === 'seguirUsuario') {
     exit; // importante para que no cargue el HTML normal
 }
 
+// Eliminar publicación vía AJAX
+if (isset($_POST['ajax']) && $_POST['ajax'] === 'eliminarPublicacion') {
+    $idPublicacion = (int)($_POST['id_publicacion'] ?? 0);
+
+    if ($idPublicacion > 0) {
+        PublicacionesCRUD::eliminarPublicacion($idPublicacion);
+        echo json_encode(['success' => true]);
+    } else {
+        echo json_encode(['success' => false]);
+    }
+    exit;
+}
+
+
 // Obtener seguidos vía AJAX
 if(isset($_GET['ajax']) && $_GET['ajax'] === 'obtenerSeguidos'){
     header('Content-Type: application/json');
@@ -275,8 +289,12 @@ $numeroFotos = count($publicaciones);
             <?php if (count($publicaciones) > 0): ?>
             <div class="galeria-grid">
                 <?php foreach ($publicaciones as $p): ?>
-                    <div class="foto-item">
+                    <div class="foto-item" data-id="<?= $p['id_publicacion'] ?>">
                         <img src="../../<?= htmlspecialchars($p['ImagenUrl']) ?>" onclick="abrirModal(this.src)">
+
+                        <?php if ($esPropio): ?>
+                            <span class="btn-eliminar">×</span>
+                        <?php endif; ?>
                     </div>
                 <?php endforeach; ?>
             </div>
@@ -401,6 +419,38 @@ document.addEventListener('click', function(e) {
     if (lista.style.display === 'block' && !lista.contains(e.target) && e.target !== btn) {
         lista.style.display = 'none';
     }
+});
+
+document.querySelectorAll('.btn-eliminar').forEach(btn => {
+    btn.addEventListener('click', function (e) {
+        e.stopPropagation(); // para que no abra el modal
+
+        if (!confirm("¿Seguro que quieres eliminar esta foto?")) {
+            return;
+        }
+
+        const contenedor = this.parentElement;
+        const id = contenedor.dataset.id;
+
+        fetch('galerias.php', {
+            method: 'POST',
+            body: new URLSearchParams({
+                ajax: 'eliminarPublicacion',
+                id_publicacion: id
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                contenedor.remove();
+            } else {
+                alert("Error al eliminar la publicación");
+            }
+        })
+        .catch(err => {
+            console.error(err);
+        });
+    });
 });
 
 

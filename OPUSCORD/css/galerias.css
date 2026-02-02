@@ -321,3 +321,29 @@ a {
     border-radius: 10px;
     cursor: pointer;
 }
+
+.foto-item {
+    position: relative;
+}
+
+.btn-eliminar {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    font-size: 18px;
+    padding: 4px 8px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: none;
+    transition: 0.2s;
+}
+
+.foto-item:hover .btn-eliminar {
+    display: block;
+}
+
+.btn-eliminar:hover {
+    background: red;
+}
