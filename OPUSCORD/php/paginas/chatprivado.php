@@ -57,9 +57,10 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == 1 && $receptorId) {
         $contenido = $msg['Contenido'];
         $contenido = preg_replace(
             '/<a href=[\'"](.+?\.(?:jpg|jpeg|png|gif|webp))[\'"] target=[\'"]_blank[\'"]>📎 (.+?)<\/a>/i',
-            '<a href="$1" target="_blank"><img src="$1" style="max-width:200px;max-height:200px;border-radius:5px;margin:2px;" alt="$2"></a>',
+            '<img src="$1" style="max-width:200px;max-height:200px;border-radius:5px;margin:2px;cursor:pointer;" onclick="abrirImagen(\'$1\')" alt="$2">',
             $contenido
         );
+
 
         echo "<div class='message $clase'><strong>$nombre:</strong> $contenido</div>";
 
@@ -130,6 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_mensaje']) && 
     <script src="../../js/Perfil.js"></script>
 
 </head>
+
 <body>
 
 <div class="container">
@@ -334,6 +336,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_mensaje']) && 
         </div>
     </div>
     <div id="alertaCustom" class="alerta-custom"></div>
+
+    <!-- Modal para ver imagen en chats -->
+<div id="imagenModal" style="
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.8);
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+">
+    <img id="imagenModalContenido" src="" style="
+        max-width:90%;
+        max-height:90%;
+        border-radius:10px;
+        cursor:pointer;
+    ">
+</div>
+
+<script>
+function abrirImagen(src) {
+    const modal = document.getElementById('imagenModal');
+    const img = document.getElementById('imagenModalContenido');
+    img.src = src;
+    modal.style.display = 'flex';
+}
+
+const modal = document.getElementById('imagenModal');
+
+modal.onclick = function(e) {
+    if (e.target === modal) {
+        modal.style.display = 'none';
+    }
+};
+
+document.getElementById('imagenModalContenido').onclick = () => {
+    modal.style.display = 'none';
+};
+</script>
 
 </body>
 </html>
