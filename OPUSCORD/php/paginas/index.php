@@ -85,6 +85,11 @@ $publicaciones = [];
 // recorremos todas las publicaciones
 foreach (PublicacionesCRUD::recibirRegistros() as $p) {
 
+    // IGNORAR fotos de galería
+    if ($p['Contenido'] === '[GALERIA]') {
+        continue; // salta esta publicación
+    }
+    
     // obtenemos el nombre del usuario de la publicacion
     $nombreUsuario = $usuariosPorId[$p['id_usuario']]['Username'] ?? '';
 

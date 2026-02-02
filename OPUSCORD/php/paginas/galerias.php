@@ -132,18 +132,21 @@ if ($esPropio && isset($_POST['subir_foto'])) {
     }
 
     if ($imagenUrl) {
-        $publicacion = new Publicacion($idUsuario, '', $imagenUrl, null, 'publica');
+        $publicacion = new Publicacion($idUsuario, '[GALERIA]', $imagenUrl, null, 'publica');
         PublicacionesCRUD::añadirPublicacion($publicacion);
+
         header("Location: galerias.php?id=$idUsuario");
         exit;
     }
+
 }
 
 // obtener publicaciones de usuario visto
 $publicaciones = array_filter(
     PublicacionesCRUD::recibirRegistros(),
-    fn($p) => $p['id_usuario'] == $idVer
+    fn($p) => $p['id_usuario'] == $idVer && $p['Contenido'] === '[GALERIA]'
 );
+
 
 $numeroFotos = count($publicaciones);
 
