@@ -1438,16 +1438,18 @@ hr {
 }
 
 
-/* imagenes */
 .imagenpublicacion {
-    width: 100%;
-    height: auto; /* ajusta la altura según el ancho */
-    max-width: 100%;
-    border-radius: 15px;
+    width: 550px;        /* ancho fijo del recuadro */
+    height: 400px;       /* alto fijo del recuadro */
+    object-fit: cover;   /* recorta la imagen pero mantiene proporciones */
+    object-position: center; /* centra la parte visible de la imagen */
+    border-radius: 10px; /* bordes redondeados */
+    cursor: pointer;
     display: block;
-    margin-top: 8px;
-    object-fit: contain; /* opcional, asegura que no se corte */
+    margin: 10px auto;   /* centrado horizontal en su contenedor */
 }
+
+
 
 
 
