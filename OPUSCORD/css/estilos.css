@@ -1726,6 +1726,19 @@ hr {
 .main-content::-webkit-scrollbar-track {
     background-color: #2f3136;
 }
+
+.chat-messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background-color: #7289da;
+    border-radius: 3px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+    background-color: #2f3136;
+}
 .alerta-custom {
     display: none;
     background: #2c2f36;

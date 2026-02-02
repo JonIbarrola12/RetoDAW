@@ -155,10 +155,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_mensaje']) && 
         <?php if (!$receptorId): ?>
             <h3>Selecciona un usuario para chatear</h3>
         <?php else: ?>
+            <div class="perfil-horiz">
+                <img 
+                    src="<?= htmlspecialchars($usuariosPorId[$receptorId]['Pfp'] ?: '../../Recursos/fotousuario.png') ?>"
+                    class="profile-pic"
+                    alt="Foto de <?= htmlspecialchars($usuariosPorId[$receptorId]['Username']) ?>"
+                >
 
-            <h3>
-                Chat con <?= htmlspecialchars($usuariosPorId[$receptorId]['Username'] ?? 'Usuario') ?>
-            </h3>
+                <h3>
+                    <?= htmlspecialchars($usuariosPorId[$receptorId]['Username'] ?? 'Usuario') ?>
+                </h3>
+            </div>
+            
+            <hr>
 
             <div class="chat-messages"></div>
 

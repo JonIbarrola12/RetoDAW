@@ -733,25 +733,43 @@ function guardarNombreGrupo() {
     const nuevoNombre = input.value.trim();
     if (!nuevoNombre) return;
 
+    const idGrupo = obtenerGrupoIdActivo();
+
     fetch('../Funcionalidades/editar_grupo_ajax.php', {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify({
             campo: 'Nombre',
             valor: nuevoNombre,
-            id_grupo: obtenerGrupoIdActivo()
+            id_grupo: idGrupo
         })
     })
     .then(res => res.json())
     .then(data => {
         if (data.status === 'ok') {
-            document.getElementById('grupoNombreTexto').textContent = nuevoNombre;
+
+            // perfil_grupo.php
+            const tituloPerfil = document.getElementById('grupoNombreTexto');
+            if (tituloPerfil) {
+                tituloPerfil.textContent = nuevoNombre;
+            }
+
+            // sidebar
+            document
+                .querySelectorAll(`.grupo-nombre[data-grupo-id="${idGrupo}"]`)
+                .forEach(el => el.textContent = nuevoNombre);
+
+            // header de grupos.php (ESTE ERA EL QUE FALLABA)
+            document
+                .querySelectorAll(`.grupo-nombre-dinamico[data-grupo-id="${idGrupo}"]`)
+                .forEach(el => el.textContent = nuevoNombre);
         }
-        input.classList.add('hidden');
-        document.getElementById('grupoNombreTexto').classList.remove('hidden');
-        document.getElementById('btnEditarNombre').classList.remove('hidden');
+
+        cerrarEdicionNombreGrupo();
     });
+
 }
+
 document.addEventListener('click', function (e) {
     const modal = document.getElementById('perfilAmigoModal');
     const contenido = document.getElementById('perfilAmigoContenido');
@@ -764,6 +782,33 @@ document.addEventListener('click', function (e) {
         contenido.innerHTML = '';
     }
 });
+
+function actualizarNombreGrupoGlobal(idGrupo, nuevoNombre) {
+    document
+        .querySelectorAll(`.grupo-nombre-dinamico[data-grupo-id="${idGrupo}"]`)
+        .forEach(el => {
+            el.textContent = nuevoNombre;
+        });
+}
+
+
+function actualizarNombreGrupoSidebar(idGrupo, nuevoNombre) {
+    const item = document.querySelector(
+        `.grupo-item[data-grupo-id="${idGrupo}"]`
+    );
+
+    if (!item) {
+        console.warn('Grupo no encontrado en sidebar');
+        return;
+    }
+
+    const nombre = item.querySelector('.grupo-nombre');
+    if (nombre) {
+        nombre.textContent = nuevoNombre;
+    }
+}
+
+
 
 document.addEventListener('blur', e => {
     if (e.target.id === 'inputGrupoDescripcion') {
@@ -840,11 +885,19 @@ function guardarNombreGrupo() {
     .then(res => res.json())
     .then(data => {
         if (data.status === 'ok') {
+
+            // perfil
             document.getElementById('grupoNombreTexto').textContent = nuevoNombre;
+
+            // sidebar ✅
+            actualizarNombreGrupoSidebar(idGrupo, nuevoNombre);
+            
         }
+
         cerrarEdicionNombreGrupo();
     });
 }
+
 function cancelarEdicionNombreGrupo() {
     const input = document.getElementById('inputGrupoNombre');
     const texto = document.getElementById('grupoNombreTexto');

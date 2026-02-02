@@ -227,7 +227,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
 
         </aside>
     <!-- chat -->
-    <main class="main-content">
+    <main class="main-content chatcontent">
         
         <?php if (isset($_SESSION['mensaje'])): ?>
             <div class="mensaje-solicitud" id="mensajeFlash">
@@ -248,12 +248,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
                     class="profile-pic grupo-foto-header"
                     data-grupo-id="<?= $grupoActivo['id_grupo'] ?>"
                 >
-                <div class="perfil-info">
-                    <p class="perfil-nombre">
+                <div class="perfil-info" data-grupo-id="<?= $idGrupo ?>">
+                    <p
+                        class="perfil-nombre grupo-nombre-dinamico"
+                        id="perfilGrupoNombre"
+                        data-grupo-id="<?= $grupoActivo['id_grupo'] ?>"
+                    >
                         <?= htmlspecialchars($grupoActivo['Nombre']) ?>
                     </p>
 
                 </div>
+
             </div>
 
 
@@ -363,18 +368,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
                 <?php foreach ($miembros as $m):
                     $g = GruposCRUD::obtenerPorId($m['GrupoId']);
                 ?>
-                    <li class="grupo-item">
-                        <a href="grupos.php?grupo=<?= $g['id_grupo'] ?>" class="grupo-link">
-                            <img 
-                                src="<?= htmlspecialchars($g['Pfp'] ?: '/Recursos/fotogrupo.png') ?>" 
-                                class="grupo-foto-sidebar"
-                                data-grupo-id="<?= $g['id_grupo'] ?>"
-                            >
-                                <span class="grupo-nombre">
-                                    <?= htmlspecialchars($g['Nombre']) ?>
-                                </span>
-                        </a>
-                    </li>
+                <li class="grupo-item" data-grupo-id="<?= $g['id_grupo'] ?>">
+                    <a href="grupos.php?grupo=<?= $g['id_grupo'] ?>" class="grupo-link">
+                        <img 
+                            src="<?= htmlspecialchars($g['Pfp'] ?: '/Recursos/fotogrupo.png') ?>" 
+                            class="grupo-foto-sidebar"
+                        >
+                        <span class="grupo-nombre">
+                            <?= htmlspecialchars($g['Nombre']) ?>
+                        </span>
+                    </a>
+                </li>
+
                 <?php endforeach; ?>
             </ul>
         </div>
@@ -397,7 +402,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
 </div>
 <div id="alertaCustom" class="alerta-custom"></div>
 
-
+    <div id="perfilAmigoModal" class="perfil-modal" style="display:none;">
+        <div id="perfilAmigoContenido" class="perfil-modal-content"></div>
+        <span id="cerrarPerfilAmigoModal" class="cerrar-modal">&times;</span>
+    </div>
 </body>
 </html>
 
