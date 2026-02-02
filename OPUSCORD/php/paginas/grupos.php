@@ -363,16 +363,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
 
         <h3>Mis Grupos</h3>
 
-        <div class="grupos-scroll">
+        <div class="grupos-scroll ">
             <ul>
                 <?php foreach ($miembros as $m):
                     $g = GruposCRUD::obtenerPorId($m['GrupoId']);
                 ?>
                 <li class="grupo-item" data-grupo-id="<?= $g['id_grupo'] ?>">
                     <a href="grupos.php?grupo=<?= $g['id_grupo'] ?>" class="grupo-link">
-                        <img 
+                        <img data-grupo-id="<?= $g['id_grupo'] ?>"
                             src="<?= htmlspecialchars($g['Pfp'] ?: '/Recursos/fotogrupo.png') ?>" 
-                            class="grupo-foto-sidebar"
+                            class="grupo-foto-sidebar" 
                         >
                         <span class="grupo-nombre">
                             <?= htmlspecialchars($g['Nombre']) ?>
