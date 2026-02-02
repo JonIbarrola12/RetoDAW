@@ -57,6 +57,18 @@ if(isset($_GET['ajax']) && $_GET['ajax'] == 1 && $grupoActivoId){
     exit;
 }
 
+// AJAX para obtener datos actualizados del grupo
+if (isset($_GET['ajaxGrupo']) && $_GET['ajaxGrupo'] == 1 && $grupoActivoId) {
+    $grupo = GruposCRUD::obtenerPorId($grupoActivoId);
+
+    echo json_encode([
+        'nombre' => $grupo['Nombre']
+    ]);
+
+    exit;
+}
+
+
 // crear grupo
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['crear_grupo'])) {
     $nombre = trim($_POST['nombre']);
@@ -306,6 +318,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
                     .catch(err => console.error(err));
             }
 
+            function actualizarNombreGrupo() {
+                fetch('grupos.php?grupo=<?= $grupoActivoId ?>&ajaxGrupo=1')
+                    .then(res => res.json())
+                    .then(data => {
+                        const titulo = document.getElementById('perfilGrupoNombre');
+                        if (titulo) {
+                            titulo.textContent = data.nombre;
+                        }
+                    })
+                    .catch(err => console.error(err));
+            }
+
+
             // enviar archivo automáticamente
             fileInput.addEventListener('change', function() {
                 if(this.files.length > 0){
@@ -337,12 +362,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
                 }).catch(err => console.error(err));
             });
 
-            // actualizar mensajes cada 5 segundos
-            setInterval(actualizarMensajes, 5000);
+            // actualizar mensajes
+            setInterval(() => {
+                actualizarMensajes();
+                actualizarNombreGrupo();
+            }, 1000);
+
 
             // al cargar la página, hacer scroll al final
             window.addEventListener('load', () => {
                 chatMessages.scrollTop = chatMessages.scrollHeight;
+                actualizarNombreGrupo();
+
             });
             </script>
 
