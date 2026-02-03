@@ -48,11 +48,15 @@ if(isset($_GET['ajax']) && $_GET['ajax'] == 1 && $grupoActivoId){
 
         // procesar enlaces de imagenes y PDFs
         $contenido = $msg['Contenido'];
+
+        // Convertir SOLO enlaces antiguos a imágenes
         $contenido = preg_replace(
-            '/<a href=[\'"](.+?\.(?:jpg|jpeg|png|gif|webp))[\'"] target=[\'"]_blank[\'"]>📎 (.+?)<\/a>/i',
-            '<img src="$1" style="max-width:200px;max-height:200px;border-radius:5px;margin:2px;cursor:pointer;" onclick="abrirImagen(\'$1\')" alt="$2">',
+            '/<a[^>]+href=[\'"]([^\'"]+\.(?:jpg|jpeg|png|gif|webp))[\'"][^>]*>📎[^<]+<\/a>/i',
+            '<img src="$1" style="max-width:200px;max-height:200px;border-radius:5px;margin:2px;cursor:pointer;" onclick="abrirImagen(\'$1\')">',
             $contenido
         );
+
+
 
 
         $foto = $usuariosPorId[$emisorIdUsuario]['Pfp']
@@ -136,12 +140,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_mensaje']) && 
             $uploadsDir = '../../uploads/';
             if (!is_dir($uploadsDir)) mkdir($uploadsDir, 0755, true);
 
-            $nombreArchivo = basename($_FILES['archivo']['name']);
+            $extension = pathinfo($_FILES['archivo']['name'], PATHINFO_EXTENSION);
+
+            // Crear nombre único y seguro
+            $nombreArchivo = uniqid('file_', true) . '.' . strtolower($extension);
+
             $destino = $uploadsDir . $nombreArchivo;
 
             if (move_uploaded_file($_FILES['archivo']['tmp_name'], $destino)) {
                 $archivoSubido = $nombreArchivo;
-            } else {
+            }else {
                 $_SESSION['mensaje'] = "Error al subir el archivo";
             }
         } else {
@@ -156,7 +164,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_mensaje']) && 
             $idMiembro = $miembro['id_miembro'];
             $textoFinal = $contenidoSeguro;
             if ($archivoSubido) {
-                $textoFinal .= ($textoFinal ? "<br>" : "") . "<a href='../../uploads/" . urlencode($archivoSubido) . "' target='_blank'>📎 $archivoSubido</a>";
+                $ruta = "../../uploads/" . urlencode($archivoSubido);
+
+                if (preg_match('/\.(jpg|jpeg|png|gif|webp)$/i', $archivoSubido)) {
+                    // Si es imagen, guardarla directamente como <img>
+                    $textoFinal .= "<br><img src='$ruta' class='imagen-chat' style='max-width:200px;max-height:200px;border-radius:5px;cursor:pointer;' onclick=\"abrirImagen('$ruta')\">";
+                } else {
+                    // Si es PDF u otro archivo
+                    $textoFinal .= "<br><a class='archivo-adjunto' href='$ruta' target='_blank'>📎 $archivoSubido</a>";
+                }
             }
             $mensaje = new MensajesGrupos($idMiembro, $grupoActivoId, $textoFinal);
             MensajesGruposCRUD::añadirMensaje($mensaje);
@@ -306,10 +322,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
                     $clase = ($emisorIdUsuario == $idUsuario) ? 'propio' : 'otro';
 
                     $contenido = $msg['Contenido'];
-                    $contenido = preg_replace('/<a href=[\'"](.+?\.(?:jpg|jpeg|png|gif|webp))[\'"] target=[\'"]_blank[\'"]>📎 (.+?)<\/a>/i',
-                        '<a href="$1" target="_blank"><img src="$1" style="max-width:200px;max-height:200px;border-radius:5px;margin:2px;" alt="$2"></a>', 
-                        $contenido);
-
                     $foto = $usuariosPorId[$emisorIdUsuario]['Pfp']
     ?? '../../Recursos/fotousuario.png';
 
@@ -361,15 +373,27 @@ echo "
             document.getElementById('file-upload-btn').addEventListener('click', e => { e.preventDefault(); fileInput.click(); });
 
             // actualizar mensajes AJAX
-            function actualizarMensajes() {
+            function actualizarMensajes(forzarScroll = false) {
+                const estabaAbajo =
+                    chatMessages.scrollTop + chatMessages.clientHeight >=
+                    chatMessages.scrollHeight - 50;
+
                 fetch('grupos.php?grupo=<?= $grupoActivoId ?>&ajax=1')
                     .then(res => res.text())
                     .then(data => {
                         chatMessages.innerHTML = data;
-                        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+                        // Bajar si:
+                        // - el usuario ya estaba abajo
+                        // - o se forzó el scroll (al enviar mensaje)
+                        if (estabaAbajo || forzarScroll) {
+                            chatMessages.scrollTop = chatMessages.scrollHeight;
+                        }
                     })
                     .catch(err => console.error(err));
             }
+
+
 
             // enviar archivo automáticamente
             fileInput.addEventListener('change', function() {
@@ -390,17 +414,25 @@ echo "
             // enviar mensaje de texto
             chatForm.addEventListener('submit', e => {
                 e.preventDefault();
+
                 const formData = new FormData(chatForm);
                 formData.append('enviar_mensaje','1');
+
                 fetch('grupos.php?grupo=<?= $grupoActivoId ?>', {
                     method: 'POST',
                     body: formData,
                     headers: {'X-Requested-With':'XMLHttpRequest'}
-                }).then(res => res.text()).then(() => {
+                })
+                .then(res => res.text())
+                .then(() => {
                     document.getElementById('mensaje-input').value = '';
-                    actualizarMensajes();
-                }).catch(err => console.error(err));
+
+                    // Aquí FORZAMOS ir abajo porque el usuario envió mensaje
+                    actualizarMensajes(true);
+                })
+                .catch(err => console.error(err));
             });
+
 
             // actualizar mensajes cada 5 segundos
             setInterval(actualizarMensajes, 5000);
