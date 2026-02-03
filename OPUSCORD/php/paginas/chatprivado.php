@@ -180,7 +180,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_mensaje']) && 
                 <ul>
                     <li><a href="index.php"><button>Feed</button></a></li>
                     <li><a href="amigos.php"><button>Amigos</button></a></li>
-                    <li><a href="chatprivado.php"><button>Mensajes</button></a></li>
+                    <li><a href="chatprivado.php" class="activo"><button>Mensajes</button></a></li>
                     <li><a href="grupos.php"><button>Grupos</button></a></li>
                     <li><a href="galerias.php?id=<?= $_SESSION['id_usuario'] ?>"><button>Galería</button></a></li>
                 </ul>

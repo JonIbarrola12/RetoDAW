@@ -1,26 +1,28 @@
 <?php
-$hostname = "localhost";
-$username = "opususer";
-$password = "password_seguro";
-$database = "opuscord";
+    $hostname = "localhost";
+    $username = "root";
+    $password = "admin";
+    $database = "opuscord";
+    $conexion = mysqli_connect($hostname,$username,$password,$database)
 
-$conexion = mysqli_connect($hostname, $username, $password, $database)
-    or die("Error conexión BD");
+    or die("Problemas al establecer conexion");
 ?>
-
 
 <?php
 try {
     $pdo = new PDO(
-        "mysql:host=localhost;dbname=opuscord;charset=utf8mb4",
-        "opususer",
-        "password_seguro",
+        "mysql:host=localhost;dbname=opuscord;charset=utf8",
+        "root",
+        "admin", // o ""
         [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
         ]
     );
 } catch (PDOException $e) {
-    error_log($e->getMessage()); // NO mostrar en producción
-    die("Error conexión BD");
+    echo json_encode([
+        'status' => 'error',
+        'msg' => 'Error conexión BD: ' . $e->getMessage()
+    ]);
+    exit;   
 }

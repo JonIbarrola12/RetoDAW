@@ -1,4 +1,5 @@
 // --- Abrir y cerrar modal de perfil ---
+
 let grupoIdActivo = null;
 document.addEventListener("DOMContentLoaded", () => {
     const mensaje = document.getElementById("mensajeFlash");
@@ -35,6 +36,7 @@ function confirmCustom(mensaje) {
         };
     });
 }
+
     function confirmCustomGru(mensaje) {
     return new Promise(resolve => {
 
