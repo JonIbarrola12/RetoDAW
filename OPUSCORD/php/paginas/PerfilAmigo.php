@@ -44,18 +44,25 @@ $foto = !empty($amigo['Pfp']) ? $amigo['Pfp'] : '/Recursos/fotousuario.png';
         <!-- TEXTO PERFIL -->
         <div class="perfil-info-texto">
 
-            <div class="bio-header">
-                <h2 class="compreTexto"><?= htmlspecialchars($amigo['Username']) ?></h2>
-            </div>
+        <div class="bio-header">
+            <h2 class="compreTexto"><?= htmlspecialchars($amigo['Username']) ?></h2>
 
-            <div class="estado-usuario">
-                <span class="estado-dot <?= $amigo['estado'] === 'Online' ? 'online' : 'offline' ?>"></span>
-                <span class="estado-texto"><?= $amigo['estado'] === 'Online' ? 'En línea' : 'Desconectado' ?></span>
-            </div>
+            <a href="../paginas/chatprivado.php?usuario=<?= $idAmigo ?>" 
+            class="chat-amigo" 
+            title="Ir al chat">
+                <i class="fa-solid fa-comments"></i>
+            </a>
+        </div>
 
+            
         </div>
 
     </div>
+
+
+    <a href="../paginas/galerias.php?id=<?= $idAmigo ?>" class="btn-galeria">
+        <i class="fa-solid fa-images"></i> Galeria
+    </a>
 
     <br>
     <hr>
@@ -89,6 +96,8 @@ $foto = !empty($amigo['Pfp']) ? $amigo['Pfp'] : '/Recursos/fotousuario.png';
         </p>
     </div>
     <br>
+
+
     <?php if ($idAmigo !== $_SESSION['id_usuario']): ?>
     <form id="formEliminarAmigo" method="POST" action="../Funcionalidades/eliminar_amigo.php">
         <input type="hidden" name="eliminar_amigo" value="<?= $idAmigo ?>">

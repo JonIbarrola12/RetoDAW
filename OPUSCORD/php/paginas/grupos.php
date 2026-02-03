@@ -52,7 +52,38 @@ if(isset($_GET['ajax']) && $_GET['ajax'] == 1 && $grupoActivoId){
             '<a href="$1" target="_blank"><img src="$1" style="max-width:200px;max-height:200px;border-radius:5px;margin:2px;" alt="$2"></a>', 
             $contenido);
 
-        echo "<div class='message $clase'><strong>".htmlspecialchars($emisor).":</strong> $contenido</div>";
+        $foto = $usuariosPorId[$emisorIdUsuario]['Pfp']
+    ?? '../../Recursos/fotousuario.png';
+
+        echo "
+        <div class='mensaje-discord $clase'>
+            <img 
+                src='".htmlspecialchars($foto)."'
+                class='mensaje-avatar'
+                data-usuario-id='{$emisorIdUsuario}'
+            >
+
+            <div class='mensaje-contenido'>
+                <div class='mensaje-header'>
+                    <span 
+                        class='mensaje-nombre nombre-usuario-click'
+                        data-usuario-id='{$emisorIdUsuario}'
+                    >
+                        ".htmlspecialchars($emisor)."
+                    </span>
+
+                    <span class='mensaje-hora'>
+                        ".date('H:i', strtotime($msg['FechaEnvio']))."
+                    </span>
+                </div>
+
+                <div class='mensaje-texto'>
+                    $contenido
+                </div>
+            </div>
+        </div>
+        ";
+
     endforeach;
     exit;
 }
@@ -288,7 +319,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
                         '<a href="$1" target="_blank"><img src="$1" style="max-width:200px;max-height:200px;border-radius:5px;margin:2px;" alt="$2"></a>', 
                         $contenido);
 
-                    echo "<div class='message $clase'><strong>".htmlspecialchars($emisor).":</strong> $contenido</div>";
+                    $foto = $usuariosPorId[$emisorIdUsuario]['Pfp']
+    ?? '../../Recursos/fotousuario.png';
+
+echo "
+<div class='mensaje-discord $clase'>
+    <img 
+        src='".htmlspecialchars($foto)."'
+        class='mensaje-avatar'
+        data-usuario-id='{$emisorIdUsuario}'
+    >
+
+    <div class='mensaje-contenido'>
+        <div class='mensaje-header'>
+            <span 
+                class='mensaje-nombre nombre-usuario-click'
+                data-usuario-id='{$emisorIdUsuario}'
+            >
+                ".htmlspecialchars($emisor)."
+            </span>
+
+            <span class='mensaje-hora'>
+                ".date('H:i', strtotime($msg['FechaEnvio']))."
+            </span>
+        </div>
+
+        <div class='mensaje-texto'>
+            $contenido
+        </div>
+    </div>
+</div>
+";
+
                 endforeach; ?>
             </div>
 

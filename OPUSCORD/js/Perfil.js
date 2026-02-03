@@ -808,6 +808,26 @@ function actualizarNombreGrupoSidebar(idGrupo, nuevoNombre) {
     }
 }
 
+document.addEventListener('click', e => {
+
+    const item = e.target.closest('.nombre-usuario-click');
+    if (!item) return;
+
+    const idUsuario = item.dataset.usuarioId;
+    if (!idUsuario) return;
+
+    const modal = document.getElementById('perfilAmigoModal');
+    const contenido = document.getElementById('perfilAmigoContenido');
+
+    modal.style.display = 'flex';
+    contenido.innerHTML = '<p class="cargando">Cargando...</p>';
+
+    fetch(`perfil_usuario.php?id=${idUsuario}`)
+        .then(res => res.text())
+        .then(html => {
+            contenido.innerHTML = html;
+        });
+});
 
 
 document.addEventListener('blur', e => {
