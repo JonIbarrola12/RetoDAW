@@ -232,7 +232,15 @@ $numeroFotos = count($publicaciones);
 
             <div class="perfil-info">
                 <div class="fila-superior">
-                    <p class="nombre-usuario"><?= htmlspecialchars($nombreUsuario) ?></p>
+<p 
+    class="nombre-usuario nombre-usuario-click"
+    data-usuario-id="<?= $usuario['id_usuario'] ?>"
+    style="cursor:pointer;"
+>
+    <?= htmlspecialchars($usuario['Username']) ?>
+</p>
+
+
                     <div class="botones-header">
                     <?php if (!$esPropio): ?>
                         <button id="btn-seguir" class="btn-seguir" data-sigo="<?= $sigo ? 1 : 0 ?>">
@@ -424,37 +432,59 @@ document.addEventListener('click', function(e) {
     }
 });
 
+let fotoPendienteEliminar = null;
+
 document.querySelectorAll('.btn-eliminar').forEach(btn => {
     btn.addEventListener('click', function (e) {
-        e.stopPropagation(); // para que no abra el modal
+        e.stopPropagation();
 
-        if (!confirm("¿Seguro que quieres eliminar esta foto?")) {
-            return;
-        }
+        fotoPendienteEliminar = this.parentElement;
 
-        const contenedor = this.parentElement;
-        const id = contenedor.dataset.id;
-
-        fetch('galerias.php', {
-            method: 'POST',
-            body: new URLSearchParams({
-                ajax: 'eliminarPublicacion',
-                id_publicacion: id
-            })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                contenedor.remove();
-            } else {
-                alert("Error al eliminar la publicación");
-            }
-        })
-        .catch(err => {
-            console.error(err);
-        });
+        mostrarConfirm(
+            '¿Seguro que quieres eliminar esta foto?',
+            () => eliminarFoto(fotoPendienteEliminar)
+        );
     });
 });
+
+function eliminarFoto(contenedor) {
+    const id = contenedor.dataset.id;
+
+    fetch('galerias.php', {
+        method: 'POST',
+        body: new URLSearchParams({
+            ajax: 'eliminarPublicacion',
+            id_publicacion: id
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            contenedor.remove();
+        } else {
+            alert('Error al eliminar la publicación');
+        }
+    });
+}
+
+function mostrarConfirm(mensaje, onConfirm) {
+    const modal = document.getElementById('confirmModal');
+    const texto = document.getElementById('confirmMensaje');
+    const btnSi = document.getElementById('confirmSi');
+    const btnNo = document.getElementById('confirmNo');
+
+    texto.textContent = mensaje;
+    modal.classList.remove('hidden');
+
+    btnSi.onclick = () => {
+        modal.classList.add('hidden');
+        onConfirm();
+    };
+
+    btnNo.onclick = () => {
+        modal.classList.add('hidden');
+    };
+}
 
 
 
@@ -465,9 +495,30 @@ document.querySelectorAll('.btn-eliminar').forEach(btn => {
 </html>
 
 
+    <script>
+document.getElementById('cerrarPerfilAmigoModal')
+    .addEventListener('click', () => {
+        document.getElementById('perfilAmigoModal').style.display = 'none';
+    });
+</script>
     <div id="perfilModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="cerrarPerfil()">&times;</span>
             <div id="perfilContenido"></div>
         </div>
     </div>
+    <div id="perfilAmigoModal" class="perfil-modal" style="display:none;">
+        <div id="perfilAmigoContenido" class="perfil-modal-content"></div>
+        <span id="cerrarPerfilAmigoModal" class="cerrar-modal">&times;</span>
+    </div>
+<div id="alertaCustom" class="alerta-custom"></div>
+
+<div id="confirmModal" class="confirm-modal hidden">
+    <div class="confirm-box">
+        <p id="confirmMensaje"></p>
+        <div class="confirm-actions">
+            <button id="confirmSi" class="btn-confirmar">Eliminar</button>
+            <button id="confirmNo" class="btn-cancelar">Cancelar</button>
+        </div>
+    </div>
+</div>

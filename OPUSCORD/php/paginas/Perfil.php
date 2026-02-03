@@ -20,6 +20,7 @@ $foto = (!empty($_SESSION['Foto'])) ? $_SESSION['Foto'] : '/Recursos/fotousuario
                 <img src="../../Recursos/camara.png" alt="Cambiar foto" class="camara-icon">
             </div>
         </div>
+        
 
         <!-- TEXTO PERFIL -->
         <div class="perfil-info-texto">
@@ -43,9 +44,11 @@ $foto = (!empty($_SESSION['Foto'])) ? $_SESSION['Foto'] : '/Recursos/fotousuario
         </div>
 
     </div>
+    
 
     <!-- MODAL USERNAME -->
     <div id="usernameModal" class="username-modal">
+        
         
         <div class="username-modal-content">
             <span id="cerrarUsernameModal">&times;</span>
@@ -58,9 +61,12 @@ $foto = (!empty($_SESSION['Foto'])) ? $_SESSION['Foto'] : '/Recursos/fotousuario
         </div>
     </div>
 
+
+        <a href="../paginas/galerias.php?id=<?= $_SESSION['id_usuario'] ?>" class="btn-galeria">
+            <i class="fa-solid fa-images"></i> Galeria
+        </a>
     <br>
     <hr>
-
     <div class="perfil-bio">
         <div class="bio-header">
             <h3>Sobre mí</h3>

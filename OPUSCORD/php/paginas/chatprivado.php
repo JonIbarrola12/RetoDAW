@@ -63,6 +63,33 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == 1 && $receptorId) {
 
 
         echo "<div class='message $clase'><strong>$nombre:</strong> $contenido</div>";
+        $foto = $usuariosPorId[$msg['id_emisor']]['Pfp'] 
+    ?: '../../Recursos/fotousuario.png';
+
+        echo "
+        <div class='mensaje-discord $clase'>
+            <img 
+                src='".htmlspecialchars($foto)."' 
+                class='mensaje-avatar'
+                data-usuario-id='{$msg['id_emisor']}'
+            >
+            <div class='mensaje-contenido'>
+                <div class='mensaje-header'>
+                    <span class='mensaje-nombre nombre-usuario-click'
+                        data-usuario-id='{$msg['id_emisor']}'>
+                        $nombre
+                    </span>
+                    <span class='mensaje-hora'>
+                        ".date('H:i', strtotime($msg['FechaEnvio']))."
+                    </span>
+                </div>
+                <div class='mensaje-texto'>
+                    $contenido
+                </div>
+            </div>
+        </div>
+        ";
+
 
         // marcar como leído si lo recibe el usuario actual
         if ($msg['id_receptor'] == $idUsuario && !$msg['Leido']) {
@@ -187,17 +214,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_mensaje']) && 
         <?php if (!$receptorId): ?>
             <h3>Selecciona un usuario para chatear</h3>
         <?php else: ?>
-            <div class="perfil-horiz">
-                <img 
-                    src="<?= htmlspecialchars($usuariosPorId[$receptorId]['Pfp'] ?: '../../Recursos/fotousuario.png') ?>"
-                    class="profile-pic"
-                    alt="Foto de <?= htmlspecialchars($usuariosPorId[$receptorId]['Username']) ?>"
-                >
+        <div 
+            class="perfil-horiz perfil-amigo-click"
+            data-usuario-id="<?= $receptorId ?>"
+            style="cursor:pointer;"
+        >
+            <img 
+                src="<?= htmlspecialchars($usuariosPorId[$receptorId]['Pfp'] ?: '../../Recursos/fotousuario.png') ?>"
+                class="profile-pic"
+                alt="Foto de <?= htmlspecialchars($usuariosPorId[$receptorId]['Username']) ?>"
+            >
 
-                <h3>
-                    <?= htmlspecialchars($usuariosPorId[$receptorId]['Username'] ?? 'Usuario') ?>
-                </h3>
-            </div>
+            <h3>
+                <?= htmlspecialchars($usuariosPorId[$receptorId]['Username'] ?? 'Usuario') ?>
+            </h3>
+        </div>
+
             
             <hr>
 
@@ -298,7 +330,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_mensaje']) && 
             <?php foreach ($amigos as $amigo): ?>
                 <a href="chatprivado.php?usuario=<?= $amigo['id_usuario'] ?>" class="chat-amigo">
                     
-                    <div class="perfil-horiz" data-usuario-id="<?= $amigo['id_usuario'] ?>">
+                    <div class="perfil-horizchat" data-usuario-id="<?= $amigo['id_usuario'] ?>">
                         
                         <img 
                             src="<?= htmlspecialchars($amigo['Pfp'] ?: '../../Recursos/fotousuario.png') ?>"
@@ -327,7 +359,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_mensaje']) && 
     </div>
 
 </aside>
-
+    <div id="perfilAmigoModal" class="perfil-modal" style="display:none;">
+        <div id="perfilAmigoContenido" class="perfil-modal-content"></div>
+        <span id="cerrarPerfilAmigoModal" class="cerrar-modal">&times;</span>
+    </div>
 </div>
     <div id="perfilModal" class="modal">
         <div class="modal-content">
@@ -376,5 +411,33 @@ document.getElementById('imagenModalContenido').onclick = () => {
 };
 </script>
 
+=======
+    <div id="confirmEliminarOverlay" class="confirm-overlay" style="display:none;">
+    <div class="confirm-box">
+        <p class="confirm-text">¿Deseas eliminar a <?= htmlspecialchars($amigo['Username']) ?>?</p>
+        <br>
+        <div class="confirm-actions">
+            <button class="confirm-accept btn-aceptar" onclick="aceptarConfirmEliminar()">Eliminar</button>
+            <button class="confirm-cancel btn-rechazar" onclick="cerrarConfirmEliminar()">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<script>
+//mensaje que desaparece al de 3 segundos 
+document.addEventListener("DOMContentLoaded", () => {
+    const mensaje = document.getElementById("mensajeFlash");
+
+    if (mensaje) {
+        setTimeout(() => {
+            mensaje.style.transition = "opacity 0.5s ease";
+            mensaje.style.opacity = "0";
+
+            setTimeout(() => mensaje.remove(), 300);
+        }, 3000); // 5 segundos
+    }
+});
+</script>
+<div id="alertaCustom" class="alerta-custom"></div>
 </body>
 </html>

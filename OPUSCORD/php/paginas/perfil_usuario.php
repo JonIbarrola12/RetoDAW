@@ -31,6 +31,7 @@ $relacion = $stmt->fetch(PDO::FETCH_ASSOC);
 
 $foto = $usuario['Pfp'] ?: '/Recursos/fotousuario.png';
 ?>
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <div id="perfilModalContent">
 
@@ -49,10 +50,15 @@ $foto = $usuario['Pfp'] ?: '/Recursos/fotousuario.png';
                 <span class="estado-texto">
                     <?= $usuario['estado'] === 'Online' ? 'En línea' : 'Desconectado' ?>
                 </span>
+                
             </div>
+
         </div>
     </div>
 
+            <a href="../paginas/galerias.php?id=<?= $idPerfil ?>" class="btn-galeria">
+    <i class="fa-solid fa-images"></i> Galeria
+</a>
     <br><hr>
 
     <div class="perfil-bio">
@@ -76,7 +82,7 @@ $foto = $usuario['Pfp'] ?: '/Recursos/fotousuario.png';
             ?>
         </p>
     </div>
-
+    
     <br>
 <?php if (!$relacion && $idPerfil !== $_SESSION['id_usuario']): ?>
     <form method="POST" action="../paginas/amigos.php">
@@ -87,6 +93,7 @@ $foto = $usuario['Pfp'] ?: '/Recursos/fotousuario.png';
 <?php elseif ($relacion && $relacion['Estado'] === 'pendiente'): ?>
     <p class="estado-pendiente">Solicitud pendiente</p>
 <?php endif; ?>
+
 
 </div>
 <div id="alertaCustom" class="alerta-custom"></div>
