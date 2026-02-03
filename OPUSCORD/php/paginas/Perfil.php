@@ -11,7 +11,7 @@ $foto = (!empty($_SESSION['Foto'])) ? $_SESSION['Foto'] : '/Recursos/fotousuario
 
 <div id="perfilModalContent">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
+    <script src="../../js/Perfil.js"></script>
     <div class="perfil-header">
 
         <div class="perfil-foto-container">
@@ -20,6 +20,7 @@ $foto = (!empty($_SESSION['Foto'])) ? $_SESSION['Foto'] : '/Recursos/fotousuario
                 <img src="../../Recursos/camara.png" alt="Cambiar foto" class="camara-icon">
             </div>
         </div>
+        
 
         <!-- TEXTO PERFIL -->
         <div class="perfil-info-texto">
@@ -43,21 +44,29 @@ $foto = (!empty($_SESSION['Foto'])) ? $_SESSION['Foto'] : '/Recursos/fotousuario
         </div>
 
     </div>
+    
 
     <!-- MODAL USERNAME -->
     <div id="usernameModal" class="username-modal">
+        
+        
         <div class="username-modal-content">
             <span id="cerrarUsernameModal">&times;</span>
             <h3>Cambiar nombre de usuario</h3>
-            <input type="text" id="usernameInput" placeholder="Nuevo nombre de usuario">
+            <input type="text" id="usernameInput" maxlength="12"  placeholder="Nuevo nombre de usuario">
+            <span id="error-username" class="textoerror"></span>
+
             <br>
             <button id="guardarUsernameBtn" class="editusu-btn">Guardar</button>
         </div>
     </div>
 
+
+        <a href="../paginas/galerias.php?id=<?= $_SESSION['id_usuario'] ?>" class="btn-galeria">
+            <i class="fa-solid fa-images"></i> Galeria
+        </a>
     <br>
     <hr>
-
     <div class="perfil-bio">
         <div class="bio-header">
             <h3>Sobre mí</h3>
@@ -118,3 +127,4 @@ $foto = (!empty($_SESSION['Foto'])) ? $_SESSION['Foto'] : '/Recursos/fotousuario
 </div>
 
 
+<div id="alertaCustom" class="alerta-custom"></div>

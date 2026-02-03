@@ -54,10 +54,41 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == 1 && $receptorId) {
         // nombre del emisor
         $nombre = $usuariosPorId[$msg['id_emisor']]['Username'] ?? 'Usuario';
 
-        echo "<div class='message $clase'>";
-        echo "<strong>" . htmlspecialchars($nombre) . ":</strong> ";
-        echo nl2br(htmlspecialchars($msg['Contenido']));
-        echo "</div>";
+        $contenido = $msg['Contenido'];
+        $contenido = preg_replace(
+            '/<a href=[\'"](.+?\.(?:jpg|jpeg|png|gif|webp))[\'"] target=[\'"]_blank[\'"]>📎 (.+?)<\/a>/i',
+            '<img src="$1" style="max-width:200px;max-height:200px;border-radius:5px;margin:2px;cursor:pointer;" onclick="abrirImagen(\'$1\')" alt="$2">',
+            $contenido
+        );
+
+
+        $foto = $usuariosPorId[$msg['id_emisor']]['Pfp'] 
+    ?: '../../Recursos/fotousuario.png';
+
+        echo "
+        <div class='mensaje-discord $clase'>
+            <img 
+                src='".htmlspecialchars($foto)."' 
+                class='mensaje-avatar'
+                data-usuario-id='{$msg['id_emisor']}'
+            >
+            <div class='mensaje-contenido'>
+                <div class='mensaje-header'>
+                    <span class='mensaje-nombre nombre-usuario-click'
+                        data-usuario-id='{$msg['id_emisor']}'>
+                        $nombre
+                    </span>
+                    <span class='mensaje-hora'>
+                        ".date('H:i', strtotime($msg['FechaEnvio']))."
+                    </span>
+                </div>
+                <div class='mensaje-texto'>
+                    $contenido
+                </div>
+            </div>
+        </div>
+        ";
+
 
         // marcar como leído si lo recibe el usuario actual
         if ($msg['id_receptor'] == $idUsuario && !$msg['Leido']) {
@@ -71,15 +102,51 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == 1 && $receptorId) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_mensaje']) && $receptorId) {
 
     $contenido = trim($_POST['mensaje'] ?? '');
+    $contenidoSeguro = htmlspecialchars($contenido, ENT_QUOTES, 'UTF-8');
+    $archivoSubido = null;
 
-    if ($contenido !== '') {
-        try {
-            $mensaje = new MensajesPrivados($idUsuario, $receptorId, $contenido);
-            MensajesPrivadosCRUD::añadirMensaje($mensaje);
-        } catch (Exception $e) {
-            $_SESSION['mensaje'] = $e->getMessage();
+    // manejar archivo
+    if (!empty($_FILES['archivo']['name']) && $_FILES['archivo']['error'] === 0) {
+        $tipoArchivo = mime_content_type($_FILES['archivo']['tmp_name']);
+        $tiposPermitidos = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'application/pdf'];
+
+        if (in_array($tipoArchivo, $tiposPermitidos)) {
+            $uploadsDir = '../../uploads/';
+            if (!is_dir($uploadsDir)) mkdir($uploadsDir, 0755, true);
+
+            $nombreArchivo = basename($_FILES['archivo']['name']);
+            $destino = $uploadsDir . $nombreArchivo;
+
+            if (move_uploaded_file($_FILES['archivo']['tmp_name'], $destino)) {
+                $archivoSubido = $nombreArchivo;
+            } else {
+                $_SESSION['mensaje'] = "Error al subir el archivo";
+            }
+        } else {
+            $_SESSION['mensaje'] = "Tipo de archivo no permitido. Solo imágenes y PDFs.";
         }
     }
+
+    // si hay mensaje o archivo, guardarlo
+    if ($contenidoSeguro !== '' || $archivoSubido) {
+        $textoFinal = $contenidoSeguro;
+        if ($archivoSubido) {
+            $rutaArchivo = "../../uploads/" . htmlspecialchars($archivoSubido);
+            $ext = strtolower(pathinfo($archivoSubido, PATHINFO_EXTENSION));
+
+            if (in_array($ext, ['jpg','jpeg','png','gif','webp'])) {
+                // si es imagen, insertamos <img> directamente
+                $textoFinal .= ($textoFinal ? "<br>" : "") . "<img src='$rutaArchivo' style='max-width:200px;max-height:200px;border-radius:5px;margin:2px;cursor:pointer;' onclick=\"abrirImagen('$rutaArchivo')\" alt='$archivoSubido'>";
+            } else {
+                // si es PDF u otro archivo
+                $textoFinal .= ($textoFinal ? "<br>" : "") . "<a href='$rutaArchivo' target='_blank'>📎 $archivoSubido</a>";
+            }
+        }
+
+        $mensaje = new MensajesPrivados($idUsuario, $receptorId, $textoFinal);
+        MensajesPrivadosCRUD::añadirMensaje($mensaje);
+    }
+
 
     // Respuesta AJAX
     if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
@@ -100,6 +167,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_mensaje']) && 
     <script src="../../js/Perfil.js"></script>
 
 </head>
+
 <body>
 
 <div class="container">
@@ -155,18 +223,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_mensaje']) && 
         <?php if (!$receptorId): ?>
             <h3>Selecciona un usuario para chatear</h3>
         <?php else: ?>
+        <div 
+            class="perfil-horiz perfil-amigo-click"
+            data-usuario-id="<?= $receptorId ?>"
+            style="cursor:pointer;"
+        >
+            <img 
+                src="<?= htmlspecialchars($usuariosPorId[$receptorId]['Pfp'] ?: '../../Recursos/fotousuario.png') ?>"
+                class="profile-pic"
+                alt="Foto de <?= htmlspecialchars($usuariosPorId[$receptorId]['Username']) ?>"
+            >
 
             <h3>
-                Chat con <?= htmlspecialchars($usuariosPorId[$receptorId]['Username'] ?? 'Usuario') ?>
+                <?= htmlspecialchars($usuariosPorId[$receptorId]['Username'] ?? 'Usuario') ?>
             </h3>
+        </div>
+
+            
+            <hr>
 
             <div class="chat-messages"></div>
 
-            <form id="chat-form" method="POST" class="chat-input">
-                <input type="text" name="mensaje" id="mensaje-input"
-                       placeholder="Escribe un mensaje..." autocomplete="off">
-                <button name="enviar_mensaje">Enviar</button>
+            <form id="chat-form" method="POST" class="chat-input" enctype="multipart/form-data">
+                <button type="button" id="file-upload-btn">+</button>
+                <input type="file" name="archivo" id="file-upload" style="display:none;" accept="image/*,application/pdf">
+                <input type="text" name="mensaje" id="mensaje-input" placeholder="Escribe un mensaje..." autocomplete="off">
+                <button type="submit" name="enviar_mensaje">Enviar</button>
             </form>
+
 
             <script>
             const chatMessages = document.querySelector('.chat-messages');
@@ -200,6 +284,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_mensaje']) && 
                     cargarMensajes();
                 });
             });
+            const fileInput = document.getElementById('file-upload');
+
+            // abrir selector de archivos
+            document.getElementById('file-upload-btn').addEventListener('click', e => {
+                e.preventDefault();
+                fileInput.click();
+            });
+
+            // enviar archivo automáticamente
+            fileInput.addEventListener('change', function() {
+                if(this.files.length > 0){
+                    const formData = new FormData(chatForm);
+                    formData.append('enviar_mensaje','1');
+                    fetch('chatprivado.php?usuario=<?= $receptorId ?>', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {'X-Requested-With':'XMLHttpRequest'}
+                    }).then(() => {
+                        fileInput.value = '';
+                        cargarMensajes();
+                    });
+                }
+            });
+
 
             // actualizar cada 3 segundos
             setInterval(cargarMensajes, 3000);
@@ -231,7 +339,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_mensaje']) && 
             <?php foreach ($amigos as $amigo): ?>
                 <a href="chatprivado.php?usuario=<?= $amigo['id_usuario'] ?>" class="chat-amigo">
                     
-                    <div class="perfil-horiz" data-usuario-id="<?= $amigo['id_usuario'] ?>">
+                    <div class="perfil-horizchat" data-usuario-id="<?= $amigo['id_usuario'] ?>">
                         
                         <img 
                             src="<?= htmlspecialchars($amigo['Pfp'] ?: '../../Recursos/fotousuario.png') ?>"
@@ -260,7 +368,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_mensaje']) && 
     </div>
 
 </aside>
-
+    <div id="perfilAmigoModal" class="perfil-modal" style="display:none;">
+        <div id="perfilAmigoContenido" class="perfil-modal-content"></div>
+        <span id="cerrarPerfilAmigoModal" class="cerrar-modal">&times;</span>
+    </div>
 </div>
     <div id="perfilModal" class="modal">
         <div class="modal-content">
@@ -268,5 +379,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_mensaje']) && 
             <div id="perfilContenido"></div>
         </div>
     </div>
+    <div id="alertaCustom" class="alerta-custom"></div>
+
+    <div id="confirmEliminarOverlay" class="confirm-overlay" style="display:none;">
+    <div class="confirm-box">
+        <p class="confirm-text">¿Deseas eliminar a <?= htmlspecialchars($amigo['Username']) ?>?</p>
+        <br>
+        <div class="confirm-actions">
+            <button class="confirm-accept btn-aceptar" onclick="aceptarConfirmEliminar()">Eliminar</button>
+            <button class="confirm-cancel btn-rechazar" onclick="cerrarConfirmEliminar()">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<script>
+//mensaje que desaparece al de 3 segundos 
+document.addEventListener("DOMContentLoaded", () => {
+    const mensaje = document.getElementById("mensajeFlash");
+
+    if (mensaje) {
+        setTimeout(() => {
+            mensaje.style.transition = "opacity 0.5s ease";
+            mensaje.style.opacity = "0";
+
+            setTimeout(() => mensaje.remove(), 300);
+        }, 3000); // 5 segundos
+    }
+});
+</script>
+<div id="alertaCustom" class="alerta-custom"></div>
 </body>
 </html>

@@ -48,11 +48,49 @@ if(isset($_GET['ajax']) && $_GET['ajax'] == 1 && $grupoActivoId){
 
         // procesar enlaces de imagenes y PDFs
         $contenido = $msg['Contenido'];
-        $contenido = preg_replace('/<a href=[\'"](.+?\.(?:jpg|jpeg|png|gif|webp))[\'"] target=[\'"]_blank[\'"]>📎 (.+?)<\/a>/i',
-            '<a href="$1" target="_blank"><img src="$1" style="max-width:200px;max-height:200px;border-radius:5px;margin:2px;" alt="$2"></a>', 
-            $contenido);
 
-        echo "<div class='message $clase'><strong>".htmlspecialchars($emisor).":</strong> $contenido</div>";
+        // Convertir SOLO enlaces antiguos a imágenes
+        $contenido = preg_replace(
+            '/<a[^>]+href=[\'"]([^\'"]+\.(?:jpg|jpeg|png|gif|webp))[\'"][^>]*>📎[^<]+<\/a>/i',
+            '<img src="$1" style="max-width:200px;max-height:200px;border-radius:5px;margin:2px;cursor:pointer;" onclick="abrirImagen(\'$1\')">',
+            $contenido
+        );
+
+
+
+
+        $foto = $usuariosPorId[$emisorIdUsuario]['Pfp']
+    ?? '../../Recursos/fotousuario.png';
+
+        echo "
+        <div class='mensaje-discord $clase'>
+            <img 
+                src='".htmlspecialchars($foto)."'
+                class='mensaje-avatar'
+                data-usuario-id='{$emisorIdUsuario}'
+            >
+
+            <div class='mensaje-contenido'>
+                <div class='mensaje-header'>
+                    <span 
+                        class='mensaje-nombre nombre-usuario-click'
+                        data-usuario-id='{$emisorIdUsuario}'
+                    >
+                        ".htmlspecialchars($emisor)."
+                    </span>
+
+                    <span class='mensaje-hora'>
+                        ".date('H:i', strtotime($msg['FechaEnvio']))."
+                    </span>
+                </div>
+
+                <div class='mensaje-texto'>
+                    $contenido
+                </div>
+            </div>
+        </div>
+        ";
+
     endforeach;
     exit;
 }
@@ -102,12 +140,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_mensaje']) && 
             $uploadsDir = '../../uploads/';
             if (!is_dir($uploadsDir)) mkdir($uploadsDir, 0755, true);
 
-            $nombreArchivo = basename($_FILES['archivo']['name']);
+            $extension = pathinfo($_FILES['archivo']['name'], PATHINFO_EXTENSION);
+
+            // Crear nombre único y seguro
+            $nombreArchivo = uniqid('file_', true) . '.' . strtolower($extension);
+
             $destino = $uploadsDir . $nombreArchivo;
 
             if (move_uploaded_file($_FILES['archivo']['tmp_name'], $destino)) {
                 $archivoSubido = $nombreArchivo;
-            } else {
+            }else {
                 $_SESSION['mensaje'] = "Error al subir el archivo";
             }
         } else {
@@ -122,7 +164,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_mensaje']) && 
             $idMiembro = $miembro['id_miembro'];
             $textoFinal = $contenidoSeguro;
             if ($archivoSubido) {
-                $textoFinal .= ($textoFinal ? "<br>" : "") . "<a href='../../uploads/" . urlencode($archivoSubido) . "' target='_blank'>📎 $archivoSubido</a>";
+                $ruta = "../../uploads/" . urlencode($archivoSubido);
+
+                if (preg_match('/\.(jpg|jpeg|png|gif|webp)$/i', $archivoSubido)) {
+                    // Si es imagen, guardarla directamente como <img>
+                    $textoFinal .= "<br><img src='$ruta' class='imagen-chat' style='max-width:200px;max-height:200px;border-radius:5px;cursor:pointer;' onclick=\"abrirImagen('$ruta')\">";
+                } else {
+                    // Si es PDF u otro archivo
+                    $textoFinal .= "<br><a class='archivo-adjunto' href='$ruta' target='_blank'>📎 $archivoSubido</a>";
+                }
             }
             $mensaje = new MensajesGrupos($idMiembro, $grupoActivoId, $textoFinal);
             MensajesGruposCRUD::añadirMensaje($mensaje);
@@ -227,7 +277,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
 
         </aside>
     <!-- chat -->
-    <main class="main-content">
+    <main class="main-content chatcontent">
         
         <?php if (isset($_SESSION['mensaje'])): ?>
             <div class="mensaje-solicitud" id="mensajeFlash">
@@ -248,12 +298,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
                     class="profile-pic grupo-foto-header"
                     data-grupo-id="<?= $grupoActivo['id_grupo'] ?>"
                 >
-                <div class="perfil-info">
-                    <p class="perfil-nombre">
+                <div class="perfil-info" data-grupo-id="<?= $idGrupo ?>">
+                    <p
+                        class="perfil-nombre grupo-nombre-dinamico"
+                        id="perfilGrupoNombre"
+                        data-grupo-id="<?= $grupoActivo['id_grupo'] ?>"
+                    >
                         <?= htmlspecialchars($grupoActivo['Nombre']) ?>
                     </p>
 
                 </div>
+
             </div>
 
 
@@ -267,11 +322,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
                     $clase = ($emisorIdUsuario == $idUsuario) ? 'propio' : 'otro';
 
                     $contenido = $msg['Contenido'];
-                    $contenido = preg_replace('/<a href=[\'"](.+?\.(?:jpg|jpeg|png|gif|webp))[\'"] target=[\'"]_blank[\'"]>📎 (.+?)<\/a>/i',
-                        '<a href="$1" target="_blank"><img src="$1" style="max-width:200px;max-height:200px;border-radius:5px;margin:2px;" alt="$2"></a>', 
-                        $contenido);
+                    $foto = $usuariosPorId[$emisorIdUsuario]['Pfp']
+    ?? '../../Recursos/fotousuario.png';
 
-                    echo "<div class='message $clase'><strong>".htmlspecialchars($emisor).":</strong> $contenido</div>";
+echo "
+<div class='mensaje-discord $clase'>
+    <img 
+        src='".htmlspecialchars($foto)."'
+        class='mensaje-avatar'
+        data-usuario-id='{$emisorIdUsuario}'
+    >
+
+    <div class='mensaje-contenido'>
+        <div class='mensaje-header'>
+            <span 
+                class='mensaje-nombre nombre-usuario-click'
+                data-usuario-id='{$emisorIdUsuario}'
+            >
+                ".htmlspecialchars($emisor)."
+            </span>
+
+            <span class='mensaje-hora'>
+                ".date('H:i', strtotime($msg['FechaEnvio']))."
+            </span>
+        </div>
+
+        <div class='mensaje-texto'>
+            $contenido
+        </div>
+    </div>
+</div>
+";
+
                 endforeach; ?>
             </div>
 
@@ -291,15 +373,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
             document.getElementById('file-upload-btn').addEventListener('click', e => { e.preventDefault(); fileInput.click(); });
 
             // actualizar mensajes AJAX
-            function actualizarMensajes() {
+            function actualizarMensajes(forzarScroll = false) {
+                const estabaAbajo =
+                    chatMessages.scrollTop + chatMessages.clientHeight >=
+                    chatMessages.scrollHeight - 50;
+
                 fetch('grupos.php?grupo=<?= $grupoActivoId ?>&ajax=1')
                     .then(res => res.text())
                     .then(data => {
                         chatMessages.innerHTML = data;
-                        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+                        // Bajar si:
+                        // - el usuario ya estaba abajo
+                        // - o se forzó el scroll (al enviar mensaje)
+                        if (estabaAbajo || forzarScroll) {
+                            chatMessages.scrollTop = chatMessages.scrollHeight;
+                        }
                     })
                     .catch(err => console.error(err));
             }
+
+
 
             // enviar archivo automáticamente
             fileInput.addEventListener('change', function() {
@@ -320,17 +414,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
             // enviar mensaje de texto
             chatForm.addEventListener('submit', e => {
                 e.preventDefault();
+
                 const formData = new FormData(chatForm);
                 formData.append('enviar_mensaje','1');
+
                 fetch('grupos.php?grupo=<?= $grupoActivoId ?>', {
                     method: 'POST',
                     body: formData,
                     headers: {'X-Requested-With':'XMLHttpRequest'}
-                }).then(res => res.text()).then(() => {
+                })
+                .then(res => res.text())
+                .then(() => {
                     document.getElementById('mensaje-input').value = '';
-                    actualizarMensajes();
-                }).catch(err => console.error(err));
+
+                    // Aquí FORZAMOS ir abajo porque el usuario envió mensaje
+                    actualizarMensajes(true);
+                })
+                .catch(err => console.error(err));
             });
+
 
             // actualizar mensajes cada 5 segundos
             setInterval(actualizarMensajes, 5000);
@@ -358,24 +460,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
 
         <h3>Mis Grupos</h3>
 
-        <div class="grupos-scroll">
+        <div class="grupos-scroll ">
             <ul>
                 <?php foreach ($miembros as $m):
                     $g = GruposCRUD::obtenerPorId($m['GrupoId']);
                 ?>
-                    <li class="grupo-item">
-                        <a href="grupos.php?grupo=<?= $g['id_grupo'] ?>" class="grupo-link">
-                            <img 
-                                src="<?= htmlspecialchars($g['Pfp'] ?: '/Recursos/fotogrupo.png') ?>" 
-                                class="grupo-foto-sidebar"
-                                data-grupo-id="<?= $g['id_grupo'] ?>"
-                            >
+                <li class="grupo-item" data-grupo-id="<?= $g['id_grupo'] ?>">
+                    <a href="grupos.php?grupo=<?= $g['id_grupo'] ?>" class="grupo-link">
+                        <img data-grupo-id="<?= $g['id_grupo'] ?>"
+                            src="<?= htmlspecialchars($g['Pfp'] ?: '/Recursos/fotogrupo.png') ?>" 
+                            class="grupo-foto-sidebar" 
+                        >
+                        <span class="grupo-nombre">
+                            <?= htmlspecialchars($g['Nombre']) ?>
+                        </span>
+                    </a>
+                </li>
 
-                            <span class="grupo-nombre">
-                                <?= htmlspecialchars($g['Nombre']) ?>
-                            </span>
-                        </a>
-                    </li>
                 <?php endforeach; ?>
             </ul>
         </div>
@@ -396,7 +497,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
         <div id="modalGrupoContenido"></div>
     </div>
 </div>
+<div id="alertaCustom" class="alerta-custom"></div>
 
+    <div id="perfilAmigoModal" class="perfil-modal" style="display:none;">
+        <div id="perfilAmigoContenido" class="perfil-modal-content"></div>
+        <span id="cerrarPerfilAmigoModal" class="cerrar-modal">&times;</span>
+    </div>
+
+<!-- Modal para ver imagen en chats -->
+<div id="imagenModal" style="
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.8);
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+">
+    <img id="imagenModalContenido" src="" style="
+        max-width:90%;
+        max-height:90%;
+        border-radius:10px;
+        cursor:pointer;
+    ">
+</div>
+
+<script>
+function abrirImagen(src) {
+    const modal = document.getElementById('imagenModal');
+    const img = document.getElementById('imagenModalContenido');
+    img.src = src;
+    modal.style.display = 'flex';
+}
+
+const modal = document.getElementById('imagenModal');
+
+modal.onclick = function(e) {
+    if (e.target === modal) {
+        modal.style.display = 'none';
+    }
+};
+
+document.getElementById('imagenModalContenido').onclick = () => {
+    modal.style.display = 'none';
+};
+</script>
 
 </body>
 </html>

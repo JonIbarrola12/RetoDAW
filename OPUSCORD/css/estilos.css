@@ -123,10 +123,10 @@
     position: fixed;
     inset: 0;
     background: rgba(0,0,0,0.6);
-    z-index: 9999;
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 9999;
 }
 
 .perfil-modal-contentgru {
@@ -137,6 +137,18 @@
     width: 420px;
     border-radius: 12px;
     padding: 20px;
+}
+.modalgrupo-contenido::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modalgrupo-contenido::-webkit-scrollbar-thumb {
+    background: #bbb;
+    border-radius: 10px;
+}
+
+.modalgrupo-contenido::-webkit-scrollbar-thumb:hover {
+    background: #999;
 }
 
 .cerrar-modalgru {
@@ -629,7 +641,11 @@
     align-items: center;
     gap: 10px;
 }
-
+.perfil-horizchat {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 .compreTexto {
     max-width: 202px; /* ajusta a tu modal */
     white-space: nowrap;
@@ -736,6 +752,147 @@
     background-color: rgb(34, 34, 34);
 }
 .perfil-horiz {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* espacio entre foto y nombre */
+}
+.mensaje-discord {
+    display: flex;
+    gap: 10px;
+    margin: 8px 0;
+    align-items: flex-start;
+}
+
+.mensaje-discord.propio {
+    justify-content: flex-end;
+}
+
+.mensaje-discord.propio .mensaje-contenido {
+    background: #2b2d31;
+}
+
+.mensaje-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+.mensaje-contenido {
+    max-width: 70%;
+    background: #313338;
+    padding: 8px 10px;
+    border-radius: 8px;
+}
+
+
+.btn-galeria {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #7289da;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    margin-top: 10px;
+    margin-left: 10PX;
+}
+
+.btn-galeria:hover {
+    background: #4752c4;
+}
+
+.btn-chat-amigo {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #7289da;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 25%;
+    text-decoration: none;
+    font-weight: 500;
+    margin-top: 10px;
+    margin-left: 10PX;
+}
+.btn-chat-amigo:hover {
+        background: #4752c4;
+
+}
+
+.mensaje-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.mensaje-nombre {
+    font-weight: bold;
+    color: #fff;
+    cursor: pointer;
+}
+
+.mensaje-nombre:hover {
+    text-decoration: underline;
+}
+
+.mensaje-hora {
+    font-size: 12px;
+    color: #b5bac1;
+}
+
+.mensaje-texto {
+    color: #dbdee1;
+    word-wrap: break-word;
+}
+
+.comentario-texto {
+    display: block;            /* que se comporte como bloque */
+    white-space: normal;       /* permite saltos de línea */
+    word-wrap: break-word;     /* rompe palabras largas si hace falta */
+    overflow-wrap: break-word; /* compatibilidad adicional */
+    flex: 1;                   /* si quieres que tome todo el espacio disponible dentro de .comentario */
+}
+.comentario-header {
+    display: flex;             /* fila horizontal */
+    align-items: center;       /* centra verticalmente el nombre con la foto */
+    gap: 8px;                  /* espacio entre foto y nombre */
+}
+.ContenidoPublicacion {
+    white-space: normal;       /* permite saltos de línea automáticos */
+    word-wrap: break-word;     /* rompe palabras largas si hacen overflow */
+    overflow-wrap: break-word; /* compatibilidad adicional */
+    color: #dcddde;            /* color del texto, opcional */
+    font-size: 14px;           /* tamaño de texto */
+    line-height: 1.4;          /* altura de línea para buena legibilidad */
+    margin: 4px 0;             /* márgenes opcionales */
+}
+
+.comentario-foto {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;         /* mantiene la proporción de la imagen */
+}
+
+.comentario-usuario {
+    color: #fff;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.perfil-amigo-click:hover{
+    background-color: #2d2d2d;
+    width: 15%;
+    padding: 10px;
+    width: 20%;
+    border-radius: 30px;
+}
+.perfil-horizchat {
     display: flex;
     align-items: center;
     gap: 15px; /* espacio entre foto y nombre */
@@ -920,6 +1077,37 @@
     background-color: #d33b48;
 
 }
+
+.confirmgru-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.confirmgru-modal.hidden {
+    display: none;
+}
+
+.confirmgru-box {
+    background: #302e2e;
+    padding: 20px;
+    border-radius: 10px;
+    width: 320px;
+    text-align: center;
+    color: white;
+}
+
+.confirmgru-actions {
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-between;
+}
+
+
 .confirm-overlay {
     position: fixed;
     inset: 0;
@@ -1007,6 +1195,7 @@
     inset: 0;
     background: rgba(0,0,0,0.6);
     display: flex;
+    
     justify-content: center;
     align-items: center;
     z-index: 9999;
@@ -1020,6 +1209,8 @@
     background: #242424;
     margin: auto;
     padding: 20px;
+    max-height: 90vh;
+    overflow-y: auto;
     color: white;
     border-radius: 10px;
     width: 500px;
@@ -1186,8 +1377,7 @@ gregar-miembro-btn:hover {
 .grupo-link {
     display: flex;
     align-items: center;
-    gap: 10px;
-    text-decoration: none;
+     text-decoration: none;
 }
 
 .grupo-foto-sidebar {
@@ -1227,7 +1417,10 @@ gregar-miembro-btn:hover {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+
 }
+
+
 
 .sidebar ul li a:hover {
     background-color: rgb(50, 50, 50);
@@ -1390,15 +1583,15 @@ hr {
 }
 
 
-/* imagenes */
 .imagenpublicacion {
-    width: 100%;
-    height: auto; /* ajusta la altura según el ancho */
-    max-width: 100%;
-    border-radius: 15px;
+    width: 550px;        /* ancho fijo del recuadro */
+    height: 400px;       /* alto fijo del recuadro */
+    object-fit: cover;   /* recorta la imagen pero mantiene proporciones */
+    object-position: center; /* centra la parte visible de la imagen */
+    border-radius: 10px; /* bordes redondeados */
+    cursor: pointer;
     display: block;
-    margin-top: 8px;
-    object-fit: contain; /* opcional, asegura que no se corte */
+    margin: 10px auto;   /* centrado horizontal en su contenedor */
 }
 
 
@@ -1410,13 +1603,17 @@ hr {
     flex-direction: column;
     gap: 6px;
 }
-
+.comentario {
+    display: block;
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
 .comentario {
     background-color: #40444b;
     padding: 6px 10px;
     border-radius: 8px;
     font-size: 14px;
-    display: flex;
     align-items: center;
     gap: 6px;
 }
@@ -1679,6 +1876,109 @@ hr {
     background-color: #2f3136;
 }
 
+.chat-messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background-color: #7289da;
+    border-radius: 3px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+    background-color: #2f3136;
+}
+.alerta-custom {
+    display: none;
+    background: #2c2f36;
+    color: #fff;
+    padding: 12px;
+    border-radius: 8px;
+    margin-top: 10px;
+    border-left: 4px solid #a855f7;
+    font-size: 14px;
+}
+
+.alerta-custom.error {
+    border-left-color: #ef4444;
+    color: #fecaca;
+}
+
+.alerta-custom.success {
+    border-left-color: #22c55e;
+    color: #bbf7d0;
+}
+
+.confirm-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.confirm-box {
+    background: #292929;
+    padding: 20px;
+    border-radius: 12px;
+    width: 320px;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0,0,0,.6);
+}
+
+.confirm-box h3 {
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.confirm-box p {
+    color: #cbd5f5;
+    font-size: 14px;
+}
+
+.confirm-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.btn-cancelar {
+    background: #1e1e1e;
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+}
+.btn-cancelar:hover{
+    background-color: #2d2d2d;
+}
+.btn-confirmar {
+    background: #ef4444;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-confirmar:hover {
+    background: #dc2626;
+}
+.btn-confirmargru {
+    background: #ef4444;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-confirmargru:hover {
+    background: #dc2626;
+}
 
 /* boton para ver comentarios */
 .ver-mas {

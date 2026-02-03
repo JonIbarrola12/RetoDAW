@@ -1,44 +1,60 @@
 <?php
 session_start();
 require_once '../conexion.php';
-require_once '../CRUD/MiembrosCRUD.php';
 
-if (!isset($_SESSION['id_usuario'])) {
-    exit('No has iniciado sesión');
+if (!isset($_SESSION['id_usuario'], $_POST['id_grupo'], $_POST['username'])) {
+    exit;
 }
 
-if (!isset($_GET['id'])) {
-    exit('Grupo no especificado');
-}
+$idAdmin = $_SESSION['id_usuario'];
+$idGrupo = (int)$_POST['id_grupo'];
+$username = trim($_POST['username']);
 
-$idUsuario = $_SESSION['id_usuario'];
-$idGrupo = (int) $_GET['id'];
-
-/* obtener datos del grupo */
+/* comprobar admin */
 $stmt = $pdo->prepare("
-    SELECT g.Nombre, g.Descripcion, g.Pfp, g.FechaCreacion, u.Username AS creador
-    FROM grupos g
-    JOIN usuarios u ON g.id_creador = u.id_usuario
-    WHERE g.id_grupo = ?
+    SELECT 1 FROM miembros
+    WHERE id_usuario = ? AND GrupoId = ? AND Rol = 'admin'
+");
+$stmt->execute([$idAdmin, $idGrupo]);
+
+if (!$stmt->fetch()) {
+    exit('No autorizado');
+}
+
+/* 🔢 CONTAR MIEMBROS DEL GRUPO */
+$stmt = $pdo->prepare("
+    SELECT COUNT(*) FROM miembros WHERE GrupoId = ?
 ");
 $stmt->execute([$idGrupo]);
-$grupo = $stmt->fetch(PDO::FETCH_ASSOC);
+$totalMiembros = $stmt->fetchColumn();
 
-if (!$grupo) {
-    exit('Grupo no encontrado');
+if ($totalMiembros >= 15) {
+    $_SESSION['mensaje'] = "❌ No se pueden tener grupos con más de 15 miembros";
+    header("Location: ../paginas/grupos.php?grupo=$idGrupo");
+    exit;
 }
 
-/* comprobar rol del usuario */
+/* obtener usuario */
 $stmt = $pdo->prepare("
-    SELECT Rol FROM miembros
-    WHERE id_usuario = ? AND GrupoId = ?
+    SELECT id_usuario FROM usuarios WHERE Username = ?
+");
+$stmt->execute([$username]);
+$usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$usuario) {
+    $_SESSION['mensaje'] = "❌ Usuario no encontrado";
+    header("Location: ../paginas/grupos.php?grupo=$idGrupo");
+    exit;
+}
+
+$idUsuario = $usuario['id_usuario'];
+
+/* insertar si no existe */
+$stmt = $pdo->prepare("
+    INSERT IGNORE INTO miembros (id_usuario, GrupoId)
+    VALUES (?, ?)
 ");
 $stmt->execute([$idUsuario, $idGrupo]);
-$miembro = $stmt->fetch(PDO::FETCH_ASSOC);
 
-$esAdmin = $miembro && $miembro['Rol'] === 'admin';
-
-$foto = !empty($grupo['Pfp'])
-    ? $grupo['Pfp']
-    : '/Recursos/grupos/default.png';
-?>
+$_SESSION['mensaje'] = "✅ Usuario añadido al grupo";
+header("Location: ../paginas/grupos.php?grupo=$idGrupo");
