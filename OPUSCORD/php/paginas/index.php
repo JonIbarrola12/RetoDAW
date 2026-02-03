@@ -472,17 +472,19 @@ foreach ($comentariosMostrar as $c):
     <div class="comentario" data-id="<?= $c['id_comentario'] ?>">
 
         <!-- FOTO PERFIL -->
-        <img 
-            src="<?= htmlspecialchars($usuario['Pfp'] ?? '/Recursos/fotousuario.png') ?>"
-            class="comentario-foto fotousuario profile-pic"
-            alt="Foto de <?= htmlspecialchars($usuario['Username'] ?? 'Usuario') ?>"
-        >
+<div class="comentario-header">
+    <img 
+        src="<?= htmlspecialchars($usuario['Pfp'] ?? '/Recursos/fotousuario.png') ?>"
+        class="comentario-foto"
+        alt="Foto de <?= htmlspecialchars($usuario['Username'] ?? 'Usuario') ?>"
+    >
+    <strong class="comentario-usuario">
+        <?= htmlspecialchars($usuario['Username'] ?? 'Usuario') ?>
+    </strong>
+</div>
 
-        <!-- TEXTO -->
         <div class="comentario-texto">
-            <strong class="comentario-usuario">
-                <?= htmlspecialchars($usuario['Username'] ?? 'Usuario') ?>
-            </strong>
+
 
             <span class="comentario-contenido">
                 <?= htmlspecialchars(
@@ -592,26 +594,7 @@ document.querySelectorAll('.comentario-form').forEach(form => {
             const div = document.createElement('div');
             div.className = 'comentario';
             div.dataset.id = data.id_comentario;
-            div.innerHTML = `        <img 
-            src="<?= htmlspecialchars($usuario['Pfp'] ?? '/Recursos/fotousuario.png') ?>"
-            class="comentario-foto fotousuario profile-pic"
-            alt="Foto de <?= htmlspecialchars($usuario['Username'] ?? 'Usuario') ?>"
-        >
-
-        <!-- TEXTO -->
-        <div class="comentario-texto">
-            <strong class="comentario-usuario">
-                <?= htmlspecialchars($usuario['Username'] ?? 'Usuario') ?>
-            </strong>
-
-            <span class="comentario-contenido">
-                <?= htmlspecialchars(
-                    is_array($c['Contenido']) 
-                        ? implode(' ', $c['Contenido']) 
-                        : $c['Contenido']
-                ) ?>
-            </span>
-        </div>`;
+            div.innerHTML = `<strong>${data.usuario}</strong> <span>${data.contenido}</span>`;
 
             // Botón para borrar
             const borrarBtn = document.createElement('button');
@@ -696,26 +679,9 @@ document.querySelectorAll('.ver-mas').forEach(btn => {
                         const div = document.createElement('div');
                         div.className = 'comentario';
                         div.dataset.id = c.id_comentario;
-                        div.innerHTML = `        <img 
-            src="<?= htmlspecialchars($usuario['Pfp'] ?? '/Recursos/fotousuario.png') ?>"
-            class="comentario-foto fotousuario profile-pic"
-            alt="Foto de <?= htmlspecialchars($usuario['Username'] ?? 'Usuario') ?>"
-        >
+                        
+                        div.innerHTML = `<strong>${c.usuario}</strong> <span>${c.contenido}</span>`;
 
-        <!-- TEXTO -->
-        <div class="comentario-texto">
-            <strong class="comentario-usuario">
-                <?= htmlspecialchars($usuario['Username'] ?? 'Usuario') ?>
-            </strong>
-
-            <span class="comentario-contenido">
-                <?= htmlspecialchars(
-                    is_array($c['Contenido']) 
-                        ? implode(' ', $c['Contenido']) 
-                        : $c['Contenido']
-                ) ?>
-            </span>
-        </div>`;
                         if(c.propio){
                             const borrarBtn = document.createElement('button');
                             borrarBtn.textContent = '✖';
