@@ -3,7 +3,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Librería Virtual - Acceso</title>
+    <title>OpusBooks - Acceso</title>
     <style>
         .error { color: red; font-size: 0.9em; margin-top: 2px; }
     </style>
@@ -11,7 +11,7 @@
 <body>
 
 <h1 style="text-align: center; font-weight: bold;">
-    LIBRERÍA VIRTUAL: ACCESO
+    OpusBooks - Acceso
 </h1>
 
 <form method="post" action="SrvLogin" style="text-align: center; margin-top: 40px;">

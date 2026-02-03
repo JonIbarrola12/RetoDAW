@@ -1,5 +1,6 @@
 <%@page import="opusbooks.beans.Libro"%>
 <%@page import="java.util.List"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
     String user = (String) session.getAttribute("user");
     if (user == null) {
@@ -112,7 +113,7 @@
             <div class="libro-card" data-titulo="<%= libro.getTitulo().toLowerCase() %>">
                 <h3><%= libro.getTitulo() %></h3>
                 <p><b>ISBN:</b> <%= libro.getIsbn() %></p>
-                <p><b>Precio:</b> $<%= libro.getPrecio() %></p>
+                <p><b>Precio:</b> <%= libro.getPrecio() %> €</p>
                 <p><b>Stock:</b> <%= libro.getStock() %></p>
 
                 <div class="acciones">
