@@ -21,7 +21,15 @@ if (!$stmt->fetch()) {
     exit('No autorizado');
 }
 
-/* expulsar */
+// Borrar mensajes del usuario en este grupo
+$stmt = $pdo->prepare("
+    DELETE mg FROM mensajesGrupos mg
+    INNER JOIN miembros m ON mg.id_emisor = m.id_miembro
+    WHERE m.id_usuario = ? AND m.GrupoId = ?
+");
+$stmt->execute([$idUsuario, $idGrupo]);
+
+// Luego expulsar al miembro
 $stmt = $pdo->prepare("
     DELETE FROM miembros
     WHERE id_usuario = ? AND GrupoId = ?

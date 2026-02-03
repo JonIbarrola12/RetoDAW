@@ -1579,6 +1579,7 @@ hr {
     display: flex;
     align-items: center;
     gap: 6px;
+    text-wrap: 20px;
 }
 
 .comentario strong {
