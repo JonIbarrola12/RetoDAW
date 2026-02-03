@@ -21,6 +21,10 @@ if (!$stmt->fetch()) {
 }
 
 /* borrar miembros */
+$pdo->prepare("DELETE FROM mensajesGrupos WHERE id_receptor = ?")
+    ->execute([$idGrupo]);
+
+/* borrar miembros */
 $pdo->prepare("DELETE FROM miembros WHERE GrupoId = ?")
     ->execute([$idGrupo]);
 

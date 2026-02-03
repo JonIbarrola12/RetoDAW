@@ -295,10 +295,6 @@
     -- Dumping data for table `seguidores`
     --
 
-
-    /*!40000 ALTER TABLE `seguidores` DISABLE KEYS */;
-    /*!40000 ALTER TABLE `seguidores` ENABLE KEYS */;
-
     /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
     /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
