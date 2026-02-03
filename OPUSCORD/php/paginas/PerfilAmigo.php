@@ -48,7 +48,7 @@ $foto = !empty($amigo['Pfp']) ? $amigo['Pfp'] : '/Recursos/fotousuario.png';
             <h2 class="compreTexto"><?= htmlspecialchars($amigo['Username']) ?></h2>
 
             <a href="../paginas/chatprivado.php?usuario=<?= $idAmigo ?>" 
-            class="chat-amigo" 
+            class="btn-chat-amigo" 
             title="Ir al chat">
                 <i class="fa-solid fa-comments"></i>
             </a>

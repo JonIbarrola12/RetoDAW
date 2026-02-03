@@ -785,31 +785,6 @@
     padding: 8px 10px;
     border-radius: 8px;
 }
-.bio-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-}
-
-.chat-amigo {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    background-color: #7289da;
-    color: white;
-    border-radius: 25%;
-    text-decoration: none;
-    font-size: 16px;
-    transition: background 0.2s ease, transform 0.1s ease;
-}
-
-.chat-amigo:hover {
-    background: #4752c4;
-    transform: scale(1.05);
-}
 
 
 .btn-galeria {
@@ -828,6 +803,23 @@
 
 .btn-galeria:hover {
     background: #4752c4;
+}
+
+.btn-chat-amigo {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #7289da;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 25%;
+    text-decoration: none;
+    font-weight: 500;
+    margin-top: 10px;
+    margin-left: 10PX;
+}
+.btn-chat-amigo:hover {
+        background: #4752c4;
 }
 
 .mensaje-header {
@@ -862,6 +854,7 @@
     background-color: #2d2d2d;
     width: 15%;
     padding: 10px;
+    width: 20%;
     border-radius: 30px;
 }
 .perfil-horizchat {

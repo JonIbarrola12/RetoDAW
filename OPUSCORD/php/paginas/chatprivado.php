@@ -62,7 +62,6 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == 1 && $receptorId) {
         );
 
 
-        echo "<div class='message $clase'><strong>$nombre:</strong> $contenido</div>";
         $foto = $usuariosPorId[$msg['id_emisor']]['Pfp'] 
     ?: '../../Recursos/fotousuario.png';
 
@@ -372,46 +371,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_mensaje']) && 
     </div>
     <div id="alertaCustom" class="alerta-custom"></div>
 
-    <!-- Modal para ver imagen en chats -->
-<div id="imagenModal" style="
-    display:none;
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,0.8);
-    justify-content:center;
-    align-items:center;
-    z-index:9999;
-">
-    <img id="imagenModalContenido" src="" style="
-        max-width:90%;
-        max-height:90%;
-        border-radius:10px;
-        cursor:pointer;
-    ">
-</div>
-
-<script>
-function abrirImagen(src) {
-    const modal = document.getElementById('imagenModal');
-    const img = document.getElementById('imagenModalContenido');
-    img.src = src;
-    modal.style.display = 'flex';
-}
-
-const modal = document.getElementById('imagenModal');
-
-modal.onclick = function(e) {
-    if (e.target === modal) {
-        modal.style.display = 'none';
-    }
-};
-
-document.getElementById('imagenModalContenido').onclick = () => {
-    modal.style.display = 'none';
-};
-</script>
-
-=======
     <div id="confirmEliminarOverlay" class="confirm-overlay" style="display:none;">
     <div class="confirm-box">
         <p class="confirm-text">¿Deseas eliminar a <?= htmlspecialchars($amigo['Username']) ?>?</p>
