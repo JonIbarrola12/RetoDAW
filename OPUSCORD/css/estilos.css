@@ -871,6 +871,23 @@
     line-height: 1.4;          /* altura de línea para buena legibilidad */
     margin: 4px 0;             /* márgenes opcionales */
 }
+.alerta-customReg {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #2ecc71;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    opacity: 0;
+    transition: opacity .3s ease;
+    z-index: 9999;
+}
+
+.alerta-customReg.mostrar {
+    opacity: 1;
+}
 
 .comentario-foto {
     width: 36px;
@@ -1610,6 +1627,7 @@ hr {
     overflow-wrap: break-word;
 }
 .comentario {
+    display: flex;
     background-color: #40444b;
     padding: 6px 10px;
     border-radius: 8px;

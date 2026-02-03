@@ -460,46 +460,24 @@ case 'verMasComentarios':
         <span class="like-count"><?= LikesCRUD::contarLikes($p['id_publicacion']) ?></span>
     </button>
 
-<!-- comentarios -->
-<div class="comentarios" data-id="<?= $p['id_publicacion'] ?>">
-<?php 
-$totalComentarios = count($comentarios);
-$comentariosMostrar = array_slice($comentarios, -3);
+    <!-- comentarios -->
+    <div class="comentarios" data-id="<?= $p['id_publicacion'] ?>">
+    <?php 
+    $totalComentarios = count($comentarios);
+    $comentariosMostrar = array_slice($comentarios, -3); // ultimos 3
+    foreach ($comentariosMostrar as $c): ?>
+        <div class="comentario" data-id="<?= $c['id_comentario'] ?>">
+            <strong>
+            <?= htmlspecialchars($usuariosPorId[$c['id_usuario']]['Username'] ?? 'Usuario') ?>
+            </strong>
 
-foreach ($comentariosMostrar as $c): 
-    $usuario = $usuariosPorId[$c['id_usuario']] ?? null;
-?>
-    <div class="comentario" data-id="<?= $c['id_comentario'] ?>">
-
-        <!-- FOTO PERFIL -->
-<div class="comentario-header">
-    <img 
-        src="<?= htmlspecialchars($usuario['Pfp'] ?? '/Recursos/fotousuario.png') ?>"
-        class="comentario-foto"
-        alt="Foto de <?= htmlspecialchars($usuario['Username'] ?? 'Usuario') ?>"
-    >
-    <strong class="comentario-usuario">
-        <?= htmlspecialchars($usuario['Username'] ?? 'Usuario') ?>
-    </strong>
-</div>
-
-        <div class="comentario-texto">
-
-
-            <span class="comentario-contenido">
-                <?= htmlspecialchars(
-                    is_array($c['Contenido']) 
-                        ? implode(' ', $c['Contenido']) 
-                        : $c['Contenido']
-                ) ?>
+            <span>
+            <?= htmlspecialchars(is_array($c['Contenido']) ? implode(' ', $c['Contenido']) : $c['Contenido']) ?>
             </span>
+            <?php if ($c['id_usuario'] == $idUsuario): ?>
+                <button class="comentario-borrar" data-id="<?= $c['id_comentario'] ?>">✖</button>
+            <?php endif; ?>
         </div>
-
-        <?php if ($c['id_usuario'] == $idUsuario): ?>
-            <button class="comentario-borrar" data-id="<?= $c['id_comentario'] ?>">✖</button>
-        <?php endif; ?>
-
-    </div>
     <?php endforeach; ?>
 
     <!-- ver mas comentarios si hay mas de 3 -->
@@ -601,14 +579,19 @@ document.querySelectorAll('.comentario-form').forEach(form => {
             borrarBtn.textContent = '✖';
             borrarBtn.className = 'comentario-borrar';
             borrarBtn.dataset.id = data.id_comentario;
-            borrarBtn.onclick = () => {
-                if (!confirm('¿Seguro que quieres eliminar este comentario?')) return;
+        borrarBtn.onclick = async () => {
 
-                fetch('index.php?ajax=borrarComentario', {
-                    method: 'POST',
-                    body: new URLSearchParams({ id_comentario: data.id_comentario })
-                }).then(() => div.remove());
-            };
+            const confirmado = await confirmCustom('¿Seguro que quieres eliminar este comentario?');
+            if (!confirmado) return;
+
+            fetch('index.php?ajax=borrarComentario', {
+                method: 'POST',
+                body: new URLSearchParams({
+                    id_comentario: data.id_comentario
+                })
+            }).then(() => div.remove());
+
+        };
 
             div.appendChild(borrarBtn);
 
@@ -679,9 +662,7 @@ document.querySelectorAll('.ver-mas').forEach(btn => {
                         const div = document.createElement('div');
                         div.className = 'comentario';
                         div.dataset.id = c.id_comentario;
-                        
                         div.innerHTML = `<strong>${c.usuario}</strong> <span>${c.contenido}</span>`;
-
                         if(c.propio){
                             const borrarBtn = document.createElement('button');
                             borrarBtn.textContent = '✖';
@@ -714,26 +695,7 @@ document.querySelectorAll('.ver-mas').forEach(btn => {
                     const div = document.createElement('div');
                     div.className = 'comentario';
                     div.dataset.id = c.id_comentario;
-                    div.innerHTML = `        <img 
-            src="<?= htmlspecialchars($usuario['Pfp'] ?? '/Recursos/fotousuario.png') ?>"
-            class="comentario-foto fotousuario profile-pic"
-            alt="Foto de <?= htmlspecialchars($usuario['Username'] ?? 'Usuario') ?>"
-        >
-
-        <!-- TEXTO -->
-        <div class="comentario-texto">
-            <strong class="comentario-usuario">
-                <?= htmlspecialchars($usuario['Username'] ?? 'Usuario') ?>
-            </strong>
-
-            <span class="comentario-contenido">
-                <?= htmlspecialchars(
-                    is_array($c['Contenido']) 
-                        ? implode(' ', $c['Contenido']) 
-                        : $c['Contenido']
-                ) ?>
-            </span>
-        </div>`;
+                    div.innerHTML = `<strong>${c.usuario}</strong> <span>${c.contenido}</span>`;
                     if(c.propio){
                         const borrarBtn = document.createElement('button');
                         borrarBtn.textContent = '✖';
