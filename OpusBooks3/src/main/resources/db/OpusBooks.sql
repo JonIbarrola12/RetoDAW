@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `opusbooks` /*!40100 DEFAULT CHARACTER SET latin1 */;
-USE `opusbooks`;
 -- MySQL dump 10.13  Distrib 8.0.34, for Win64 (x86_64)
 --
 -- Host: localhost    Database: opusbooks
@@ -117,7 +115,7 @@ CREATE TABLE `datoscompras` (
 
 LOCK TABLES `datoscompras` WRITE;
 /*!40000 ALTER TABLE `datoscompras` DISABLE KEYS */;
-INSERT INTO `datoscompras` VALUES (2,'123456789',1),(3,'9788497592208',2),(3,'9788499890950',1);
+INSERT INTO `datoscompras` VALUES (3,'9788497592208',2),(3,'9788499890950',1);
 /*!40000 ALTER TABLE `datoscompras` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -176,7 +174,7 @@ CREATE TABLE `libros` (
 
 LOCK TABLES `libros` WRITE;
 /*!40000 ALTER TABLE `libros` DISABLE KEYS */;
-INSERT INTO `libros` VALUES ('123456789',12.30,3,'Hola',1,1,1),('9780140283334',15.50,25,'Paula',2,2,2),('9780451524935',16.50,45,'1984',5,5,4),('9780451526342',17.00,50,'Rebelión en la granja',5,5,4),('9780451526343',15.50,40,'Sin blanca',5,5,2),('9780451526344',16.00,30,'Homenaje a Cataluña',5,5,2),('9780451526345',18.00,35,'Los días de Birmania',5,5,4),('9780747532743',22.99,60,'Harry Potter y la piedra filosofal',3,3,1),('9780747538493',24.50,50,'Harry Potter y la cámara secreta',3,3,1),('9780747572481',23.99,40,'Harry Potter y el prisionero de Azkaban',3,3,1),('9780747581086',25.00,35,'Harry Potter y el cáliz de fuego',3,3,1),('9780747581087',24.50,30,'Harry Potter y la Orden del Fénix',3,3,1),('9781501142970',20.00,40,'It',4,4,3),('9781501142971',19.50,20,'Carrie',4,4,3),('9781501142972',22.00,25,'Misery',4,4,3),('9781501143510',21.50,25,'Doctor Sueño',4,4,3),('9781501143519',21.00,35,'El resplandor',4,4,3),('9788497592208',19.99,48,'Cien años de soledad',1,1,1),('9788498385972',18.50,20,'Eva Luna',2,2,2),('9788498385989',16.99,30,'Hija de la fortuna',2,2,2),('9788498385996',17.50,40,'La isla bajo el mar',2,2,1),('9788498411961',14.50,30,'El amor en los tiempos del cólera',1,2,1),('9788499890943',13.99,30,'Del amor y otros demonios',1,1,1),('9788499890950',14.99,24,'Crónica de una muerte anunciada',1,1,1),('9788499890967',13.50,50,'Memoria de mis putas tristes',1,1,1),('9789561040919',18.00,40,'La casa de los espíritus',2,1,1);
+INSERT INTO `libros` VALUES ('9780140283334',15.50,25,'Paula',3,3,3),('9780451524935',16.50,45,'1984',6,6,5),('9780451526342',17.00,50,'Rebelión en la granja',6,6,5),('9780451526343',15.50,40,'Sin blanca',6,6,3),('9780451526344',16.00,30,'Homenaje a Cataluña',6,6,3),('9780451526345',18.00,35,'Los días de Birmania',6,6,5),('9780747532743',22.99,60,'Harry Potter y la piedra filosofal',4,4,2),('9780747538493',24.50,50,'Harry Potter y la cámara secreta',4,4,2),('9780747572481',23.99,40,'Harry Potter y el prisionero de Azkaban',4,4,2),('9780747581086',25.00,35,'Harry Potter y el cáliz de fuego',4,4,2),('9780747581087',24.50,30,'Harry Potter y la Orden del Fénix',4,4,2),('9781501142970',20.00,40,'It',5,5,4),('9781501142971',19.50,20,'Carrie',5,5,4),('9781501142972',22.00,25,'Misery',5,5,4),('9781501143510',21.50,25,'Doctor Sueño',5,5,4),('9781501143519',21.00,35,'El resplandor',5,5,4),('9788497592208',19.99,48,'Cien años de soledad',2,2,2),('9788498385972',18.50,20,'Eva Luna',3,3,3),('9788498385989',16.99,30,'Hija de la fortuna',3,3,3),('9788498385996',17.50,40,'La isla bajo el mar',3,3,2),('9788498411961',14.50,30,'El amor en los tiempos del cólera',2,3,2),('9788499890943',13.99,30,'Del amor y otros demonios',2,2,2),('9788499890950',14.99,24,'Crónica de una muerte anunciada',2,2,2),('9788499890967',13.50,50,'Memoria de mis putas tristes',2,2,2),('9789561040919',18.00,40,'La casa de los espíritus',3,2,2);
 /*!40000 ALTER TABLE `libros` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -222,4 +220,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-01-29 10:35:35
+-- Dump completed on 2026-02-03 19:50:04
