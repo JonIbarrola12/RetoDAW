@@ -131,8 +131,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_mensaje']) && 
     if ($contenidoSeguro !== '' || $archivoSubido) {
         $textoFinal = $contenidoSeguro;
         if ($archivoSubido) {
-            $textoFinal .= ($textoFinal ? "<br>" : "") . "<a href='../../uploads/" . urlencode($archivoSubido) . "' target='_blank'>📎 $archivoSubido</a>";
+            $rutaArchivo = "../../uploads/" . htmlspecialchars($archivoSubido);
+            $ext = strtolower(pathinfo($archivoSubido, PATHINFO_EXTENSION));
+
+            if (in_array($ext, ['jpg','jpeg','png','gif','webp'])) {
+                // si es imagen, insertamos <img> directamente
+                $textoFinal .= ($textoFinal ? "<br>" : "") . "<img src='$rutaArchivo' style='max-width:200px;max-height:200px;border-radius:5px;margin:2px;cursor:pointer;' onclick=\"abrirImagen('$rutaArchivo')\" alt='$archivoSubido'>";
+            } else {
+                // si es PDF u otro archivo
+                $textoFinal .= ($textoFinal ? "<br>" : "") . "<a href='$rutaArchivo' target='_blank'>📎 $archivoSubido</a>";
+            }
         }
+
         $mensaje = new MensajesPrivados($idUsuario, $receptorId, $textoFinal);
         MensajesPrivadosCRUD::añadirMensaje($mensaje);
     }
