@@ -48,6 +48,7 @@ public class SrvConfirmarCompra extends HttpServlet {
         }
 
         try {
+        	bd.abrirTransaccion();
             // 1️⃣ Insertar Compra
             Compra compra = new Compra();
             compra.setFecha_compra(Date.valueOf(LocalDate.now()));
@@ -65,11 +66,12 @@ public class SrvConfirmarCompra extends HttpServlet {
                 if (nuevoStock < 0) nuevoStock = 0;
                 bd.actualizarStock(item.getLibro().getIsbn(), nuevoStock);
             }
-
+            bd.hacerCommit();
             // Limpiar carrito
             session.removeAttribute("itemsCompra");
 
         } catch (Exception e) {
+        	bd.hacerRollback();
             e.printStackTrace();
             response.getWriter().println("Error procesando la compra.");
             return;

@@ -40,7 +40,7 @@ if (error != null) {
 
     <div style="margin-bottom:10px;">
         <label>DNI:</label>
-        <input type="text" id="dni" name="dni" placeholder="12345678A"
+        <input type="text" id="dni" name="dni" 
                style="float:right;width:220px;">
     </div>
 

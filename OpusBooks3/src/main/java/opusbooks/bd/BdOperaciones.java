@@ -8,8 +8,11 @@ import java.util.Properties;
 
 import javax.servlet.ServletContext;
 
+import opusbooks.beans.Autor;
+import opusbooks.beans.Categoria;
 import opusbooks.beans.Compra;
 import opusbooks.beans.DatosCompra;
+import opusbooks.beans.Editorial;
 import opusbooks.beans.Libro;
 import opusbooks.beans.Usuario;
 import opusbooks.config.Configuracion;
@@ -256,7 +259,129 @@ public class BdOperaciones extends BdBase {
         }
         return dni;
     }
+    
+    public List<Autor> getAutores() {
+        List<Autor> lista = new ArrayList<>();
+        try {
+            String sql = "SELECT id_autor, nombre, apellidos FROM autores";
+            PreparedStatement ps = conexion.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
 
+            while (rs.next()) {
+                Autor a = new Autor();
+                a.setId_autor(rs.getInt("id_autor"));
+                a.setNombre(rs.getString("nombre"));
+                a.setApellidos(rs.getString("apellidos"));
+                lista.add(a);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
 
+    public List<Editorial> getEditoriales() {
+        List<Editorial> lista = new ArrayList<>();
+        try {
+            String sql = "SELECT id_editorial, nombre FROM editoriales";
+            PreparedStatement ps = conexion.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
 
+            while (rs.next()) {
+                Editorial e = new Editorial();
+                e.setId_editorial(rs.getInt("id_editorial"));
+                e.setNombre(rs.getString("nombre"));
+                lista.add(e);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
+
+    public List<Categoria> getCategorias() {
+        List<Categoria> lista = new ArrayList<>();
+        try {
+            String sql = "SELECT id_categoria, nombre FROM categorias";
+            PreparedStatement ps = conexion.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Categoria c = new Categoria();
+                c.setId_categoria(rs.getInt("id_categoria"));
+                c.setNombre(rs.getString("nombre"));
+                lista.add(c);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
+    
+    public List<Libro> getLibrosFiltrados(String autorId, String editorialId, String categoriaId) {
+        List<Libro> lista = new ArrayList<>();
+        try {
+            String sql = "SELECT l.isbn, l.titulo, l.precio, l.stock, " +
+                         "a.id_autor, a.nombre AS nombreAutor, " +
+                         "e.id_editorial, e.nombre AS nombreEditorial, " +
+                         "c.id_categoria, c.nombre AS nombreCategoria " +
+                         "FROM libros l " +
+                         "JOIN autores a ON l.id_autor = a.id_autor " +
+                         "JOIN editoriales e ON l.id_editorial = e.id_editorial " +
+                         "JOIN categorias c ON l.id_categoria = c.id_categoria " +
+                         "WHERE 1=1 ";
+
+            // Filtrar por autor
+            if (autorId != null && !autorId.isEmpty()) {
+                sql += " AND a.id_autor = ? ";
+            }
+            // Filtrar por editorial
+            if (editorialId != null && !editorialId.isEmpty()) {
+                sql += " AND e.id_editorial = ? ";
+            }
+            // Filtrar por categoría
+            if (categoriaId != null && !categoriaId.isEmpty()) {
+                sql += " AND c.id_categoria = ? ";
+            }
+
+            PreparedStatement ps = conexion.prepareStatement(sql);
+
+            int index = 1;
+            if (autorId != null && !autorId.isEmpty()) ps.setInt(index++, Integer.parseInt(autorId));
+            if (editorialId != null && !editorialId.isEmpty()) ps.setInt(index++, Integer.parseInt(editorialId));
+            if (categoriaId != null && !categoriaId.isEmpty()) ps.setInt(index++, Integer.parseInt(categoriaId));
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Libro libro = new Libro();
+                libro.setIsbn(rs.getString("isbn"));
+                libro.setTitulo(rs.getString("titulo"));
+                libro.setPrecio(rs.getDouble("precio"));
+                libro.setStock(rs.getInt("stock"));
+                libro.setId_autor(rs.getInt("id_autor"));
+                libro.setNombreAutor(rs.getString("nombreAutor"));
+                libro.setId_editorial(rs.getInt("id_editorial"));
+                libro.setNombreEditorial(rs.getString("nombreEditorial"));
+                libro.setId_categoria(rs.getInt("id_categoria"));
+                libro.setNombreCategoria(rs.getString("nombreCategoria"));
+                lista.add(libro);
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
 }
+
+
+
+
