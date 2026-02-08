@@ -165,6 +165,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_mensaje']) && 
     <title>OPUSCORD - Chat Privado</title>
     <link rel="stylesheet" href="../../css/estilos.css">
     <script src="../../js/Perfil.js"></script>
+<link rel="icon" href="../../Recursos/OpusLogo.png" type="image/png">
 
 </head>
 

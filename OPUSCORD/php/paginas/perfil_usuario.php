@@ -19,13 +19,13 @@ $stmt->execute([$idPerfil]);
 $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$usuario) exit;
-
 // relación
 $stmt = $pdo->prepare("
     SELECT Estado FROM amigos
     WHERE (id_usuario = ? AND id_amigo_usuario = ?)
        OR (id_usuario = ? AND id_amigo_usuario = ?)
 ");
+
 $stmt->execute([$idUsuario, $idPerfil, $idPerfil, $idUsuario]);
 $relacion = $stmt->fetch(PDO::FETCH_ASSOC);
 

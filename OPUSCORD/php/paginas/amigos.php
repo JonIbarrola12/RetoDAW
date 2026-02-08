@@ -94,6 +94,8 @@ $busqueda = $_GET['buscar'] ?? '';
     <title>OPUSCORD - Amigos</title>
     <link rel="stylesheet" href="../../css/estilos.css">
     <script src="../../js/Perfil.js"></script>
+    <link rel="icon" href="../../Recursos/OpusLogo.png" type="image/png">
+
 </head>
 <body class="bodyAmigos">
 
@@ -279,7 +281,7 @@ $busqueda = $_GET['buscar'] ?? '';
         </div>
         <!---------------lista de amigos------------------>
     <section class="bloque-amigos">
-            <h3>🌟 Amistades</h3>
+            <h3>Amistades</h3>
             <br>
         <div class="lista-amigos">
             <?php

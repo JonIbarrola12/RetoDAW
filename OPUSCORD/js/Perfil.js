@@ -56,12 +56,12 @@ function confirmCustom(mensaje) {
 
         btnSi.onclick = () => {
             limpiar();
-            resolve(true);   // ✅ MUY IMPORTANTE
+            resolve(true);  
         };
 
         btnNo.onclick = () => {
             limpiar();
-            resolve(false);  // ✅ MUY IMPORTANTE
+            resolve(false); 
         };
     });
 }
@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Detectar click en cualquier amigo
     document.querySelectorAll('.perfil-horiz').forEach(div => {
         div.addEventListener('click', () => {
-            const idAmigo = div.dataset.usuarioId; // asegúrate que cada .perfil-horiz tiene data-usuario-id
+            const idAmigo = div.dataset.usuarioId; 
             if (idAmigo) {
                 abrirPerfilAmigo(idAmigo);
             }
@@ -441,20 +441,20 @@ setInterval(() => {
             amigos.forEach(amigo => {
                 let div = contenedor.querySelector(`[data-usuario-id="${amigo.id_usuario}"]`);
                 if (div) {
-                    // 🔹 Actualizar nombre
+                    //  Actualizar nombre
                     const nombre = div.querySelector('.perfil-nombre');
                     if (nombre.textContent !== amigo.Username) {
                         nombre.textContent = amigo.Username;
                     }
 
-                    // 🔹 Actualizar foto
+                    //  Actualizar foto
                     const img = div.querySelector('img.profile-pic');
                     const nuevaFoto = amigo.Pfp || '../../Recursos/mamiy.png';
                     if (img.src !== nuevaFoto && !img.src.endsWith(nuevaFoto)) {
                         img.src = nuevaFoto;
                     }
 
-                    // 🔹 Actualizar estado
+                    // Actualizar estado
                     const dot = div.querySelector('.estado-dot');
                     const texto = div.querySelector('.estado-texto');
 
@@ -641,7 +641,7 @@ document.addEventListener('click', e => {
     const fotoGrupo = e.target.closest('#fotoGrupo');
     if (!fotoGrupo) return;
 
-    grupoIdActivo = fotoGrupo.dataset.grupoId; // 🔥 GUARDAMOS ID
+    grupoIdActivo = fotoGrupo.dataset.grupoId; // GUARDAMOS ID
     document.getElementById('inputFotoGrupo').click();
 });
 
@@ -668,15 +668,15 @@ document.addEventListener('change', e => {
 
             const nuevaFoto = data.nuevaFoto + '?t=' + Date.now();
 
-            // 🔹 MODAL DEL GRUPO
+            // MODAL DEL GRUPO
             fotoGrupo.src = nuevaFoto;
 
-            // 🔹 HEADER DEL CHAT
+            // HEADER DEL CHAT
             document.querySelectorAll(
                 `.grupo-foto-header[data-grupo-id="${idGrupo}"]`
             ).forEach(img => img.src = nuevaFoto);
 
-            // 🔥 SIDEBAR
+            // SIDEBAR
             document.querySelectorAll(
                 `.grupo-foto-sidebar[data-grupo-id="${idGrupo}"]`
             ).forEach(img => img.src = nuevaFoto);
@@ -911,7 +911,7 @@ function guardarNombreGrupo() {
             // perfil
             document.getElementById('grupoNombreTexto').textContent = nuevoNombre;
 
-            // sidebar ✅
+            // sidebar 
             actualizarNombreGrupoSidebar(idGrupo, nuevoNombre);
             
         }
@@ -935,7 +935,7 @@ function cancelarEdicionNombreGrupo() {
     cerrarEdicionNombreGrupo();
 }
 
-/* Cerrar edición (una sola función 💅) */
+/* Cerrar edición (una sola función  */
 function cerrarEdicionNombreGrupo() {
     const input = document.getElementById('inputGrupoNombre');
     const texto = document.getElementById('grupoNombreTexto');

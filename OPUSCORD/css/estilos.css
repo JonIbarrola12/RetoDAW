@@ -1289,7 +1289,7 @@ gregar-miembro-btn:hover {
     background-color: #656161;
 }
 .btn-añadir-miembro {
-    margin-left: auto; /* 👈 ESTO lo manda a la derecha */
+    margin-left: auto; 
     background: #5865f2;
     color: white;
     border: none;

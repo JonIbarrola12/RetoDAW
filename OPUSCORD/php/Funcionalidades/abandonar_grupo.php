@@ -28,6 +28,11 @@ $stmt = $pdo->prepare("
     WHERE id_usuario = ? AND GrupoId = ?
 ");
 $stmt->execute([$idUsuario, $idGrupo]);
+$stmt = $pdo->prepare("
+    DELETE FROM miembros
+    WHERE id_usuario = ? AND GrupoId = ?
+");
+$stmt->execute([$idUsuario, $idGrupo]);
 
 
 header('Location: ../paginas/grupos.php');

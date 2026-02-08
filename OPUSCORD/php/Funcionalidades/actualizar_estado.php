@@ -12,3 +12,4 @@ $stmt = $pdo->prepare("
     WHERE id_usuario = ?
 ");
 $stmt->execute([$_SESSION['id_usuario']]);  
+

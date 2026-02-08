@@ -155,6 +155,7 @@ $numeroFotos = count($publicaciones);
 <!DOCTYPE html>
 <html lang="es">
 <head>
+<link rel="icon" href="../../Recursos/OpusLogo.png" type="image/png">
 <meta charset="UTF-8">
 <title>Galería de <?= htmlspecialchars($nombreUsuario) ?></title>
 <script src="../../js/Perfil.js"></script>

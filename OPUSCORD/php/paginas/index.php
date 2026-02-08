@@ -283,11 +283,15 @@ case 'verMasComentarios':
 <link rel="stylesheet" href="../../css/estilos.css">
 <link rel="stylesheet" href="../../css/publicaciones.css">
 <script src="../../js/Perfil.js"></script>
+<link rel="icon" href="../../Recursos/OpusLogo.png" type="image/png">
 </head>
 <body>
+    
 <div class="container">
+    
 <!-- menu -->
         <aside class="sidebar">
+            
             <h2>OPUSCORD</h2>
             <!-- Navegación arriba -->
             <nav class="main-nav">

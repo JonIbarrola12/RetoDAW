@@ -110,8 +110,9 @@ document.getElementById("form").addEventListener("submit", function(event) {
 
    
 
-    //Validar contraseña
+        // Validar contraseña
     let contrasena = document.getElementById("contrasena").value.trim();
+
     if (contrasena === "") {
         errorContra.textContent = "La contraseña es obligatoria";
         inputContra.classList.add("is-invalid");
@@ -121,18 +122,21 @@ document.getElementById("form").addEventListener("submit", function(event) {
         errorContra.textContent = "La contraseña contiene caracteres no permitidos";
         inputContra.classList.add("is-invalid");
         valido = false;
-    } else {
-      let regexContrasena = /^.{3,}$/;
-      if (!regexContrasena.test(contrasena)) {
-        errorContra.textContent =
-            "La contraseña debe tener más de 2 caracteres";
+    } 
+    else {
+        let regexContrasena = /^(?=.*[A-Z])(?=.*\d).{7,}$/;
+
+        if (!regexContrasena.test(contrasena)) {
+            errorContra.textContent =
+                "La contraseña debe tener al menos 7 caracteres, una mayúscula y un número";
             inputContra.classList.add("is-invalid");
-        valido = false;
-      } else {
-        errorContra.textContent = "";
-      } 
-      
+            valido = false;
+        } else {
+            errorContra.textContent = "";
+            inputContra.classList.remove("is-invalid");
+        }
     }
+
 
     // Validar email
     let email = document.getElementById("email").value.trim();

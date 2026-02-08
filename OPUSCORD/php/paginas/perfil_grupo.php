@@ -223,7 +223,7 @@ $miembros = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <div class="grupo-acciones-final">
 
     <?php if (!$esAdmin): ?>
-        <!-- BOTÓN ABANDONAR -->
+    <!-- BOTÓN ABANDONAR -->
         <form 
             method="POST" 
             action="../Funcionalidades/abandonar_grupo.php"

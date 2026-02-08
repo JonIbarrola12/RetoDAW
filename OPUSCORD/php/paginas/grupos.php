@@ -226,6 +226,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invitar']) && $grupoA
         .message.otro { background-color: #949494; padding:5px; margin:5px 0; border-radius:5px; }
         .chat-input { display:flex; gap:5px; margin-top:10px; }
     </style>
+    <link rel="icon" href="../../Recursos/OpusLogo.png" type="image/png">
+
 </head>
 <body>
 <div class="container">
