@@ -23,6 +23,7 @@
             margin: 0;
             background: #f9f9f9;
         }
+
         header {
             display: flex;
             justify-content: space-between;
@@ -31,48 +32,97 @@
             color: #fff;
             padding: 15px 30px;
         }
+
         header h1 {
             margin: 0;
             font-size: 24px;
         }
+
         .usuario {
             display: flex;
             align-items: center;
             gap: 15px;
         }
+
         .boton-cerrar {
-            padding: 5px 15px;
+            padding: 6px 16px;
             cursor: pointer;
             background: #e74c3c;
             border: none;
             color: #fff;
             border-radius: 4px;
         }
+
         main {
             padding: 20px 30px;
         }
+
+        /* 🔹 ESTILOS DEL FILTRO */
+        .filtro-form {
+            background: #fff;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filtro-form label {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .filtro-form select {
+            padding: 6px 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            min-width: 150px;
+        }
+
+        .filtro-form button {
+            padding: 8px 18px;
+            background: #2980b9;
+            border: none;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .filtro-form button:hover {
+            background: #1f6391;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
             background: #fff;
             box-shadow: 0 2px 6px rgba(0,0,0,0.1);
         }
+
         thead {
             background: #333;
             color: #fff;
         }
+
         th, td {
             padding: 10px;
             text-align: center;
             border-bottom: 1px solid #ddd;
         }
+
         tbody tr:hover {
             background: #f2f2f2;
         }
+
         .comprar-btn {
             margin-top: 20px;
             text-align: center;
         }
+
         .comprar-btn button {
             padding: 10px 20px;
             font-size: 16px;
@@ -81,12 +131,6 @@
             border: none;
             color: #fff;
             border-radius: 4px;
-        }
-        form.filtro-form {
-            margin-bottom: 20px;
-            display: flex;
-            gap: 15px;
-            align-items: center;
         }
     </style>
 </head>
@@ -103,7 +147,8 @@
 </header>
 
 <main>
-    <!-- Formulario de filtros -->
+
+    <!-- Filtro -->
     <form method="get" action="SrvMenu" class="filtro-form">
         <label>Autor:</label>
         <select name="autor">
@@ -113,7 +158,7 @@
                 if (autores != null) {
                     for (Autor a : autores) {
             %>
-                        <option value="<%= a.getId_autor() %>"><%= a.getNombre() %></option>
+                <option value="<%= a.getId_autor() %>"><%= a.getNombre() %></option>
             <%
                     }
                 }
@@ -128,7 +173,7 @@
                 if (editoriales != null) {
                     for (Editorial e : editoriales) {
             %>
-                        <option value="<%= e.getId_editorial() %>"><%= e.getNombre() %></option>
+                <option value="<%= e.getId_editorial() %>"><%= e.getNombre() %></option>
             <%
                     }
                 }
@@ -143,7 +188,7 @@
                 if (categorias != null) {
                     for (Categoria c : categorias) {
             %>
-                        <option value="<%= c.getId_categoria() %>"><%= c.getNombre() %></option>
+                <option value="<%= c.getId_categoria() %>"><%= c.getNombre() %></option>
             <%
                     }
                 }
@@ -153,7 +198,7 @@
         <button type="submit">Filtrar</button>
     </form>
 
-    <!-- Tabla de libros -->
+    <!-- Tabla -->
     <table>
         <thead>
             <tr>
@@ -171,22 +216,22 @@
                 if (libros != null && !libros.isEmpty()) {
                     for (Libro libro : libros) {
             %>
-                <tr>
-                    <td><%= libro.getIsbn() %></td>
-                    <td><%= libro.getTitulo() %></td>
-                    <td><%= libro.getNombreAutor() %></td>
-                    <td><%= libro.getNombreEditorial() %></td>
-                    <td><%= libro.getNombreCategoria() %></td>
-                    <td>$<%= libro.getPrecio() %></td>
-                    <td><%= libro.getStock() %></td>
-                </tr>
+            <tr>
+                <td><%= libro.getIsbn() %></td>
+                <td><%= libro.getTitulo() %></td>
+                <td><%= libro.getNombreAutor() %></td>
+                <td><%= libro.getNombreEditorial() %></td>
+                <td><%= libro.getNombreCategoria() %></td>
+                <td><%= libro.getPrecio() %>&euro;</td>
+                <td><%= libro.getStock() %></td>
+            </tr>
             <%
                     }
                 } else {
             %>
-                <tr>
-                    <td colspan="7">No hay libros disponibles</td>
-                </tr>
+            <tr>
+                <td colspan="7">No hay libros disponibles</td>
+            </tr>
             <%
                 }
             %>
