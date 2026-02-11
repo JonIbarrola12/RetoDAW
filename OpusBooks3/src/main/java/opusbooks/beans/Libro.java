@@ -1,101 +1,74 @@
 package opusbooks.beans;
 
 import java.io.Serializable;
+import java.sql.Date;
 
-public class Libro implements Serializable{
-	
-	private String isbn;
-	private double precio;
-	private int stock;
-	private String titulo;
-	private int id_autor;
-	private int id_editorial;
-	private int id_categoria;
-	private String nombreAutor;
-	private String nombreEditorial;
-	private String nombreCategoria;
-	
-	public Libro() {}
+public class Libro implements Serializable {
 
-	public Libro(String isbn, double precio, int stock, String titulo, int id_autor, int id_editorial,
-			int id_categoria) {
-		super();
-		this.isbn = isbn;
-		this.precio = precio;
-		this.stock = stock;
-		this.titulo = titulo;
-		this.id_autor = id_autor;
-		this.id_editorial = id_editorial;
-		this.id_categoria = id_categoria;
-	}
+    private String isbn;
+    private double precio;
+    private int stock;
+    private String titulo;
+    private int id_autor;
+    private int id_editorial;
+    private int id_categoria;
+    private int id_poblacion;
+    private Date fechaEdicion;
+    private String nombreAutor;
+    private String nombreEditorial;
+    private String nombreCategoria;
+    private String nombrePoblacion;
 
-	public String getIsbn() {
-		return isbn;
-	}
+    public Libro() {}
 
-	public void setIsbn(String isbn) {
-		this.isbn = isbn;
-	}
+    public Libro(String isbn, double precio, int stock, String titulo, int id_autor, int id_editorial, int id_categoria) {
+        this.isbn = isbn;
+        this.precio = precio;
+        this.stock = stock;
+        this.titulo = titulo;
+        this.id_autor = id_autor;
+        this.id_editorial = id_editorial;
+        this.id_categoria = id_categoria;
+    }
 
-	public double getPrecio() {
-		return precio;
-	}
+    public String getIsbn() { return isbn; }
+    public void setIsbn(String isbn) { this.isbn = isbn; }
 
-	public void setPrecio(double precio) {
-		this.precio = precio;
-	}
+    public double getPrecio() { return precio; }
+    public void setPrecio(double precio) { this.precio = precio; }
 
-	public int getStock() {
-		return stock;
-	}
+    public int getStock() { return stock; }
+    public void setStock(int stock) { this.stock = stock; }
 
-	public void setStock(int stock) {
-		this.stock = stock;
-	}
+    public String getTitulo() { return titulo; }
+    public void setTitulo(String titulo) { this.titulo = titulo; }
 
-	public String getTitulo() {
-		return titulo;
-	}
+    public int getId_autor() { return id_autor; }
+    public void setId_autor(int id_autor) { this.id_autor = id_autor; }
 
-	public void setTitulo(String titulo) {
-		this.titulo = titulo;
-	}
+    public int getId_editorial() { return id_editorial; }
+    public void setId_editorial(int id_editorial) { this.id_editorial = id_editorial; }
 
-	public int getId_autor() {
-		return id_autor;
-	}
+    public int getId_categoria() { return id_categoria; }
+    public void setId_categoria(int id_categoria) { this.id_categoria = id_categoria; }
 
-	public void setId_autor(int id_autor) {
-		this.id_autor = id_autor;
-	}
+    public String getNombreAutor() { return nombreAutor; }
+    public void setNombreAutor(String nombreAutor) { this.nombreAutor = nombreAutor; }
 
-	public int getId_editorial() {
-		return id_editorial;
-	}
+    public String getNombreEditorial() { return nombreEditorial; }
+    public void setNombreEditorial(String nombreEditorial) { this.nombreEditorial = nombreEditorial; }
 
-	public void setId_editorial(int id_editorial) {
-		this.id_editorial = id_editorial;
-	}
+    public String getNombreCategoria() { return nombreCategoria; }
+    public void setNombreCategoria(String nombreCategoria) { this.nombreCategoria = nombreCategoria; }
 
-	public int getId_categoria() {
-		return id_categoria;
-	}
+    public int getIdPoblacion() { return id_poblacion; }
+    public void setIdPoblacion(int id_poblacion) { this.id_poblacion = id_poblacion; }
 
-	public void setId_categoria(int id_categoria) {
-		this.id_categoria = id_categoria;
-	}
-	public String getNombreAutor() {
-	    return nombreAutor;
-	}
-	public void setNombreAutor(String nombreAutor) {
-	    this.nombreAutor = nombreAutor;
-	}
+    public String getNombrePoblacion() { return nombrePoblacion; }
+    public void setNombrePoblacion(String nombrePoblacion) { this.nombrePoblacion = nombrePoblacion; }
 
-	public String getNombreEditorial() { return nombreEditorial; }
-	public void setNombreEditorial(String nombreEditorial) { this.nombreEditorial = nombreEditorial; }
+    public Date getFechaEdicion() { return fechaEdicion; }
+    public void setFechaEdicion(Date fechaEdicion) { this.fechaEdicion = fechaEdicion; }
 
-	public String getNombreCategoria() { return nombreCategoria; }
-	public void setNombreCategoria(String nombreCategoria) { this.nombreCategoria = nombreCategoria; }
-	
-	
 }
+

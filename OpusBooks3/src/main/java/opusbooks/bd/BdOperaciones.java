@@ -10,16 +10,15 @@ import javax.servlet.ServletContext;
 
 import opusbooks.beans.Autor;
 import opusbooks.beans.Categoria;
-import opusbooks.beans.Compra;
-import opusbooks.beans.DatosCompra;
 import opusbooks.beans.Editorial;
 import opusbooks.beans.Libro;
+import opusbooks.beans.Pais;
+import opusbooks.beans.Poblacion;
 import opusbooks.beans.Usuario;
 import opusbooks.config.Configuracion;
 
 public class BdOperaciones extends BdBase {
 
-    // Constructor que carga el properties automáticamente
     public BdOperaciones(ServletContext context) {
         super();
         try {
@@ -37,7 +36,6 @@ public class BdOperaciones extends BdBase {
             config.setPassword(prop.getProperty("password"));
 
             BdBase.inicializarParametrosConexion(config);
-            System.out.println("Propiedades de BD cargadas correctamente");
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Error al inicializar propiedades de BD", e);
@@ -57,6 +55,23 @@ public class BdOperaciones extends BdBase {
             e.printStackTrace();
         }
         return correcto;
+    }
+
+    public String obtenerDniUsuario(String usuario, String contrasena) {
+        String dni = null;
+        String sql = "SELECT dni FROM usuarios WHERE usuario=? AND contrasena=?";
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+            ps.setString(1, usuario);
+            ps.setString(2, contrasena);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    dni = rs.getString("dni");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return dni;
     }
 
     public boolean insertarUsuario(Usuario usuario) {
@@ -125,33 +140,34 @@ public class BdOperaciones extends BdBase {
         }
         return usuario;
     }
-    
+
     public List<Libro> getLibros() {
         List<Libro> libros = new ArrayList<>();
         try {
-        	String sql =
-        		    "SELECT l.isbn, l.titulo, l.precio, l.stock, " +
-        		    "CONCAT(a.nombre, ' ', a.apellidos) AS autor, " +
-        		    "e.nombre AS editorial, " +
-        		    "c.nombre AS categoria " +
-        		    "FROM libros l " +
-        		    "JOIN autores a ON l.id_autor = a.id_autor " +
-        		    "JOIN editoriales e ON l.id_editorial = e.id_editorial " +
-        		    "JOIN categorias c ON l.id_categoria = c.id_categoria";
+            String sql = "SELECT l.isbn, l.titulo, l.precio, l.stock, l.fecha_edicion, " +
+                         "CONCAT(a.nombre, ' ', a.apellidos) AS autor, " +
+                         "e.nombre AS editorial, " +
+                         "c.nombre AS categoria, " +
+                         "p.nom_poblacion AS poblacion " +
+                         "FROM libros l " +
+                         "JOIN autores a ON l.id_autor = a.id_autor " +
+                         "JOIN editoriales e ON l.id_editorial = e.id_editorial " +
+                         "JOIN categorias c ON l.id_categoria = c.id_categoria " +
+                         "LEFT JOIN poblacion p ON l.id_poblacion = p.id_poblacion";
             Statement stmt = conexion.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             while (rs.next()) {
-            	Libro libro = new Libro();
-            	libro.setIsbn(rs.getString("isbn"));
-            	libro.setTitulo(rs.getString("titulo"));
-            	libro.setPrecio(rs.getDouble("precio"));
-            	libro.setStock(rs.getInt("stock"));
-
-            	libro.setNombreAutor(rs.getString("autor"));
-            	libro.setNombreEditorial(rs.getString("editorial"));
-            	libro.setNombreCategoria(rs.getString("categoria"));
-
-            	libros.add(libro);
+                Libro libro = new Libro();
+                libro.setIsbn(rs.getString("isbn"));
+                libro.setTitulo(rs.getString("titulo"));
+                libro.setPrecio(rs.getDouble("precio"));
+                libro.setStock(rs.getInt("stock"));
+                libro.setFechaEdicion(rs.getDate("fecha_edicion"));
+                libro.setNombreAutor(rs.getString("autor"));
+                libro.setNombreEditorial(rs.getString("editorial"));
+                libro.setNombreCategoria(rs.getString("categoria"));
+                libro.setNombrePoblacion(rs.getString("poblacion"));
+                libros.add(libro);
             }
             rs.close();
             stmt.close();
@@ -160,113 +176,63 @@ public class BdOperaciones extends BdBase {
         }
         return libros;
     }
-    public Libro getLibroPorIsbn(String isbn) {
-        Libro libro = null;
 
-        String sql = "SELECT l.isbn, l.titulo, l.precio, l.stock, " +
-                     "CONCAT(a.nombre, ' ', a.apellidos) AS autor, " +
-                     "e.nombre AS editorial, " +
-                     "c.nombre AS categoria " +
-                     "FROM libros l " +
-                     "JOIN autores a ON l.id_autor = a.id_autor " +
-                     "JOIN editoriales e ON l.id_editorial = e.id_editorial " +
-                     "JOIN categorias c ON l.id_categoria = c.id_categoria " +
-                     "WHERE l.isbn = ?";
+    public List<Libro> getLibrosFiltrados(String autorId, String editorialId, String categoriaId, String poblacionId, Date fechaInicio, Date fechaFin) {
+        List<Libro> lista = new ArrayList<>();
+        try {
+            String sql = "SELECT l.*, a.nombre AS nombreAutor, e.nombre AS nombreEditorial, c.nombre AS nombreCategoria, p.nom_poblacion " +
+                         "FROM libros l " +
+                         "JOIN autores a ON l.id_autor = a.id_autor " +
+                         "JOIN editoriales e ON l.id_editorial = e.id_editorial " +
+                         "JOIN categorias c ON l.id_categoria = c.id_categoria " +
+                         "LEFT JOIN poblacion p ON l.id_poblacion = p.id_poblacion " +
+                         "WHERE 1=1 ";
 
-        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
-            ps.setString(1, isbn);
-            ResultSet rs = ps.executeQuery();
+            if (autorId != null && !autorId.isEmpty()) sql += " AND l.id_autor = " + autorId;
+            if (editorialId != null && !editorialId.isEmpty()) sql += " AND l.id_editorial = " + editorialId;
+            if (categoriaId != null && !categoriaId.isEmpty()) sql += " AND l.id_categoria = " + categoriaId;
+            if (poblacionId != null && !poblacionId.isEmpty()) sql += " AND l.id_poblacion = " + poblacionId;
+            if (fechaInicio != null) sql += " AND l.fecha_edicion >= ?";
+            if (fechaFin != null) sql += " AND l.fecha_edicion <= ?";
 
-            if (rs.next()) {
-                libro = new Libro();
-                libro.setIsbn(rs.getString("isbn"));
-                libro.setTitulo(rs.getString("titulo"));
-                libro.setPrecio(rs.getDouble("precio"));
-                libro.setStock(rs.getInt("stock"));
-                libro.setNombreAutor(rs.getString("autor"));       // necesitarías setter en Libro
-                libro.setNombreEditorial(rs.getString("editorial")); 
-                libro.setNombreCategoria(rs.getString("categoria"));
+            PreparedStatement pst = conexion.prepareStatement(sql);
+
+            int index = 1;
+            if (fechaInicio != null) pst.setDate(index++, fechaInicio);
+            if (fechaFin != null) pst.setDate(index++, fechaFin);
+
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                Libro l = new Libro();
+                l.setIsbn(rs.getString("isbn"));
+                l.setTitulo(rs.getString("titulo"));
+                l.setPrecio(rs.getDouble("precio"));
+                l.setStock(rs.getInt("stock"));
+                l.setId_autor(rs.getInt("id_autor"));
+                l.setId_editorial(rs.getInt("id_editorial"));
+                l.setId_categoria(rs.getInt("id_categoria"));
+                l.setIdPoblacion(rs.getInt("id_poblacion"));
+                l.setFechaEdicion(rs.getDate("fecha_edicion"));
+                l.setNombreAutor(rs.getString("nombreAutor"));
+                l.setNombreEditorial(rs.getString("nombreEditorial"));
+                l.setNombreCategoria(rs.getString("nombreCategoria"));
+                l.setNombrePoblacion(rs.getString("nom_poblacion"));
+                lista.add(l);
             }
-
             rs.close();
+            pst.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        return libro;
+        return lista;
     }
-    
-    public int insertarCompra(Compra compra) {
-        String sql = "INSERT INTO compras (fecha_compra, dni) VALUES (?, ?)";
 
-        try (PreparedStatement ps = conexion.prepareStatement(
-                sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
-
-            ps.setDate(1, compra.getFecha_compra());
-            ps.setString(2, compra.getDni());
-            ps.executeUpdate();
-
-            ResultSet rs = ps.getGeneratedKeys();
-            if (rs.next()) {
-                return rs.getInt(1); // id_compra generado
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return -1; // error
-    }
-    public boolean insertarDatosCompra(DatosCompra datosCompra) {
-        String sql = "INSERT INTO datoscompras (id_compra, isbn, cantidad) VALUES (?, ?, ?)";
-
-        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
-            ps.setInt(1, datosCompra.getId_compra());
-            ps.setString(2, datosCompra.getIsbn());
-            ps.setInt(3, datosCompra.getCantidad());
-            ps.executeUpdate();
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-    
-    public boolean actualizarStock(String isbn, int nuevoStock) {
-        String sql = "UPDATE libros SET stock = ? WHERE isbn = ?";
-        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
-            ps.setInt(1, nuevoStock);
-            ps.setString(2, isbn);
-            ps.executeUpdate();
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-    
-    public String obtenerDniUsuario(String usuario, String contrasena) {
-        String dni = null;
-        String sql = "SELECT dni FROM usuarios WHERE usuario = ? AND contrasena = ?";
-        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
-            ps.setString(1, usuario);
-            ps.setString(2, contrasena);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                dni = rs.getString("dni");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return dni;
-    }
-    
     public List<Autor> getAutores() {
         List<Autor> lista = new ArrayList<>();
         try {
             String sql = "SELECT id_autor, nombre, apellidos FROM autores";
-            PreparedStatement ps = conexion.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-
+            Statement stmt = conexion.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
             while (rs.next()) {
                 Autor a = new Autor();
                 a.setId_autor(rs.getInt("id_autor"));
@@ -275,8 +241,8 @@ public class BdOperaciones extends BdBase {
                 lista.add(a);
             }
             rs.close();
-            ps.close();
-        } catch (SQLException e) {
+            stmt.close();
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return lista;
@@ -286,9 +252,8 @@ public class BdOperaciones extends BdBase {
         List<Editorial> lista = new ArrayList<>();
         try {
             String sql = "SELECT id_editorial, nombre FROM editoriales";
-            PreparedStatement ps = conexion.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-
+            Statement stmt = conexion.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
             while (rs.next()) {
                 Editorial e = new Editorial();
                 e.setId_editorial(rs.getInt("id_editorial"));
@@ -296,8 +261,8 @@ public class BdOperaciones extends BdBase {
                 lista.add(e);
             }
             rs.close();
-            ps.close();
-        } catch (SQLException e) {
+            stmt.close();
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return lista;
@@ -307,9 +272,8 @@ public class BdOperaciones extends BdBase {
         List<Categoria> lista = new ArrayList<>();
         try {
             String sql = "SELECT id_categoria, nombre FROM categorias";
-            PreparedStatement ps = conexion.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-
+            Statement stmt = conexion.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
             while (rs.next()) {
                 Categoria c = new Categoria();
                 c.setId_categoria(rs.getInt("id_categoria"));
@@ -317,71 +281,52 @@ public class BdOperaciones extends BdBase {
                 lista.add(c);
             }
             rs.close();
-            ps.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return lista;
-    }
-    
-    public List<Libro> getLibrosFiltrados(String autorId, String editorialId, String categoriaId) {
-        List<Libro> lista = new ArrayList<>();
-        try {
-            String sql = "SELECT l.isbn, l.titulo, l.precio, l.stock, " +
-                         "a.id_autor, a.nombre AS nombreAutor, " +
-                         "e.id_editorial, e.nombre AS nombreEditorial, " +
-                         "c.id_categoria, c.nombre AS nombreCategoria " +
-                         "FROM libros l " +
-                         "JOIN autores a ON l.id_autor = a.id_autor " +
-                         "JOIN editoriales e ON l.id_editorial = e.id_editorial " +
-                         "JOIN categorias c ON l.id_categoria = c.id_categoria " +
-                         "WHERE 1=1 ";
-
-            // Filtrar por autor
-            if (autorId != null && !autorId.isEmpty()) {
-                sql += " AND a.id_autor = ? ";
-            }
-            // Filtrar por editorial
-            if (editorialId != null && !editorialId.isEmpty()) {
-                sql += " AND e.id_editorial = ? ";
-            }
-            // Filtrar por categoría
-            if (categoriaId != null && !categoriaId.isEmpty()) {
-                sql += " AND c.id_categoria = ? ";
-            }
-
-            PreparedStatement ps = conexion.prepareStatement(sql);
-
-            int index = 1;
-            if (autorId != null && !autorId.isEmpty()) ps.setInt(index++, Integer.parseInt(autorId));
-            if (editorialId != null && !editorialId.isEmpty()) ps.setInt(index++, Integer.parseInt(editorialId));
-            if (categoriaId != null && !categoriaId.isEmpty()) ps.setInt(index++, Integer.parseInt(categoriaId));
-
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-                Libro libro = new Libro();
-                libro.setIsbn(rs.getString("isbn"));
-                libro.setTitulo(rs.getString("titulo"));
-                libro.setPrecio(rs.getDouble("precio"));
-                libro.setStock(rs.getInt("stock"));
-                libro.setId_autor(rs.getInt("id_autor"));
-                libro.setNombreAutor(rs.getString("nombreAutor"));
-                libro.setId_editorial(rs.getInt("id_editorial"));
-                libro.setNombreEditorial(rs.getString("nombreEditorial"));
-                libro.setId_categoria(rs.getInt("id_categoria"));
-                libro.setNombreCategoria(rs.getString("nombreCategoria"));
-                lista.add(libro);
-            }
-            rs.close();
-            ps.close();
+            stmt.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
         return lista;
     }
+
+    public List<Poblacion> getPoblaciones() {
+        List<Poblacion> lista = new ArrayList<>();
+        try {
+            String sql = "SELECT id_poblacion, nom_poblacion, id_pais FROM poblacion";
+            Statement stmt = conexion.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                Poblacion p = new Poblacion();
+                p.setId_poblacion(rs.getInt("id_poblacion"));
+                p.setNom_poblacion(rs.getString("nom_poblacion"));
+                p.setId_pais(rs.getInt("id_pais"));
+                lista.add(p);
+            }
+            rs.close();
+            stmt.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
+
+    public List<Pais> getPaises() {
+        List<Pais> lista = new ArrayList<>();
+        try {
+            String sql = "SELECT id_pais, nom_pais FROM pais";
+            Statement stmt = conexion.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                Pais p = new Pais();
+                p.setId_pais(rs.getInt("id_pais"));
+                p.setNom_pais(rs.getString("nom_pais"));
+                lista.add(p);
+            }
+            rs.close();
+            stmt.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
+
 }
-
-
-
-

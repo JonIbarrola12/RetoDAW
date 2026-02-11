@@ -13,6 +13,9 @@ import opusbooks.beans.Libro;
 import opusbooks.beans.Autor;
 import opusbooks.beans.Editorial;
 import opusbooks.beans.Categoria;
+import java.sql.Date;
+import opusbooks.beans.Poblacion;
+
 
 public class SrvMenu extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -33,6 +36,24 @@ public class SrvMenu extends HttpServlet {
         String autorId = request.getParameter("autor");
         String editorialId = request.getParameter("editorial");
         String categoriaId = request.getParameter("categoria");
+        String poblacionId = request.getParameter("poblacion");
+        String fechaInicioStr = request.getParameter("fechaInicio");
+        String fechaFinStr = request.getParameter("fechaFin");
+
+        Date fechaInicio = null;
+        Date fechaFin = null;
+
+        try {
+            if (fechaInicioStr != null && !fechaInicioStr.isEmpty()) {
+                fechaInicio = Date.valueOf(fechaInicioStr);
+            }
+            if (fechaFinStr != null && !fechaFinStr.isEmpty()) {
+                fechaFin = Date.valueOf(fechaFinStr);
+            }
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+
 
         BdOperaciones bd = new BdOperaciones(getServletContext());
 
@@ -42,7 +63,7 @@ public class SrvMenu extends HttpServlet {
         }
 
         // 3️⃣ Cargar libros filtrados
-        List<Libro> libros = bd.getLibrosFiltrados(autorId, editorialId, categoriaId);
+        List<Libro> libros = bd.getLibrosFiltrados(autorId, editorialId, categoriaId, poblacionId, fechaInicio, fechaFin);
         request.setAttribute("libros", libros);
 
         // 4️⃣ Cargar listas para los select
@@ -53,6 +74,9 @@ public class SrvMenu extends HttpServlet {
         request.setAttribute("autores", autores);
         request.setAttribute("editoriales", editoriales);
         request.setAttribute("categorias", categorias);
+        
+        List<Poblacion> poblaciones = bd.getPoblaciones();
+        request.setAttribute("poblaciones", poblaciones);
 
         bd.cerrarConexion();
 
@@ -60,6 +84,10 @@ public class SrvMenu extends HttpServlet {
         request.setAttribute("autorSeleccionado", autorId);
         request.setAttribute("editorialSeleccionada", editorialId);
         request.setAttribute("categoriaSeleccionada", categoriaId);
+        request.setAttribute("poblacionSeleccionada", poblacionId);
+        request.setAttribute("fechaInicioSeleccionada", fechaInicioStr);
+        request.setAttribute("fechaFinSeleccionada", fechaFinStr);
+
 
         // 6️⃣ Enviar al JSP
         request.getRequestDispatcher("/menu.jsp").forward(request, response);
